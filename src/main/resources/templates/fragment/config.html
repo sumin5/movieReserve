@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="configFragment">
+        <meta name="description" content="Directing Template">
+        <meta name="keywords" content="Directing, unica, creative, html">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <!-- 공통 css -->
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+
+        <link rel="stylesheet" href="css파일 경로" type="text/css">
+        
+        <!-- Js Plugins -->
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+        <script src="js파일 경로"></script>
+        
+        <!-- default_layout을 사용하는 페이지에서 단독으로 넣을 css 공간 -->
+        <th:block layout:fragment="css" ></th:block>
+
+        <!-- default_layout을 사용하는 페이지에서 단독으로 넣을 script 공간 -->
+        <th:block layout:fragment="script" ></th:block>
+
+    </th:block>
+</html>
