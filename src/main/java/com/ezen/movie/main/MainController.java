@@ -1,4 +1,4 @@
-package com.ezen.movie.controller;
+package com.ezen.movie.main;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ezen.movie.service.MenuDTO;
-import com.ezen.movie.service.MenuService;
+import com.ezen.movie.test.MenuDTO;
+import com.ezen.movie.test.MenuService;
 
 @Controller
 @RequestMapping("/")

@@ -1,4 +1,4 @@
-package com.ezen.movie.service;
+package com.ezen.movie.test;
 
 import java.util.List;
 

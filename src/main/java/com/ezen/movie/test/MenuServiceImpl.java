@@ -1,11 +1,11 @@
-package com.ezen.movie.service;
+package com.ezen.movie.test;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ezen.movie.mapper.TestMapper;
+import com.ezen.movie.test.TestMapper;
 
 @Service
 public class MenuServiceImpl implements MenuService {
