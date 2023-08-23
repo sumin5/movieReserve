@@ -32,13 +32,13 @@ dependencies {
 	
 	//데브툴
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	
-	// 포스트그리
-	implementation 'org.postgresql:postgresql:42.5.1'
+
+	//mysql
+	implementation 'mysql:mysql-connector-java:8.0.33'
 	
 	// mybatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
