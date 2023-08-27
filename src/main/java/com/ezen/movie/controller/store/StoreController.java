@@ -10,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.service.main.MainDTO;
 import com.ezen.movie.service.main.MainService;
+import com.ezen.movie.service.store.StoreDTO;
+import com.ezen.movie.service.store.StoreService;
 
 @Controller
 @RequestMapping("/store")
@@ -30,6 +32,5 @@ public class StoreController {
 		return mav;
 		
 	}
-	
 
 }

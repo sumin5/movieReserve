@@ -10,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.service.main.MainDTO;
 import com.ezen.movie.service.main.MainService;
+import com.ezen.movie.service.store.StoreDTO;
+import com.ezen.movie.service.store.StoreService;
 
 @Controller
 @RequestMapping("/")
@@ -17,6 +19,9 @@ public class MainController {
 	
 	@Autowired
 	private MainService menuService;
+	
+	@Autowired
+	private StoreService storeService;
 	
 	@GetMapping("/")
 	public ModelAndView main() {
@@ -31,5 +36,15 @@ public class MainController {
 		
 	}
 	
+	@GetMapping("/storeMain")
+	public ModelAndView storeMain() {
+		ModelAndView mav = new ModelAndView("/main/storeMain");
+		
+		List<StoreDTO> storeList = storeService.storeList();
+		System.err.println(storeList);
+		
+		mav.addObject("storeList", storeList);
+		return mav;
+	}
 
 }

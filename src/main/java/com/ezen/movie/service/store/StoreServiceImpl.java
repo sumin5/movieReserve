@@ -14,9 +14,8 @@ public class StoreServiceImpl implements StoreService {
 	private StoreMapper storeMapper;
 
 	@Override
-	public List<StoreDTO> menuList() {
-		
-		return storeMapper.selectMenu();
+	public List<StoreDTO> storeList() {
+		return storeMapper.selectStore();
 	}
 
 }

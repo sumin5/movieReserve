@@ -9,6 +9,5 @@ import com.ezen.movie.service.store.StoreDTO;
 @Mapper
 public interface StoreMapper {
 	
-	List<StoreDTO> selectMenu();
-	
+	List<StoreDTO> selectStore();
 }
