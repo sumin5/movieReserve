@@ -32,13 +32,14 @@ dependencies {
 	
 	//데브툴
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	
-	// 포스트그리
-	implementation 'org.postgresql:postgresql:42.5.1'
+	// MySQL AWS RDS
+	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	
 	// mybatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'

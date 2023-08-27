@@ -7,9 +7,9 @@
 -->
 <mapper namespace="com.ezen.movie.mapper.store.StoreMapper">
 
-    <select id="selectMenu" resultType="storeDTO" >
+    <select id="selectStore" resultType="storeDTO" >
         select *
-        from menu
+        from STORE
     </select>
 	
 
