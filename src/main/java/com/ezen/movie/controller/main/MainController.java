@@ -26,7 +26,7 @@ public class MainController {
 	@GetMapping("/")
 	public ModelAndView main() {
 		
-		ModelAndView mav = new ModelAndView("/main/main2");
+		ModelAndView mav = new ModelAndView("/main/main");
 		
 		List<MainDTO> menuList = menuService.menuList();
 		System.err.println(menuList);
