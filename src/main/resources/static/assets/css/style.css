@@ -12,6 +12,7 @@
 body {
   font-family: "Open Sans", sans-serif;
   color: #444444;
+  overflow-x: hidden;
 }
 
 a {
@@ -1011,6 +1012,7 @@ section {
 /*--------------------------------------------------------------
 # Portfolio
 --------------------------------------------------------------*/
+
 .portfolio .portfolio-item {
   margin-bottom: 30px;
 }
@@ -1054,12 +1056,10 @@ section {
   position: relative;
   overflow: hidden;
   z-index: 1;
-  background: rgba(84, 84, 84, 0.6);
 }
 
 .portfolio .portfolio-wrap::before {
   content: "";
-  background: rgba(84, 84, 84, 0.6);
   position: absolute;
   left: 30px;
   right: 30px;
