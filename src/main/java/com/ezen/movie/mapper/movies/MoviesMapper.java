@@ -10,5 +10,7 @@ import com.ezen.movie.service.movies.MoviesDTO;
 public interface MoviesMapper {
 	
 	List<MoviesDTO> selectMenu();
+
+	List<MoviesDTO> selectMovie();
 	
 }

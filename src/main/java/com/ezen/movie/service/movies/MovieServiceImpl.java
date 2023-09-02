@@ -18,4 +18,8 @@ public class MovieServiceImpl implements MovieService {
 		return moviesMapper.selectMenu();
 	}
 
+	@Override
+	public List<MoviesDTO> movieList() {
+		return moviesMapper.selectMovie();
+	}
 }
