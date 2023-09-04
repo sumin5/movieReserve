@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
+      layout:decorate="~{layout/join_layout}">
 
-
+	<link th:href="@{/assets/css/join.css}" rel="stylesheet">
 <head>
 	<style>
 	
@@ -11,120 +11,178 @@
 		
 	<script>
 	$(function(){
-	    $("#form-total").steps({
+		$("#wizard").steps({
 	        headerTag: "h2",
 	        bodyTag: "section",
 	        transitionEffect: "fade",
 	        enableAllSteps: true,
-	        stepsOrientation: "vertical",
-	        autoFocus: true,
 	        transitionEffectSpeed: 500,
-	        titleTemplate : '<div class="title">#title#</div>',
 	        labels: {
-	            previous : 'Back Step',
-	            next : '<i class="zmdi zmdi-arrow-right"></i>',
-	            finish : '<i class="zmdi zmdi-check"></i>',
-	            current : ''
-	        },
+	            finish: "Submit",
+	            next: "Forward",
+	            previous: "Backward"
+	        }
+	    });
+	    $('.wizard > .steps li a').click(function(){
+	    	$(this).parent().addClass('checked');
+			$(this).parent().prevAll().addClass('checked');
+			$(this).parent().nextAll().removeClass('checked');
+	    });
+	    // Custome Jquery Step Button
+	    $('.forward').click(function(){
+	    	$("#wizard").steps('next');
 	    })
+	    $('.backward').click(function(){
+	        $("#wizard").steps('previous');
+	    })
+	    // Select Dropdown
+	    $('html').click(function() {
+	        $('.select .dropdown').hide(); 
+	    });
+	    $('.select').click(function(event){
+	        event.stopPropagation();
+	    });
+	    $('.select .select-control').click(function(){
+	        $(this).parent().next().toggle();
+	    })    
+	    $('.select .dropdown li').click(function(){
+	        $(this).parent().toggle();
+	        var text = $(this).attr('rel');
+	        $(this).parent().prev().find('div').text(text);
+	    })
+		
 	});
 	</script>
 </head>
 
 <main id="main" layout:fragment="content">
-		<div class="page-content">
-		<div class="form-v1-content">
-			<div class="wizard-form">
-		        <form class="form-register" action="#" method="post">
-		        	<div id="form-total">
-		        		<!-- SECTION 1 -->
-			            <h2>
-			            	<p class="step-icon"><span>01</span></p>
-			            	<span class="step-text">Peronal Infomation</span>
-			            </h2>
-			            <section>
-			                <div class="inner">
-			                	<div class="wizard-header">
-									<h3 class="heading">회원가입</h3>
-									<p>Please enter your infomation and proceed to the next step so we can build your accounts.  </p>
+	<div class="wrapper">
+            <form action="" id="wizard">
+        		<!-- SECTION 1 -->
+                <h2></h2>
+                <section>
+                    <div class="inner">
+						<div class="image-holder">
+							<img src="" alt="">
+						</div>
+						<div class="form-content" >
+							<div class="form-header">
+								<h3>Registration</h3>
+							</div>
+							<p>Please fill with your details</p>
+							<div class="form-row">
+								<div class="form-holder2">
+									<input type="text" placeholder="First Name" class="form-control2">
+									<button type="button" class="btn-form">중복확인</button>
 								</div>
-								<div class="form-row">
-									<div class="form-holder">
-										<fieldset>
-											<legend>아이디</legend>
-											<input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name" required>
-										</fieldset>
-									</div>
+							</div>
+							<div class="form-row">
+								<div class="form-holder">
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control">
 								</div>
-								<div class="form-row">
-									<div class="form-holder">
-										<fieldset>
-											<legend>아이디</legend>
-											<input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name" required>
-										</fieldset>
-									</div>
-									<div class="form-holder">
-										<fieldset>
-											<legend>Last Name</legend>
-											<input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name" required>
-										</fieldset>
-									</div>
+								<div class="form-holder">
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control">
 								</div>
-								<div class="form-row">
-									<div class="form-holder form-holder-2">
-										<fieldset>
-											<legend>Your Email</legend>
-											<input type="text" name="your_email" id="your_email" class="form-control" pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}" placeholder="example@email.com" required>
-										</fieldset>
-									</div>
+							</div>
+							<div class="form-row">
+								<div class="form-holder">
+									<input type="text" placeholder="Age" class="form-control">
 								</div>
-								<div class="form-row">
-									<div class="form-holder form-holder-2">
-										<fieldset>
-											<legend>Phone Number</legend>
-											<input type="text" class="form-control" id="phone" name="phone" placeholder="+1 888-999-7777" required>
-										</fieldset>
-									</div>
-								</div>
-								<div class="form-row form-row-date">
-									<div class="form-holder form-holder-2">
-										<label class="special-label">Birth Date:</label>
-										<select name="month" id="month">
-											<option value="MM" disabled selected>MM</option>
-											<option value="16">16</option>
-											<option value="17">17</option>
-											<option value="18">18</option>
-											<option value="19">19</option>
-										</select>
-										<select name="date" id="date">
-											<option value="DD" disabled selected>DD</option>
-											<option value="Feb">Feb</option>
-											<option value="Mar">Mar</option>
-											<option value="Apr">Apr</option>
-											<option value="May">May</option>
-										</select>
-										<select name="year" id="year">
-											<option value="YYYY" disabled selected>YYYY</option>
-											<option value="2017">2017</option>
-											<option value="2016">2016</option>
-											<option value="2015">2015</option>
-											<option value="2014">2014</option>
-											<option value="2013">2013</option>
-										</select>
-									</div>
-								</div>
-								<div class="form-row">
-									<div class="form-holder form-holder-2">
-										<input type="text" class="form-control input-border" id="ssn" name="ssn" placeholder="SSN" required>
+								<div class="form-holder" style="align-self: flex-end; transform: translateY(4px);">
+									<div class="checkbox-tick">
+										<label class="male">
+											<input type="radio" name="gender" value="male" checked> Male<br>
+											<span class="checkmark"></span>
+										</label>
+										<label class="female">
+											<input type="radio" name="gender" value="female"> Female<br>
+											<span class="checkmark"></span>
+										</label>
 									</div>
 								</div>
 							</div>
-			            </section>
-		        	</div>
-		        </form>
-			</div>
+							<div class="checkbox-circle">
+								<label>
+									<input type="checkbox" checked> Nor again is there anyone who loves or pursues or desires to obtaini.
+									<span class="checkmark"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+                </section>
+
+				<!-- SECTION 2 -->
+                <h2></h2>
+                <section>
+                    <div class="inner">
+						<div class="image-holder">
+							<img src="" alt="">
+						</div>
+						<div class="form-content">
+							<div class="form-header">
+								<h3 class="join-h3Tag">Registration</h3>
+							</div>
+							<p>Please fill with additional info</p>
+							<div class="form-row">
+								<div class="form-holder w-100">
+									<input type="text" placeholder="Address" class="form-control">
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-holder">
+									<input type="text" placeholder="City" class="form-control">
+								</div>
+								<div class="form-holder">
+									<input type="text" placeholder="Zip Code" class="form-control">
+								</div>
+							</div>
+
+							<div class="form-row">
+								<div class="select">
+									<div class="form-holder">
+										<div class="select-control">Your country</div>
+										<i class="zmdi zmdi-caret-down"></i>
+									</div>
+									<ul class="dropdown">
+										<li rel="United States">United States</li>
+										<li rel="United Kingdom">United Kingdom</li>
+										<li rel="Viet Nam">Viet Nam</li>
+									</ul>
+								</div>
+								<div class="form-holder"></div>
+							</div>
+						</div>
+					</div>
+                </section>
+
+                <!-- SECTION 3 -->
+                <h2></h2>
+                <section>
+                    <div class="inner">
+						<div class="image-holder">
+							<img src="" alt="">
+						</div>
+						<div class="form-content">
+							<div class="form-header">
+								<h3>Registration</h3>
+							</div>
+							<p class="join_Ptag">Send an optional message</p>
+							<div class="form-row">
+								<div class="form-holder w-100">
+									<textarea name="" id="" placeholder="Your messagere here!" class="form-control" style="height: 99px;"></textarea>
+								</div>
+							</div>
+							<div class="checkbox-circle mt-24">
+								<label>
+									<input type="checkbox" checked>  Please accept <a href="#">terms and conditions ?</a>
+									<span class="checkmark"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+                </section>
+            </form>
 		</div>
-	
 </main>
 	
 </html>

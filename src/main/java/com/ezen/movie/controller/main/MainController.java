@@ -76,6 +76,7 @@ public class MainController {
 	@PostMapping("/mailAuth")
 	@ResponseBody
     public String mailConfirm(@RequestParam String email) throws Exception {
+		
         String code = emailService.sendSimpleMessage(email);
         return code;
     }

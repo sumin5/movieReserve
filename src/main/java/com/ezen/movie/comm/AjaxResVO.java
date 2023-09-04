@@ -1,31 +1,30 @@
 package com.ezen.movie.comm;
 
 
-public class AjaxResVO {
-	
-	private int gb;		// 구분
+public class AjaxResVO<T> {
+
+	private String code;	// 코드명
 	private String msg;		// 메세지
-	private Object data;	// 데이터
+	private T data;			// 데이터
 	
-	public AjaxResVO(int gb, String msg) {
+	public AjaxResVO(String code, String msg) {
 		super();
-		this.gb = gb;
+		this.code = code;
 		this.msg = msg;
 	}
 	
-	
-	public AjaxResVO(int gb, String msg, Object data) {
+	public AjaxResVO(String code, String msg, T data) {
 		super();
-		this.gb = gb;
+		this.code = code;
 		this.msg = msg;
 		this.data = data;
 	}
 
-	public int getGb() {
-		return gb;
+	public String getCode() {
+		return code;
 	}
-	public void setGb(int gb) {
-		this.gb = gb;
+	public void setCode(String code) {
+		this.code = code;
 	}
 	public String getMsg() {
 		return msg;
@@ -33,16 +32,11 @@ public class AjaxResVO {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
-	
-	
-	
-	
-	
 	
 }
