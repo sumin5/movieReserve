@@ -10,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.service.main.MainDTO;
 import com.ezen.movie.service.main.MainService;
+import com.ezen.movie.service.movies.MovieService;
+import com.ezen.movie.service.movies.MoviesDTO;
 
 @Controller
 @RequestMapping("/movies")
@@ -17,19 +19,21 @@ public class MoviesController {
 	
 	@Autowired
 	private MainService menuService;
+	@Autowired
+	private MovieService movieService;
 	
-	@GetMapping("/")
-	public ModelAndView main() {
-		
-		ModelAndView mav = new ModelAndView("/main/main2");
-		
-		List<MainDTO> menuList = menuService.menuList();
-		System.err.println(menuList);
-		
-		mav.addObject("menuList",menuList);
+	@GetMapping("/movieList")
+	public ModelAndView movieList() {
+		ModelAndView mav = new ModelAndView("/movies/movieList");
+			List<MoviesDTO> movieList = movieService.movieList();
+			mav.addObject("movieList",movieList);
 		return mav;
-		
 	}
 	
+	@GetMapping("/movieDetail")
+	public ModelAndView movieDetail() {
+		ModelAndView mav = new ModelAndView("/movies/movieDetail");
+		return mav;
+	}
 
 }
