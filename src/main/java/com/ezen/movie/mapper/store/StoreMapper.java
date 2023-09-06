@@ -8,6 +8,6 @@ import com.ezen.movie.service.store.StoreDTO;
 
 @Mapper
 public interface StoreMapper {
-	
-	List<StoreDTO> selectStore();
+
+	List<StoreDTO> selectPopAndDrink();
 }

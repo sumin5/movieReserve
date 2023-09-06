@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface StoreService {
 	
-	List<StoreDTO> storeList();
+	List<StoreDTO> popdrinkList();
 
 }
