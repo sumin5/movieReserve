@@ -10,12 +10,13 @@ import com.ezen.movie.mapper.store.StoreMapper;
 
 @Service
 public class StoreServiceImpl implements StoreService {
+	
 	@Autowired
 	private StoreMapper storeMapper;
 
 	@Override
-	public List<StoreDTO> storeList() {
-		return storeMapper.selectStore();
+	public List<StoreDTO> popdrinkList() {
+		return storeMapper.selectPopAndDrink();
 	}
 
 }

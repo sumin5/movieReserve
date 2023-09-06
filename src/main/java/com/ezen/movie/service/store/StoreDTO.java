@@ -9,6 +9,7 @@ import lombok.Setter;
 public class StoreDTO {
 	
 	private int productIdx;
+	private String productGb;
 	private String productName;
 	private String productPrice;
 	private String productInfo;
@@ -18,6 +19,12 @@ public class StoreDTO {
 	}
 	public void setProductIdx(int productIdx) {
 		this.productIdx = productIdx;
+	}
+	public String getProductGb() {
+		return productGb;
+	}
+	public void setProductGb(String productGb) {
+		this.productGb = productGb;
 	}
 	public String getProductName() {
 		return productName;

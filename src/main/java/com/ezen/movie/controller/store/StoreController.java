@@ -20,6 +20,9 @@ public class StoreController {
 	@Autowired
 	private MainService menuService;
 	
+	@Autowired
+	private StoreService storeService;
+	
 	@GetMapping("/")
 	public ModelAndView main() {
 		
@@ -31,6 +34,17 @@ public class StoreController {
 		mav.addObject("menuList",menuList);
 		return mav;
 		
+	}
+	
+	@GetMapping("/popAndDrinkPage")
+	public ModelAndView popAndDrinkPage() {
+		ModelAndView mav = new ModelAndView();
+		
+		List<StoreDTO> popdrinkList = storeService.popdrinkList();
+		System.out.println(popdrinkList);
+		
+		mav.addObject("popdrinkList", popdrinkList);
+		return mav;
 	}
 
 }

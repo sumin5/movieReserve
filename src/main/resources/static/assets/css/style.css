@@ -1012,6 +1012,14 @@ section {
 /*--------------------------------------------------------------
 # Portfolio
 --------------------------------------------------------------*/
+.portfolio button {
+	border: none;
+    background: none;
+}
+
+.portfolio-container {
+	left: 16%;
+}
 
 .portfolio .portfolio-item {
   margin-bottom: 30px;

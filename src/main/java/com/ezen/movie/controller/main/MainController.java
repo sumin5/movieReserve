@@ -60,15 +60,10 @@ public class MainController {
 		
 	}
 	
-	
+	//스토어 메인화면 이동
 	@GetMapping("/storeMain")
 	public ModelAndView storeMain() {
 		ModelAndView mav = new ModelAndView("/main/storeMain");
-		
-		List<StoreDTO> storeList = storeService.storeList();
-		System.err.println(storeList);
-		
-		mav.addObject("storeList", storeList);
 		return mav;
 	}
 	
