@@ -7,14 +7,18 @@ public class AjaxResVO<T> {
 	private String msg;		// 메세지
 	private T data;			// 데이터
 	
+	
+	
+	public AjaxResVO() {
+		
+	}
+
 	public AjaxResVO(String code, String msg) {
-		super();
 		this.code = code;
 		this.msg = msg;
 	}
 	
 	public AjaxResVO(String code, String msg, T data) {
-		super();
 		this.code = code;
 		this.msg = msg;
 		this.data = data;

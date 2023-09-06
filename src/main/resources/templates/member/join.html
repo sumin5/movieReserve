@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
-      layout:decorate="~{layout/join_layout}">
+      layout:decorate="~{layout/default_layout}">
 
-	<link th:href="@{/assets/css/join.css}" rel="stylesheet">
 <head>
-	<style>
-	
-	</style>
+
 		
-	<script>
+	<script charset="utf-8"> 
+		
+		
 	$(function(){
+		
 		$("#wizard").steps({
 	        headerTag: "h2",
 	        bodyTag: "section",
@@ -52,6 +52,59 @@
 	    })
 		
 	});
+	
+	
+	
+	
+	// 비밀번호 정규화
+	//var reg = "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";	
+	//var txt = "aaaa";
+	//if( !reg.test(txt) ) {
+	 //   alert("비밀번호 정규식 규칙 위반!!");
+	    //return false
+	//}
+	
+	// 중복 체크
+	
+	let idFlag = false; 
+	
+	function doubleChk() {
+
+		var memberId = $("#memberId").val();
+
+		if(isNull(memberId)){
+			alert("아이디를 입력해주세요");
+			return false;
+		}
+
+		$.ajax({
+			
+			type : 'post',
+			url : '[[@{/member/doubleChk}]]',
+			data : {
+				'memberId':memberId
+			},
+			dataType : 'json',
+			success : function(res){
+				
+				if(res.code == 00) {
+					
+					idFlag = true;
+					
+					$("#doubleBtn").empty();
+					$("#doubleBtn").html("통과");
+										
+				} 
+				
+				alert(res.msg);
+			},
+			error: function(res){
+				alert(res);
+			}
+		});
+		
+	}
+	
 	</script>
 </head>
 
@@ -69,19 +122,20 @@
 							<div class="form-header">
 								<h3>Registration</h3>
 							</div>
-							<p>Please fill with your details</p>
+							<p>감동을 주는 세수정유!! 회원가입을 환영합니다.</p>
 							<div class="form-row">
 								<div class="form-holder2">
-									<input type="text" placeholder="First Name" class="form-control2">
-									<button type="button" class="btn-form">중복확인</button>
+									<input type="text" placeholder="아이디를 입력해주세요." class="form-control2" id="memberId" name="memberId">
+									<button type="button" class="btn-form" onclick="doubleChk()" id="doubleBtn">중복확인</button>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="form-holder">
-									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control">
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password1">	
 								</div>
 								<div class="form-holder">
-									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control">
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password2">
+									<p id="passNotMsg" style="display: none;">비밀번호가 일치하지 않습니다.</p>
 								</div>
 							</div>
 							<div class="form-row">

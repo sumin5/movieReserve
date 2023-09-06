@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.config.EmailService;
 import com.ezen.movie.config.EmailServiceImpl;
 import com.ezen.movie.service.main.MainDTO;
@@ -20,16 +21,10 @@ import com.ezen.movie.service.store.StoreService;
 
 @Controller
 @RequestMapping(value = {"/main","/" } )
-public class MainController {
+public class MainController extends AbstractController{
 	
 	@Autowired
 	private MainService menuService;
-	
-	@Autowired
-	private StoreService storeService;
-	
-	@Autowired
-	private EmailService emailService;
 	
 	@GetMapping("/")
 	public ModelAndView main() {
@@ -43,37 +38,12 @@ public class MainController {
 		return mav;
 		
 	}
-	
-	@GetMapping("/loginForm")
-	public ModelAndView loginForm() {
-		
-		ModelAndView mav = new ModelAndView("/main/member/login");
-		return mav;
-		
-	}
-	
-	@GetMapping("/joinForm")
-	public ModelAndView joinForm() {
-		
-		ModelAndView mav = new ModelAndView("/main/member/join");
-		return mav;
-		
-	}
-	
+
 	//스토어 메인화면 이동
 	@GetMapping("/storeMain")
 	public ModelAndView storeMain() {
 		ModelAndView mav = new ModelAndView("/main/storeMain");
 		return mav;
 	}
-	
-	//메일인증로직
-	@PostMapping("/mailAuth")
-	@ResponseBody
-    public String mailConfirm(@RequestParam String email) throws Exception {
-		
-        String code = emailService.sendSimpleMessage(email);
-        return code;
-    }
 
 }
