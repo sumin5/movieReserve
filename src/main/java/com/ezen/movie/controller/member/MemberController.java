@@ -63,8 +63,8 @@ public class MemberController extends AbstractController{
 			}
 			
 			boolean flag = memberService.getDoubleChk(dto);
-			System.err.println(flag);
 			String msg = "";
+			
 			if(flag) {
 				msg ="이미 있는 계정입니다.";
 			}

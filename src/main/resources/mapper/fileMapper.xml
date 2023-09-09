@@ -5,12 +5,14 @@
     [템플릿 설명]  
     - 해당 파일은 SQL 문을 작성하는 곳입니다.
 -->
-<mapper namespace="com.ezen.movie.mapper.member.MemberMapper">
+<mapper namespace="com.ezen.movie.mapper.file.FileMapper">
 
-    <select id="getDoubleChk" parameterType="memberDTO" resultType="Integer">
-        select count(*) 
-        from members
-        where member_id = #{memberId}
+    <select id="getOne" parameterType="fileDTO" resultType="fileDTO">
+        select * 
+        from file
+        where table_idx = #{tableIdx}
+        	and table_gb = #{tableGb}
+        limit 1
     </select>
 
 </mapper>

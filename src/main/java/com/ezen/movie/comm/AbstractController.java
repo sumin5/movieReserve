@@ -2,7 +2,6 @@ package com.ezen.movie.comm;
 
 import java.util.List;
 
-import org.springframework.security.web.header.writers.frameoptions.StaticAllowFromStrategy;
 import org.springframework.util.CollectionUtils;
 
 public class AbstractController {

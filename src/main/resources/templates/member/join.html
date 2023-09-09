@@ -57,16 +57,17 @@
 	
 	
 	// 비밀번호 정규화
-	//var reg = "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";	
-	//var txt = "aaaa";
-	//if( !reg.test(txt) ) {
-	 //   alert("비밀번호 정규식 규칙 위반!!");
-	    //return false
-	//}
+	/* var reg = "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";	
+	var txt = "aaaa";
+	if( !reg.test(txt) ) {
+	    alert("비밀번호 정규식 규칙 위반!!");
+	    return false
+	} */
 	
 	// 중복 체크
 	
 	let idFlag = false; 
+	let pwFlag = false;
 	
 	function doubleChk() {
 
@@ -82,12 +83,12 @@
 			type : 'post',
 			url : '[[@{/member/doubleChk}]]',
 			data : {
-				'memberId':memberId
+				'memberId':memberId,
 			},
 			dataType : 'json',
 			success : function(res){
 				
-				if(res.code == 00) {
+				if(res.code == '00') {
 					
 					idFlag = true;
 					
@@ -103,6 +104,21 @@
 			}
 		});
 		
+	}
+
+	function passCheck(){
+		
+		let password1 = $("#password1").val();
+		let password2 = $("#password2").val();
+
+		if(password1 != password2) {
+
+			$("#passNotMsg").show();
+			
+		} else {
+			$("#passNotMsg").hide();
+			pwFlag = true;
+		}
 	}
 	
 	</script>
@@ -131,10 +147,10 @@
 							</div>
 							<div class="form-row">
 								<div class="form-holder">
-									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password1">	
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password1" onchange="passCheck()">	
 								</div>
-								<div class="form-holder">
-									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password2">
+								<div class="form-holder"> 
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password2" onchange="passCheck()">
 									<p id="passNotMsg" style="display: none;">비밀번호가 일치하지 않습니다.</p>
 								</div>
 							</div>

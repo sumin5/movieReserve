@@ -14,7 +14,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public boolean getDoubleChk(MemberDTO dto) {
-		System.err.println(memberMapper.getDoubleChk(dto));
+		
 		return memberMapper.getDoubleChk(dto) > 0; 
 	}
 
