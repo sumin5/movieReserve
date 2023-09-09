@@ -2,9 +2,11 @@ package com.ezen.movie.service.movies;
 
 import org.apache.ibatis.type.Alias;
 
+import com.ezen.movie.service.comm.CommDTO;
+
 
 @Alias("moviesDTO")
-public class MoviesDTO {
+public class MoviesDTO extends CommDTO{
 	
 	private String movieNameHngl;
 	private String movieNameEng;
@@ -15,23 +17,7 @@ public class MoviesDTO {
 	private String runningTime;
 	private String movieDistributor;
 	private String movieInfo;
-	public MoviesDTO() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	public MoviesDTO(String movieNameHngl, String movieNameEng, String openingDate, String movieRate, String genre,
-			String movieCountry, String runningTime, String movieDistributor, String movieInfo) {
-		super();
-		this.movieNameHngl = movieNameHngl;
-		this.movieNameEng = movieNameEng;
-		this.openingDate = openingDate;
-		this.movieRate = movieRate;
-		this.genre = genre;
-		this.movieCountry = movieCountry;
-		this.runningTime = runningTime;
-		this.movieDistributor = movieDistributor;
-		this.movieInfo = movieInfo;
-	}
+	
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}

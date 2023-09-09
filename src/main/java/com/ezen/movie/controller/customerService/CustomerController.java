@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.service.main.MainDTO;
 import com.ezen.movie.service.main.MainService;
 
 @Controller
 @RequestMapping("/customer")
-public class CustomerController {
+public class CustomerController extends AbstractController{
 	
 	@Autowired
 	private MainService menuService;
