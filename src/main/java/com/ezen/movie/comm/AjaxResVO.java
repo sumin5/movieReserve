@@ -12,6 +12,11 @@ public class AjaxResVO<T> {
 	public AjaxResVO() {
 		
 	}
+	
+	public AjaxResVO(String code) {
+		super();
+		this.code = code;
+	}
 
 	public AjaxResVO(String code, String msg) {
 		this.code = code;

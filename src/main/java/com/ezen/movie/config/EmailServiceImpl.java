@@ -10,6 +10,8 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.ezen.movie.mapper.member.MemberMapper;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -24,6 +26,9 @@ public class EmailServiceImpl implements EmailService{
 
 	@Autowired
 	JavaMailSender javaMailSender;
+	
+	@Autowired
+	MemberMapper memberMapper;
 
     //인증번호 생성
     private final String ePw = createKey();
@@ -83,4 +88,11 @@ public class EmailServiceImpl implements EmailService{
         }
         return ePw; // 메일로 보냈던 인증 코드를 서버로 리턴
     }
+
+	@Override
+	public void sendMail(String to) {
+	
+		memberMapper.sendMail(to);
+		
+	}
 }

@@ -84,12 +84,34 @@ public class MemberController extends AbstractController{
 	}
 
 	//메일인증로직
-	@PostMapping("/mailAuth")
+	@PostMapping("/mailAuthSend")
 	@ResponseBody
-    public String mailConfirm(@RequestParam String email) throws Exception {
+    public AjaxResVO<?> mailConfirm(@RequestParam String email) throws Exception {
 		
-        String code = emailService.sendSimpleMessage(email);
-        return code;
+		AjaxResVO<?> data = new AjaxResVO<>();
+		
+		try {
+			
+			if(isNull(email)) {
+				throw new ValueException("잘못된 접근 경로입니다.");
+			}
+
+	        String code = emailService.sendSimpleMessage(email);
+	        
+			emailService.sendMail(code);
+			
+			data = new AjaxResVO<>(AJAXPASS,"메일을 확인해주세요.");
+			
+		} catch (ValueException e) {
+			e.getMessage();
+			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		} 
+		
+		return data;
+		
     }
 	
 }

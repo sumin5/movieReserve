@@ -165,7 +165,13 @@ inner_Ptag {
 	margin-right: 0;
     margin-bottom: 18px;
 	}
-	
+	.form-holder2 .form-divClass{
+  	display:flex;
+	margin-right: 0;
+    margin-bottom: 18px;
+	}
+		
+
 	.btn-form{
 	    padding: 0;
     border: none;
@@ -236,15 +242,15 @@ inner_Ptag {
   border-bottom: 2px solid #e6e6e6;
   width: 100%;
   color: #666; }
-  .form-control:focus {
+  .form-control2:focus {
     border-color: #e9e0cf; }
-  .form-control::-webkit-input-placeholder {
+  .form-control2::-webkit-input-placeholder {
     color: #999; }
-  .form-control::-moz-placeholder {
+  .form-control2::-moz-placeholder {
     color: #999; }
-  .form-control:-ms-input-placeholder {
+  .form-control2:-ms-input-placeholder {
     color: #999; }
-  .form-control:-moz-placeholder {
+  .form-control2:-moz-placeholder {
     color: #999; }
 
 select.form-control {
@@ -462,3 +468,10 @@ textarea.form-control {
     bottom: 3%; } }
 
 /*# sourceMappingURL=style.css.map */
+
+.form-select-border {
+	    border: none;
+    border-bottom: 2px solid #e6e6e6;
+    font-size: 1rem;
+}
+

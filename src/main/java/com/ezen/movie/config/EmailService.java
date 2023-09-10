@@ -14,4 +14,6 @@ public interface EmailService {
 	
 	public String sendSimpleMessage(String to)throws Exception;
 	
+	// DB에 인증번호 등록
+	public void sendMail(String to);
 }
