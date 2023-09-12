@@ -18,7 +18,7 @@ public class AbstractController {
 	
 	
 	// list 널 체크
-	public boolean isNull(List<Object> list) {
+	public boolean isNull(List<?> list) {
 		
 		return CollectionUtils.isEmpty(list);
 		

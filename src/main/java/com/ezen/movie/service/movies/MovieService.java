@@ -7,4 +7,6 @@ public interface MovieService {
 	List<MoviesDTO> menuList();
 	
 	List<MoviesDTO> movieList();
+
+	MoviesDTO getOne(MoviesDTO dto);
 }

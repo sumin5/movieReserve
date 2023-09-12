@@ -9,16 +9,22 @@
 
 <div class="container" style="margin-left:80px; margin-bottom:30px;">
 	<div class="row">
-		<div th:each="var : ${movieList}"class="col-md-3 mb-3">
+		<div th:each="list : ${movieList}"class="col-md-3 mb-3">
+			
+			<!--<div class="card" style="width:250px;">
+				<img class="card-img-top" th:src="${list?.child?.file?.filePath}" alt="Card-image" style="max-width:250px; height:250px;">
+			</div>-->
 			<div class="card" style="width:250px;">
-				<img class="card-img-top" th:src="@{/img/asd.jpg}" alt="Card-image" style="max-width:250px; height:250px;">
+				<img class="card-img-top" th:src="${list?.obChild?.filePath}" alt="Card-image" style="max-width:250px; height:250px;">
 			</div>
-				<div class="card-body">
-					<a th:href="@{/movies/movieDetail}"><h3><strong th:text="${var.movieNameHngl}"></strong></h3></a><br>
-				 	<h6 th:text="${var.genre}" style="margin-top:-30px"></h6>
-				</div>
-				
-				
+			
+			<div class="card-body">
+				<a th:href="@{/movies/movieDetail(movieIdx = ${list?.movieIdx})}">
+					<h3><strong th:text="${list?.movieNameHngl}"></strong></h3>
+				</a>
+				<br>
+			 	<h6 th:text="${list?.genre}" style="margin-top:-30px"></h6>
+			</div>
 		</div>
 	</div>
 </div>

@@ -9,4 +9,5 @@ public interface FileMapper {
 	
 	public FileDTO getOne(FileDTO vo);
 
+	public FileDTO getList(FileDTO vo);
 }

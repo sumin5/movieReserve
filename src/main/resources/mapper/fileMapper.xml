@@ -9,10 +9,16 @@
 
     <select id="getOne" parameterType="fileDTO" resultType="fileDTO">
         select * 
-        from file
+        from FILE
         where table_idx = #{tableIdx}
         	and table_gb = #{tableGb}
         limit 1
     </select>
 
+	<select id="getList" parameterType="fileDTO" resultType="fileDTO">
+		select file_name from file
+			where table_gb = #{tableGb}
+			and table_idx = #{tableIdx}
+		
+	</select>
 </mapper>

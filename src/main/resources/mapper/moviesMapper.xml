@@ -11,7 +11,11 @@
 </select>
 
 <select resultType="moviesDTO" id="selectMovie">
-	select * from mysql_ssjy.MOVIES
+	select * from MOVIES
  </select>
 
+<select resultType="moviesDTO" id="selectOneMovie" parameterType="moviesDTO">
+		select * from MOVIES 
+			where movie_idx = #{movieIdx}
+</select>
 </mapper>

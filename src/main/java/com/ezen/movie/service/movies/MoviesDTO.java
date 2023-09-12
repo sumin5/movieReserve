@@ -17,7 +17,7 @@ public class MoviesDTO extends CommDTO{
 	private String runningTime;
 	private String movieDistributor;
 	private String movieInfo;
-	
+	private int movieIdx;
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}
@@ -72,5 +72,12 @@ public class MoviesDTO extends CommDTO{
 	public void setMovieInfo(String movieInfo) {
 		this.movieInfo = movieInfo;
 	}
+	public int getMovieIdx() {
+		return movieIdx;
+	}
+	public void setMovieIdx(int movieIdx) {
+		this.movieIdx = movieIdx;
+	}
+	
 	
 }

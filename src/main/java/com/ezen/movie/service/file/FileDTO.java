@@ -9,20 +9,17 @@ import com.ezen.movie.service.comm.CommDTO;
 public class FileDTO extends CommDTO {
 	
 	private String fileIdx;		//파일IDX
-	private String tableIdx;	//테이블IDX
+	private int tableIdx;	//테이블IDX
 	private String filePath;	//파일패스
 	private String fileName;	//파일이름
 	private String tableGb;		//테이블구분
 	public String getFileIdx() {
 		return fileIdx;
 	}
-	public void setFileIdx(String fileIdx) {
-		this.fileIdx = fileIdx;
-	}
-	public String getTableIdx() {
+	public int getTableIdx() {
 		return tableIdx;
 	}
-	public void setTableIdx(String tableIdx) {
+	public void setTableIdx(int tableIdx) {
 		this.tableIdx = tableIdx;
 	}
 	public String getFilePath() {
@@ -43,5 +40,9 @@ public class FileDTO extends CommDTO {
 	public void setTableGb(String tableGb) {
 		this.tableGb = tableGb;
 	}
+	public void setFileIdx(String fileIdx) {
+		this.fileIdx = fileIdx;
+	}
+	
 	
 }
