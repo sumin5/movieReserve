@@ -87,8 +87,15 @@ public class MoviesController extends AbstractController{
 		
 		MoviesDTO movieDetail = movieService.getOne(dto);
 		
+		FileDTO file = new FileDTO();
+		file.setTableIdx(movieDetail.getMovieIdx());
+		file.setTableGb("movies");
+		file = fileMapper.getOne(file);
+		movieDetail.setObChild(file);
+		
 		mav.addObject("movieDetail", movieDetail);
 		return mav;
 	}
 
+	
 }
