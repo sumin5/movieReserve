@@ -22,8 +22,10 @@
 				<a th:href="@{/movies/movieDetail(movieIdx = ${list?.movieIdx})}">
 					<h3 th:text="${list?.movieNameHngl}"></h3>
 				</a>
-				<br>
-			 	<h6 th:text="${list?.genre}" style="margin-top:-30px"></h6>
+				<div style="margin-top:-60px">
+				 	<h6 th:text="${list?.genre}"></h6>
+				 	개봉일 : <p th:text="${list?.openingDt}" style="display:inline-block;"></p>
+				</div>
 			</div>
 		</div>
 	</div>

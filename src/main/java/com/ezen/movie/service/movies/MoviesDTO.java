@@ -10,7 +10,7 @@ public class MoviesDTO extends CommDTO{
 	
 	private String movieNameHngl;
 	private String movieNameEng;
-	private String openingDate;
+	private String openingDt;
 	private String movieRate;
 	private String genre;
 	private String movieCountry;
@@ -30,11 +30,11 @@ public class MoviesDTO extends CommDTO{
 	public void setMovieNameEng(String movieNameEng) {
 		this.movieNameEng = movieNameEng;
 	}
-	public String getOpeningDate() {
-		return openingDate;
+	public String getOpeningDt() {
+		return openingDt;
 	}
-	public void setOpeningDate(String openingDate) {
-		this.openingDate = openingDate;
+	public void setOpeningDt(String openingDt) {
+		this.openingDt = openingDt;
 	}
 	public String getMovieRate() {
 		return movieRate;
@@ -78,6 +78,5 @@ public class MoviesDTO extends CommDTO{
 	public void setMovieIdx(int movieIdx) {
 		this.movieIdx = movieIdx;
 	}
-	
 	
 }
