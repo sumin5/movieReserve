@@ -1,8 +1,12 @@
 package com.ezen.movie.service.movies;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
+import com.ezen.movie.service.cast.CastDTO;
 import com.ezen.movie.service.comm.CommDTO;
+import com.ezen.movie.service.person.PersonDTO;
 
 
 @Alias("moviesDTO")
@@ -18,6 +22,9 @@ public class MoviesDTO extends CommDTO{
 	private String movieDistributor;
 	private String movieInfo;
 	private int movieIdx;
+	private List<CastDTO> castDTO;
+	private List<PersonDTO> personDTO;
+	
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}
@@ -38,6 +45,18 @@ public class MoviesDTO extends CommDTO{
 	}
 	public String getMovieRate() {
 		return movieRate;
+	}
+	public List<CastDTO> getCastDTO() {
+		return castDTO;
+	}
+	public void setCastDTO(List<CastDTO> castDTO) {
+		this.castDTO = castDTO;
+	}
+	public List<PersonDTO> getPersonDTO() {
+		return personDTO;
+	}
+	public void setPersonDTO(List<PersonDTO> personDTO) {
+		this.personDTO = personDTO;
 	}
 	public void setMovieRate(String movieRate) {
 		this.movieRate = movieRate;

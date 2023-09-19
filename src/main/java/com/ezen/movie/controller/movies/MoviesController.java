@@ -94,14 +94,17 @@ public class MoviesController extends AbstractController{
 		
 		FileDTO file = new FileDTO();
 		List<CastDTO> cast = castMapper.getList();
+		System.err.println(cast.get(0).getRole());
 		//List<PersonDTO> person = personMapper.getList();
 		file.setTableIdx(movieDetail.getMovieIdx());
 		file.setTableGb("movies");
 		file = fileMapper.getOne(file);
 		//movieDetail.setObChild(file);
-		movieDetail.setObChild(cast);
-		//movieDetail.setObChild(person);
 		
+		movieDetail.setObChild(cast);
+		// 이렇게 참조하는 방법도 있음.
+		movieDetail.setCastDTO(cast);
+		//movieDetail.setObChild(person);
 		
 		mav.addObject("movieDetail", movieDetail);
 		return mav;

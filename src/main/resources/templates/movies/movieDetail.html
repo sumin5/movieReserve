@@ -17,7 +17,11 @@
 				</div>
 				<hr style="width:800px;">
 				장르 : <p th:text="${movieDetail.genre}" style="display:inline-block;"></p>
-				출연 : <p th:text="${movoieDetail.obChild.get(0).role}"></p>
+				출연 : 
+				<th:block th:each="l ,index : ${movieDetail?.obChild}">
+					<th:block th:if="${index.last}" th:text="${l?.role}"></th:block>
+					<th:block th:unless="${index.last}" th:text="${l?.role} + ',' "></th:block>	
+				</th:block>  
 			</div>
 
 		</div>
