@@ -3,5 +3,9 @@
 
 <mapper namespace="com.ezen.movie.mapper.cast.CastMapper">
 	<select id="getList" parameterType="castDTO" resultType="castDTO">
+		select * from CAST
+			where movie_idx IN (
+			select movie_idx from MOVIES
+			)
 	</select>
 </mapper>

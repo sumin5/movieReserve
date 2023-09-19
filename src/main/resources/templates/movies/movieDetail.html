@@ -6,7 +6,7 @@
 	<main>
 		<div style="margin:50px 50px 50px 50px">
 			<div style=" width:auto; height:auto; display:inline-block;">
-				<img th:src="${movieDetail.obChild.filePath}" style="width:200px; height: 280px;">
+				<!--<img th:src="${movieDetail.obChild.filePath}" style="width:200px; height: 280px;">-->
 			</div>
 			<div style="display:inline-block; margin-left : 50px;">
 				<div style="display:inline-block;">
@@ -17,6 +17,7 @@
 				</div>
 				<hr style="width:800px;">
 				장르 : <p th:text="${movieDetail.genre}" style="display:inline-block;"></p>
+				출연 : <p th:text="${movoieDetail.obChild.get(0).role}"></p>
 			</div>
 
 		</div>

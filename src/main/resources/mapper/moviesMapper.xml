@@ -12,10 +12,11 @@
 
 <select resultType="moviesDTO" id="selectMovie">
 	select * from MOVIES
+		
  </select>
 
 <select resultType="moviesDTO" id="selectOneMovie" parameterType="moviesDTO">
 		select * from MOVIES 
-			where movie_idx = #{movieIdx}
+			where MOVIES.movie_idx = #{movieIdx}
 </select>
 </mapper>

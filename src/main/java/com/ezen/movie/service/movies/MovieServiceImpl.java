@@ -25,6 +25,7 @@ public class MovieServiceImpl implements MovieService {
 	
 	@Override
 	public MoviesDTO getOne(MoviesDTO dto) {
+		
 		return moviesMapper.selectOneMovie(dto);
 	}
 }
