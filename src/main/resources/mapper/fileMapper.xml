@@ -16,9 +16,10 @@
     </select>
 
 	<select id="getList" parameterType="fileDTO" resultType="fileDTO">
-		select file_name from file
-			where table_gb = #{tableGb}
+		select file_path from mysql_ssjy.FILE
+			where
+			table_gb = #{tableGb}
 			and table_idx = #{tableIdx}
-		
+			
 	</select>
 </mapper>

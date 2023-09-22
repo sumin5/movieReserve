@@ -6,6 +6,7 @@ import org.apache.ibatis.type.Alias;
 
 import com.ezen.movie.service.cast.CastDTO;
 import com.ezen.movie.service.comm.CommDTO;
+import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.person.PersonDTO;
 
 
@@ -24,6 +25,7 @@ public class MoviesDTO extends CommDTO{
 	private int movieIdx;
 	private List<CastDTO> castDTO;
 	private List<PersonDTO> personDTO;
+	private List<FileDTO> fileDTO;
 	
 	public String getMovieNameHngl() {
 		return movieNameHngl;
@@ -57,6 +59,12 @@ public class MoviesDTO extends CommDTO{
 	}
 	public void setPersonDTO(List<PersonDTO> personDTO) {
 		this.personDTO = personDTO;
+	}
+	public List<PersonDTO> getFileDTO() {
+		return personDTO;
+	}
+	public void setFileDTO(List<FileDTO> fileDTO) {
+		this.fileDTO = fileDTO;
 	}
 	public void setMovieRate(String movieRate) {
 		this.movieRate = movieRate;

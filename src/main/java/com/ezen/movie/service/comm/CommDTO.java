@@ -11,6 +11,7 @@ public class CommDTO {
 	private Map<String, Object> child;	//자식
 	private boolean flag;		// 여부
 	private Object obChild;		// 자식
+	private Object obChild2;
 	
 	public String getCreateDt() {
 		return createDt;
@@ -54,6 +55,12 @@ public class CommDTO {
 	}
 	public void setObChild(Object obChild) {
 		this.obChild = obChild;
+	}
+	public Object getObChild2() {
+		return obChild;
+	}
+	public void setObChild2(Object obChild2) {
+		this.obChild = obChild2;
 	}
 	
 	

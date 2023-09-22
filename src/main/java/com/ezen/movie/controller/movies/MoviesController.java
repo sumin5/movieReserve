@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.mapper.cast.CastMapper;
 import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.mapper.person.PersonMapper;
-import com.ezen.movie.service.cast.CastDTO;
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.main.MainService;
 import com.ezen.movie.service.movies.MovieService;
@@ -35,15 +35,14 @@ public class MoviesController extends AbstractController{
 	private PersonMapper personMapper;
 	
 	
+	
+	//영화 리스트 
 	@GetMapping("/movieList")
 	public ModelAndView movieList() {
 		ModelAndView mav = new ModelAndView("/movies/movieList");
 			List<MoviesDTO> movieList = movieService.movieList();
-			
 				
-					
 			if(!isNull(movieList)){
-				
 				
 //				for(int i=0; i<movieList.size(); i++) {
 //					
@@ -71,9 +70,7 @@ public class MoviesController extends AbstractController{
 					
 					moviesDTO.setObChild(file);
 				}
-				
 			}
-			
 //			if(isNull(movieList)) {
 //				
 //				for(MoviesDTO movieDTO  : movieList) {
@@ -86,25 +83,31 @@ public class MoviesController extends AbstractController{
 		return mav;
 	}
 	
+	//영화 상세정보
 	@GetMapping("/movieDetail")
 	public ModelAndView movieDetail(MoviesDTO dto) {
 		ModelAndView mav = new ModelAndView("/movies/movieDetail");
 		
 		MoviesDTO movieDetail = movieService.getOne(dto);
 		
-		FileDTO file = new FileDTO();
-		List<CastDTO> cast = castMapper.getList();
-		System.err.println(cast.get(0).getRole());
-		//List<PersonDTO> person = personMapper.getList();
-		file.setTableIdx(movieDetail.getMovieIdx());
-		file.setTableGb("movies");
-		file = fileMapper.getOne(file);
-		//movieDetail.setObChild(file);
+		FileDTO  vo = new FileDTO();
 		
-		movieDetail.setObChild(cast);
-		// 이렇게 참조하는 방법도 있음.
-		movieDetail.setCastDTO(cast);
+		vo.setTableGb("movies");
+		vo.setTableIdx(movieDetail.getMovieIdx());
+		
+		System.out.println("asdf" + vo.getTableIdx());
+		List<FileDTO> file = fileMapper.getList(vo);
+		
+		List<PersonDTO> person = personMapper.getList();
+		System.out.println("fasdf" +file);
+		System.err.println(person.get(0).getPersonNameHngl());
+		//file.setTableIdx(movieDetail.getMovieIdx());
+		//file.setTableGb("movies");
+		movieDetail.setObChild(file);
+	
 		//movieDetail.setObChild(person);
+		// 이렇게 참조하는 방법도 있음.
+		movieDetail.setPersonDTO(person);
 		
 		mav.addObject("movieDetail", movieDetail);
 		return mav;
