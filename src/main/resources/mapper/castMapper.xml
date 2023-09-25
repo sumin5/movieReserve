@@ -8,4 +8,12 @@
 			select movie_idx from MOVIES
 			)
 	</select>
+	
+	<!--
+	<select id="getOne" parameterType="castDTO" resultType="castDTO">
+		select * from CAST 
+		where movie_idx = #{movieIdx}
+		and cast_gb = '감독'
+	</select>
+	-->
 </mapper>

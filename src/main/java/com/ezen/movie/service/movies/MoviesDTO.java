@@ -23,10 +23,10 @@ public class MoviesDTO extends CommDTO{
 	private String movieDistributor;
 	private String movieInfo;
 	private int movieIdx;
-	private List<CastDTO> castDTO;
+	private CastDTO castDTO;
+	private PersonDTO personOne;
 	private List<PersonDTO> personDTO;
 	private List<FileDTO> fileDTO;
-	
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}
@@ -47,24 +47,6 @@ public class MoviesDTO extends CommDTO{
 	}
 	public String getMovieRate() {
 		return movieRate;
-	}
-	public List<CastDTO> getCastDTO() {
-		return castDTO;
-	}
-	public void setCastDTO(List<CastDTO> castDTO) {
-		this.castDTO = castDTO;
-	}
-	public List<PersonDTO> getPersonDTO() {
-		return personDTO;
-	}
-	public void setPersonDTO(List<PersonDTO> personDTO) {
-		this.personDTO = personDTO;
-	}
-	public List<PersonDTO> getFileDTO() {
-		return personDTO;
-	}
-	public void setFileDTO(List<FileDTO> fileDTO) {
-		this.fileDTO = fileDTO;
 	}
 	public void setMovieRate(String movieRate) {
 		this.movieRate = movieRate;
@@ -105,5 +87,30 @@ public class MoviesDTO extends CommDTO{
 	public void setMovieIdx(int movieIdx) {
 		this.movieIdx = movieIdx;
 	}
+	public CastDTO getCastDTO() {
+		return castDTO;
+	}
+	public void setCastDTO(CastDTO castDTO) {
+		this.castDTO = castDTO;
+	}
+	public PersonDTO getPersonOne() {
+		return personOne;
+	}
+	public void setPersonOne(PersonDTO personOne) {
+		this.personOne = personOne;
+	}
+	public List<PersonDTO> getPersonDTO() {
+		return personDTO;
+	}
+	public void setPersonDTO(List<PersonDTO> personDTO) {
+		this.personDTO = personDTO;
+	}
+	public List<FileDTO> getFileDTO() {
+		return fileDTO;
+	}
+	public void setFileDTO(List<FileDTO> fileDTO) {
+		this.fileDTO = fileDTO;
+	}
+	
 	
 }

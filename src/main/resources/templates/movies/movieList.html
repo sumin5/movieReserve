@@ -20,7 +20,7 @@
 			
 			<div class="card-body">
 				<a th:href="@{/movies/movieDetail(movieIdx = ${list?.movieIdx})}">
-					<h3 th:text="${list?.movieNameHngl}"></h3>
+					<h3 th:text="${list?.movieNameHngl}" style="border:hidden"></h3>
 				</a>
 				<div style="margin-top:-60px">
 				 	<h6 th:text="${list?.genre}"></h6>

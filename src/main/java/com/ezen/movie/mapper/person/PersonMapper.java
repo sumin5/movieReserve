@@ -7,4 +7,6 @@ import com.ezen.movie.service.person.PersonDTO;
 public interface PersonMapper {
 
 	public List<PersonDTO> getList();
+	
+	public PersonDTO getOne();
 }

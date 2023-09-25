@@ -2,10 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ezen.movie.mapper.person.PersonMapper">
-	<select id="getList" parameterType="personDTO" resultType="personDTO">
+	<select id="getList"  resultType="personDTO">
 		select * from  PERSON 
-		where persion_idx in ( select persion_idx from CAST)
-		
+		where persion_idx in ( select persion_idx from CAST
+		where cast_gb='주연')
 	</select>
 	
+	<select id="getOne" resultType="personDTO">
+		select * from PERSON
+		where persion_idx in (select persion_idx from CAST
+		where CAST.cast_gb ='감독')
+	</select>
 </mapper>

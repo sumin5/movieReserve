@@ -7,26 +7,52 @@
 		<div style="margin:50px 50px 50px 50px">
 			<div style="display:inline-block; margin-left : 50px;">
 				<div style="display:inline-block;">
-					<th:block th:each="l : ${movieDetail?.ObChild}">
-						<img th:src="${l?.filePath}">
-					</th:block>
+					<div id="carouselExample" class="carousel slide">
+						<div class="carousel-inner">
+							<div class="carousel-item active" th:each="l : ${movieDetail?.fileDTO}">
+								<img th:src="${l?.filePath}" style="width:400px; height:350px;" class="w-100">
+							</div>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+								data-bs-slide="prev">
+								<span class="carousel-control-prev-icon"></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+								data-bs-slide="next">
+								<span class="carousel-control-next-icon"></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+
+					</div>
+					<div style="display:inline-block;">
+						<h2 th:text="${movieDetail.movieNameHngl}"></h2>
+					</div>
+					<div style="display:inline-block">
+						<p th:text=" '(' + ${movieDetail.movieNameEng} + ')' "></p>
+					</div>
+					 <p th:text="${movieDetail.openingDt} + ' 개봉'"></p>
+					<hr style="width:800px;">
+					감독 : <p th:text="${movieDetail?.ObChild?.personNameHngl}" style="display:inline-block;"></p><br>
+					출연 :
+					<p style="display:inline-block;">
+						<th:block th:each="l ,index : ${movieDetail?.personDTO}">
+							<th:block th:if="${index.last}" th:text="${l?.personNameHngl}"></th:block>
+							<th:block th:unless="${index.last}" th:text="${l?.personNameHngl} + ',' "></th:block>
+						</th:block>
+					</p><br>
+					배급 : <p th:text="${movieDetail.movieDistributor}" style="display:inline-block;"></p><br>
+					장르/기본정보 : <p th:text="${movieDetail.genre}" style="display:inline-block;"></p>/
+					<p th:text="${movieDetail.movieCountry}" style="display:inline-block;"></p>,
+					<p th:text="${movieDetail.runningTime}" style="display:inline-block"></p>,
+					<p th:text="${movieDetail.movieRate}" style="display:inline-block"></p>
+					
+					<h2 th:text="${movieDetail.movieInfo}" style="border:hidden; margin-top:40px;"></h2>
+					
 				</div>
-				<div style="display:inline-block;">
-					<h2 th:text="${movieDetail.movieNameHngl}"></h2>
-				</div>
-				<div>
-					<p th:text="${movieDetail.movieNameEng}" style="margin-bottom:5px;"></p>
-				</div>
-				<hr style="width:800px;">
-				장르 : <p th:text="${movieDetail.genre}" style="display:inline-block;"></p><br>
-				출연 :
-				<th:block th:each="l ,index : ${movieDetail?.personDTO}">
-					<th:block th:if="${index.last}" th:text="${l?.personNameHngl}"></th:block>
-					<th:block th:unless="${index.last}" th:text="${l?.personNameHngl} + ',' "></th:block>
-				</th:block>
+
 			</div>
 
-		</div>
 	</main>
 </div>
 
