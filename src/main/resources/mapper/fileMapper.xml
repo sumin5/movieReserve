@@ -12,7 +12,9 @@
         from FILE
         where table_idx = #{tableIdx}
         	and table_gb = #{tableGb}
-        limit 1
+        	and file_top_path is not null
+        	and file_top_name is not null
+        	limit 1
     </select>
 
 	<select id="getList" parameterType="fileDTO" resultType="fileDTO">
@@ -20,6 +22,12 @@
 			where
 			table_gb = #{tableGb}
 			and table_idx = #{tableIdx}
-			
+	</select>
+	
+	<select id="getTop" parameterType="fileDTO" resultType="fileDTO">
+		select file_top_path from FILE
+			where table_gb = #{tableGb}
+			and table_idx = #{tableIdx}
+			and file_top_path is not null
 	</select>
 </mapper>

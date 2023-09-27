@@ -12,4 +12,6 @@ public interface FileMapper {
 	public FileDTO getOne(FileDTO vo);
 
 	public List<FileDTO> getList(FileDTO vo);
+	
+	public FileDTO getTop(FileDTO vo);
 }

@@ -13,8 +13,13 @@ public class FileDTO extends CommDTO {
 	private String filePath;	//파일패스
 	private String fileName;	//파일이름
 	private String tableGb;		//테이블구분
+	private String fileTopPath; // 파일대표이미지경로
+	private String fileTopName; // 파일대표이미지이름
 	public String getFileIdx() {
 		return fileIdx;
+	}
+	public void setFileIdx(String fileIdx) {
+		this.fileIdx = fileIdx;
 	}
 	public int getTableIdx() {
 		return tableIdx;
@@ -40,8 +45,17 @@ public class FileDTO extends CommDTO {
 	public void setTableGb(String tableGb) {
 		this.tableGb = tableGb;
 	}
-	public void setFileIdx(String fileIdx) {
-		this.fileIdx = fileIdx;
+	public String getFileTopPath() {
+		return fileTopPath;
+	}
+	public void setFileTopPath(String fileTopPath) {
+		this.fileTopPath = fileTopPath;
+	}
+	public String getFileTopName() {
+		return fileTopName;
+	}
+	public void setFileTopName(String fileTopName) {
+		this.fileTopName = fileTopName;
 	}
 	
 	

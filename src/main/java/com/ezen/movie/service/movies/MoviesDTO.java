@@ -27,6 +27,7 @@ public class MoviesDTO extends CommDTO{
 	private PersonDTO personOne;
 	private List<PersonDTO> personDTO;
 	private List<FileDTO> fileDTO;
+	private FileDTO fileDTO2;
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}
@@ -110,6 +111,12 @@ public class MoviesDTO extends CommDTO{
 	}
 	public void setFileDTO(List<FileDTO> fileDTO) {
 		this.fileDTO = fileDTO;
+	}
+	public FileDTO getFileDTO2() {
+		return fileDTO2;
+	}
+	public void setFileDTO2(FileDTO fileDTO2) {
+		this.fileDTO2 = fileDTO2;
 	}
 	
 	

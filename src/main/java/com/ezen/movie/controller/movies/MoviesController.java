@@ -57,17 +57,15 @@ public class MoviesController extends AbstractController{
 //				}
 				
 				for (MoviesDTO moviesDTO : movieList) {
-					
 					FileDTO file = new FileDTO();
+					
 					file.setTableIdx(moviesDTO.getMovieIdx());
 					file.setTableGb("movies");
-					
 					file = fileMapper.getOne(file);
 					
 //					Map<String, Object> map = new HashMap<>();
 //					map.put("file",file);
 //					moviesDTO.setChild(map);
-					
 					moviesDTO.setObChild(file);
 				}
 			}
@@ -90,17 +88,23 @@ public class MoviesController extends AbstractController{
 		
 		MoviesDTO movieDetail = movieService.getOne(dto);
 		
-		FileDTO  vo = new FileDTO();
-		vo.setTableGb("movies");
-		vo.setTableIdx(movieDetail.getMovieIdx());
+		FileDTO list = new FileDTO();
+		FileDTO getOne = new FileDTO();
+		getOne.setTableGb("movies");
+		getOne.setTableIdx(movieDetail.getMovieIdx());
+		list.setTableGb("movies");
+		list.setTableIdx(movieDetail.getMovieIdx());
 		
-		System.out.println("asdf" + vo.getTableIdx());
-		List<FileDTO> file = fileMapper.getList(vo);
+		List<FileDTO> file = fileMapper.getList(list);
+		
+		FileDTO getTop = fileMapper.getTop(getOne);
+		System.out.println("getTop" + getTop);
 		List<PersonDTO> person = personMapper.getList();
 		PersonDTO ps = personMapper.getOne();
 		System.out.println("asfdas" + ps);
 		//file.setTableIdx(movieDetail.getMovieIdx());
 		//file.setTableGb("movies");
+		movieDetail.setFileDTO2(getTop);
 		movieDetail.setFileDTO(file);
 		movieDetail.setPersonOne(ps);
 		movieDetail.setObChild(ps);
