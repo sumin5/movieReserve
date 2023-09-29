@@ -22,6 +22,8 @@
 			where
 			table_gb = #{tableGb}
 			and table_idx = #{tableIdx}
+			and file_top_path is null
+			and file_top_name is null
 	</select>
 	
 	<select id="getTop" parameterType="fileDTO" resultType="fileDTO">

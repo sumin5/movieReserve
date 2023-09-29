@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
 	layout:decorate="~{layout/default_layout}">
-
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 <div layout:fragment="content">
 	<main>
 		<div style="margin-top:70px;">
-			<div style="display:inline-block; margin-left:100px;  vertical-align:top;">
-				<img th:src="${movieDetail.fileDTO2.fileTopPath}" style="width:220px; height:300px;">
+			<div style="display:inline-block; margin-left:100px;  vertical-align:top; margin-right:30px;">
+				<img th:src="${movieDetail.fileDTO2.fileTopPath}" style="width:220px; height:330px;">
 			</div>
 			<div style="display:inline-block;">
 				<div>
@@ -16,7 +16,7 @@
 					<p th:text=" '(' + ${movieDetail.movieNameEng} + ')' "></p>
 				</div>
 				<p th:text="${movieDetail.openingDt} + ' 개봉'"></p>
-				<hr style="width:800px;">
+				<hr style="width:870px;">
 				감독 : <p th:text="${movieDetail?.ObChild?.personNameHngl}" style="display:inline-block;"></p><br>
 				출연 :
 				<p style="display:inline-block;">
@@ -29,12 +29,66 @@
 				장르/기본정보 : <p th:text="${movieDetail.genre}" style="display:inline-block;"></p>/
 				<p th:text="${movieDetail.movieCountry}" style="display:inline-block;"></p>,
 				<p th:text="${movieDetail.runningTime}" style="display:inline-block"></p>,
-				<p th:text="${movieDetail.movieRate}" style="display:inline-block"></p>
+				<p th:text="${movieDetail.movieRate}" style="display:inline-block"></p><br>
+				<a th:href="@{/reserve/main}" class="btn"
+					style="background-color:paleturquoise; font-size:20px;">예매하기</a>
 			</div>
 		</div>
 
-		<h2 th:text="${movieDetail.movieInfo}" style="border:hidden; margin-top:40px;"></h2>
+
+		<h3 th:text="${movieDetail.movieInfo}"
+			style="border:hidden; margin-top:40px;margin-left:200px; margin-bottom:30px; width:80%;"></h3><br>
+	<div style="text-align:center;">
+		<div style="display:inline-block;" class="stillCut">
+			<a  th:href="'#images'" style="background-color:paleturquoise; font-size:20px; margin-bottom:50px;">스틸 컷</a>
+		</div>
+		
+		<div style="display:inline-block;">
+			<a  style="background-color:paleturquoise; font-size:20px; margin-bottom:50px;">인물 정보</a>
+		</div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+		
+	<div class="images" id="images">
+		<div th:each="l : ${movieDetail.fileDTO}" style="text-align:center; margin-bottom:40px;">
+			<img th:src="${l.filePath}" style="width:650px;height:420px;">
+		</div>
+	</div>
+		
 </div>
+
+
+<script>
+	$(document).ready(function($) {
+		$(".stillCut").click(function(event){
+			event.preventDefault();
+			$('html,body').animate({scrollTop:$(this.hash).offset().top},500);
+		})
+	})
+</script>
 </main>
 
 </html>
