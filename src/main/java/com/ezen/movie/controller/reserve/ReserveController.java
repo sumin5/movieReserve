@@ -33,6 +33,11 @@ public class ReserveController extends AbstractController{
 		
 		ModelAndView mav = new ModelAndView("/reserve/selectPage");
 		List<MoviesDTO> movieList = movieService.movieList();
+		
+		if(!isNull(movieList)) {
+			mav.addObject("initIdx",movieList.get(0).getMovieIdx());
+		}
+		
 		mav.addObject("movieList", movieList);
 		return mav;
 		

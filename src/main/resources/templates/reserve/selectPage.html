@@ -6,6 +6,7 @@
 <script>
 	
 	let today = "";
+	let initMovieIdx = "[[${initIdx}]]";
 	
 	// 페이지 온로드시
 	$(function(){ 
@@ -34,6 +35,7 @@
 		$('#datepicker').change(function(){
 			$("#resdate").text($(this).val());
 			today = $("#datepicker").val().slice(0,10);
+			getTimetable(initMovieIdx);
 		})
 		
 		//초기 날짜 설정
@@ -41,7 +43,7 @@
 		today = $("#datepicker").val().slice(0,10);
 		
 		// 영화초기설정
-		getTimetable(1);
+		getTimetable(initMovieIdx);
 		
   	})
   	
@@ -51,6 +53,8 @@
 
 
 	function getTimetable(movieIdx){
+		
+		initMovieIdx = movieIdx;
 		
 		if(isNull(movieIdx) || isNull(today)){
 			alert("잘못된 접근입니다.");
