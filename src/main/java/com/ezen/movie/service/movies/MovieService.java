@@ -1,6 +1,7 @@
 package com.ezen.movie.service.movies;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MovieService {
 	
@@ -9,4 +10,6 @@ public interface MovieService {
 	List<MoviesDTO> movieList();
 
 	MoviesDTO getOne(MoviesDTO dto);
+	
+
 }

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- [템플릿 설명] - 해당 파일은 SQL 문을 작성하는 곳입니다. -->
 
 <mapper namespace="com.ezen.movie.mapper.movies.MoviesMapper">
 
-<select resultType="moviesDTO" id="selectMenu">
-	select *from menu 
-</select>
-
-<select resultType="moviesDTO" id="selectMovie">
-	select * from MOVIES
-		
+<select id="selectMovie" resultType="moviesDTO">
+	SELECT *
+	     , COUNT(*) OVER () TOTAL
+    FROM MOVIES
  </select>
 
 <select resultType="moviesDTO" id="selectOneMovie" parameterType="moviesDTO">
-		select * from MOVIES 
-			where MOVIES.movie_idx = #{movieIdx}
+		SELECT * FROM MOVIES 
+		WHERE MOVIES.movie_idx = #{movieIdx}
 </select>
+
+
+
 </mapper>

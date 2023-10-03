@@ -13,21 +13,23 @@ import com.ezen.movie.service.person.PersonDTO;
 @Alias("moviesDTO")
 public class MoviesDTO extends CommDTO{
 	
-	private String movieNameHngl;
-	private String movieNameEng;
-	private String openingDt;
-	private String movieRate;
-	private String genre;
-	private String movieCountry;
-	private String runningTime;
-	private String movieDistributor;
-	private String movieInfo;
-	private int movieIdx;
+	private String movieNameHngl;	//영화명 한글
+	private String movieNameEng;	//영화명 영어
+	private String openingDt;		//개봉일
+	private String movieRate;		//영화등급
+	private String genre;			//장르
+	private String movieCountry;	//국가
+	private String runningTime;		//러닝타임
+	private String movieDistributor;	//배급
+	private String movieInfo;			//영화소개
+	private int movieIdx;			// 영화IDx
+	private int timetableIdx; 		// 시간표IDX
 	private CastDTO castDTO;
 	private PersonDTO personOne;
 	private List<PersonDTO> personDTO;
 	private List<FileDTO> fileDTO;
 	private FileDTO fileDTO2;
+	
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}
@@ -117,6 +119,12 @@ public class MoviesDTO extends CommDTO{
 	}
 	public void setFileDTO2(FileDTO fileDTO2) {
 		this.fileDTO2 = fileDTO2;
+	}
+	public int getTimetableIdx() {
+		return timetableIdx;
+	}
+	public void setTimetableIdx(int timetableIdx) {
+		this.timetableIdx = timetableIdx;
 	}
 	
 	

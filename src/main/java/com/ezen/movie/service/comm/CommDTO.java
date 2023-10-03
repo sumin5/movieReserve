@@ -12,6 +12,7 @@ public class CommDTO {
 	private boolean flag;		// 여부
 	private Object obChild;		// 자식
 	private Object obChild2;
+	private int total;			// 총합
 	
 	public String getCreateDt() {
 		return createDt;
@@ -62,8 +63,12 @@ public class CommDTO {
 	public void setObChild2(Object obChild2) {
 		this.obChild = obChild2;
 	}
-	
-	
+	public int getTotal() {
+		return total;
+	}
+	public void setTotal(int total) {
+		this.total = total;
+	}
 	
 	
 }
