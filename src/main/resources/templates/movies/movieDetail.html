@@ -4,7 +4,7 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 <div layout:fragment="content">
 	<main>
-		<div style="margin-top:70px;">
+		<div style="margin-top:70px; margin-left:120px;">
 			<div style="display:inline-block; margin-left:100px;  vertical-align:top; margin-right:30px;">
 				<img th:src="${movieDetail.fileDTO2.fileTopPath}" style="width:220px; height:330px;">
 			</div>
@@ -39,56 +39,32 @@
 		<h3 th:text="${movieDetail.movieInfo}"
 			style="border:hidden; margin-top:40px;margin-left:200px; margin-bottom:30px; width:80%;"></h3><br>
 	<div style="text-align:center;">
-		<div style="display:inline-block;" class="stillCut">
-			<a  th:href="'#images'" style="background-color:paleturquoise; font-size:20px; margin-bottom:50px;">스틸 컷</a>
+		<div style="display:inline-block;"  id="stillCut">
+			<a  th:href="'#images'" style="color:black!important;background-color:paleturquoise;
+			 font-size:20px; margin-bottom:50px;" class="btn">스틸 컷</a>
 		</div>
 		
 		<div style="display:inline-block;">
-			<a  style="background-color:paleturquoise; font-size:20px; margin-bottom:50px;">인물 정보</a>
+			<a  style="background-color:paleturquoise; font-size:20px; margin-bottom:50px;" class="btn">인물 정보</a>
 		</div>
 	</div>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
 		
-	<div class="images" id="images">
+	<div class="images" id="images" style="display:none;">
 		<div th:each="l : ${movieDetail.fileDTO}" style="text-align:center; margin-bottom:40px;">
 			<img th:src="${l.filePath}" style="width:650px;height:420px;">
 		</div>
 	</div>
-		
-</div>
 
 
 <script>
-	$(document).ready(function($) {
-		$(".stillCut").click(function(event){
-			event.preventDefault();
-			$('html,body').animate({scrollTop:$(this.hash).offset().top},500);
-		})
-	})
+$(function (){
+	$("#stillCut").click(function (){
+  	$("#images").toggle();
+  });
+});
 </script>
+</div>
+
 </main>
 
 </html>

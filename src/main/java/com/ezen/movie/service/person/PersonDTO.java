@@ -16,6 +16,7 @@ public class PersonDTO extends CommDTO{
 	private String height;
 	private String debutDt;
 	private String debutMovie;
+	private int movieIdx;
 	public int getPersionIdx() {
 		return persionIdx;
 	}
@@ -70,6 +71,11 @@ public class PersonDTO extends CommDTO{
 	public void setDebutMovie(String debutMovie) {
 		this.debutMovie = debutMovie;
 	}
-	
+	public int getMovieIdx() {
+		return movieIdx;
+	}
+	public void setMovieIdx(int movieIdx) {
+		this.movieIdx = movieIdx;
+	}
 	
 }

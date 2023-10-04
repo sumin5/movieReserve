@@ -35,7 +35,6 @@ public class MoviesController extends AbstractController{
 	private PersonMapper personMapper;
 	
 	
-	
 	//영화 리스트 
 	@GetMapping("/movieList")
 	public ModelAndView movieList() {
@@ -90,6 +89,12 @@ public class MoviesController extends AbstractController{
 		
 		FileDTO list = new FileDTO();
 		FileDTO getOne = new FileDTO();
+		
+		PersonDTO onePerson = new PersonDTO();
+		PersonDTO  listPerson = new PersonDTO();
+		onePerson.setMovieIdx(movieDetail.getMovieIdx());
+		listPerson.setMovieIdx(movieDetail.getMovieIdx());
+		
 		getOne.setTableGb("movies");
 		getOne.setTableIdx(movieDetail.getMovieIdx());
 		list.setTableGb("movies");
@@ -98,10 +103,10 @@ public class MoviesController extends AbstractController{
 		List<FileDTO> file = fileMapper.getList(list);
 		
 		FileDTO getTop = fileMapper.getTop(getOne);
-		System.out.println("getTop" + getTop);
-		List<PersonDTO> person = personMapper.getList();
-		PersonDTO ps = personMapper.getOne();
-		System.out.println("asfdas" + ps);
+		List<PersonDTO> person = personMapper.getList(listPerson);
+		PersonDTO ps = personMapper.getOne(onePerson);
+		System.out.println("testss" + person);
+		System.out.println("aaaa"+ps);
 		//file.setTableIdx(movieDetail.getMovieIdx());
 		//file.setTableGb("movies");
 		movieDetail.setFileDTO2(getTop);
