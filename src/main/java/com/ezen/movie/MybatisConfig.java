@@ -47,8 +47,8 @@ public class MybatisConfig {
         encryptor.setPassword(dbDecryptKey);
         
 		String DbPw = encryptor.decrypt("jHTcCCz4qn3s6TlKWPlUnEkcui/yT1dK");
-        dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
-        dataSourceBuilder.url("jdbc:mysql://mysql.cnewsfhi3ek0.ap-northeast-2.rds.amazonaws.com:3306/mysql_ssjy");
+        dataSourceBuilder.driverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+        dataSourceBuilder.url("jdbc:log4jdbc:mysql://mysql.cnewsfhi3ek0.ap-northeast-2.rds.amazonaws.com:3306/mysql_ssjy");
         dataSourceBuilder.username("mysql_ssyj");
         dataSourceBuilder.password(DbPw);
         return dataSourceBuilder.build();
