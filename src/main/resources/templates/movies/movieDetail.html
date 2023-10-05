@@ -30,7 +30,7 @@
 				<p th:text="${movieDetail.movieCountry}" style="display:inline-block;"></p>,
 				<p th:text="${movieDetail.runningTime}" style="display:inline-block"></p>,
 				<p th:text="${movieDetail.movieRate}" style="display:inline-block"></p><br>
-				<a th:href="@{/reserve/main}" class="btn"
+				<a th:href="@{/reserve/selectPage}" class="btn"
 					style="background-color:paleturquoise; font-size:20px;">예매하기</a>
 			</div>
 		</div>
@@ -63,6 +63,8 @@ $(function (){
   });
 });
 </script>
+
+
 </div>
 
 </main>
