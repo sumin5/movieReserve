@@ -1,0 +1,21 @@
+		a {
+			color: #222;
+		}
+		ul.tabs {
+			list-style: none;
+		}
+		ul.tabs li {
+			background: none;
+			display: inline-block;
+			padding: 15px;
+			cursor: pointer;
+		}
+
+
+		.tab-content {
+			display: none;
+		}
+
+		.tab-content.on {
+			display: block;
+		}

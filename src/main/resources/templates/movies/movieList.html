@@ -1,35 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
-	  layout:decorate="~{layout/default_layout}">
-<div layout:fragment="content">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
+	layout:decorate="~{layout/movie_layout}">
 
-<h1 style="margin-left:30px; margin-top:30px;"><b>상영중인 영화</b></h1>
-<hr style="margin-left:10%; margin-right :10% ;color: black; height:3px">
+<div layout:fragment="content" style="background-color:#242628;">
+	<div style="padding:30px;">
+		<ul class="tabs">
+			<li class="item-on" data-tab="tab-1">
+				<a style="margin-left:30px; margin-bottom:-10px; color:white;" href="#">상영중인 영화</a>
+			</li>
+			<li class="item" data-tab="tab-2">
+				<a style="margin-left:30px; margin-bottom:-10px; color:white;" href="#">개봉 예정 영화</a>
+			</li>
+		</ul>
 
-<div class="container" style="margin-left:80px; margin-bottom:30px;">
-	<div class="row">
-		<div th:each="list : ${movieList}"class="col-md-3 mb-3">
-			
-			<!--<div class="card" style="width:250px;">
+		<hr style="margin-left:10%; margin-right :10% ;color: white; height:3px">
+
+		<div class="tab-content on" style="margin-left:80px;" id="tab-1">
+			<div class="row">
+				<div th:each="list : ${movieList}" class="col-md-3 mb-3">
+
+					<!--<div class="card" style="width:250px;">
 				<img class="card-img-top" th:src="${list?.child?.file?.filePath}" alt="Card-image" style="max-width:250px; height:250px;">
 			</div>-->
-			<div class="card" style="width:250px;">
-				<img class="card-img-top" th:src="${list?.obChild?.fileTopPath}" alt="Card-image" style="max-width:250px; height:250px;">
-			</div>
-			
-			<div class="card-body">
-				<a th:href="@{/movies/movieDetail(movieIdx = ${list?.movieIdx})}">
-					<h3 th:text="${list?.movieNameHngl}" style="border:hidden"></h3>
-				</a>
-				<div style="margin-top:-60px">
-				 	<h6 th:text="${list?.genre}"></h6>
-				 	개봉일 : <p th:text="${list?.openingDt}" style="display:inline-block;"></p>
+					<div class="card" style="width:250px;">
+						<img class="card-img-top" th:src="${list?.obChild?.fileTopPath}" alt="Card-image"
+							style="max-width:250px; height:250px;">
+					</div>
+
+					<div class="card-body">
+						<a th:href="@{/movies/movieDetail(movieIdx = ${list?.movieIdx})}">
+							<h3 th:text="${list?.movieNameHngl}" style="border:hidden; color:white;"></h3>
+						</a>
+						<div style="margin-top:-80px">
+							<h6 style="display:inline-block;color:white;">장르 : &nbsp;&nbsp;</h6>
+							<h6 th:text="${list?.genre}" style="color:white; display:inline-block;"></h6><br>
+							<h6 style="display:inline-block; color:white;">개봉일 :&nbsp;&nbsp;</h6>
+							<p th:text="${list?.openingDt}" style="display:inline-block; color:white;"></p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
+
+		<div id="tab-2" class="tab-content">
+			aaaa
+		</div>
 	</div>
+
+	<script>
+		$(function () {
+			$('ul.tabs li').click(function () {
+				var tab_id = $(this).attr('data-tab');
+
+				$('ul.tabs li').removeClass('on');
+				$('.tab-content').removeClass('on');
+
+				$(this).addClass('on');
+				$("#" + tab_id).addClass('on');
+			});
+		});
+
+	</script>
 </div>
 
-	
+
 </html>
