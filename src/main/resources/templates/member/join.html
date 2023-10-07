@@ -90,6 +90,9 @@
 	let idFlag = false; 
 	let pwFlag = false;
 	
+	let currentTimer  = null;
+	let mailFlag = false;
+	
 	// 아이디 중복체크
 	function doubleChk() {
 
@@ -168,7 +171,14 @@
 			success : function(res){
 				
 				if(res.code == '00') {
-					timer();
+					
+					if(currentTimer === null) {
+						timer();
+					} else {
+						clearInterval(currentTimer);
+						timer();
+					}
+					
 					mailFlag = true;
 				} 
 				
@@ -189,7 +199,7 @@
 		var sec = "";
 		var timerMsg = $("#timerMsg")
 		
-		var interval = setInterval(function(){
+		currentTimer = setInterval(function(){
 			min = parseInt(time/60);
 			sec = time%60;
 			timerMsg.show();
@@ -198,7 +208,7 @@
 			time--;
 
 			if(time < 0 ) {
-				clearInterval(interval);
+				clearInterval(currentTimer);
 				timerMsg.html("시간초과");
 			}
 		}, 1000);
@@ -287,12 +297,15 @@
 									  <option value="select">직접입력</option>
 									</select>
 								</div>
+								<div class="form-holder">
+									<button type="button" class="custom-btn" onclick="mailAuthSend()" id="mailBtn">인증발송</button>
+								</div>
 							</div>
 							<div class="form-row">
 								<div class="form-holder2" style="display: inline;">
 									<div class="form-divClass">
 										<input type="text" placeholder="인증번호" class="form-control2" id="mailAuth" name="mailAuth">
-										<button type="button" class="btn-form" onclick="mailAuthSend()" id="mailBtn">인증발송</button>
+										<button type="button" class="btn-form" onclick="mailAuthCheck()" id="mailChkBtn">인증확인</button>
 									</div>
 									<p id="timerMsg" style="display:none; color: red;"></p>
 								</div>
