@@ -50,6 +50,26 @@
 	        var text = $(this).attr('rel');
 	        $(this).parent().prev().find('div').text(text);
 	    })
+	    
+	    // 입력감지	
+	        $("#memberId").on("propertychange change keyup paste input", function(){
+			idFlag = false;
+		});
+	    
+		// 직접입력 누를시 바뀌는곳
+		$("select[name='selectMail']").on("change",function(){
+			
+			let name = $(this).val();
+			
+			if(name == 'select'){
+				$("#mailInputDiv").empty();
+				$("#mailInputDiv").html(
+					'<input type="text" placeholder="직접 입력" class="form-control2" name="inputMail">'
+				);
+			}
+			
+		})
+		
 		
 	});
 	
@@ -57,17 +77,23 @@
 	
 	
 	// 비밀번호 정규화
-	//var reg = "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";	
-	//var txt = "aaaa";
-	//if( !reg.test(txt) ) {
-	 //   alert("비밀번호 정규식 규칙 위반!!");
-	    //return false
-	//}
+	/* var reg = "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";	
+	var txt = "aaaa";
+	if( !reg.test(txt) ) {
+	    alert("비밀번호 정규식 규칙 위반!!");
+	    return false
+	} */
 	
+
 	// 중복 체크
 	
 	let idFlag = false; 
+	let pwFlag = false;
 	
+	let currentTimer  = null;
+	let mailFlag = false;
+	
+	// 아이디 중복체크
 	function doubleChk() {
 
 		var memberId = $("#memberId").val();
@@ -82,18 +108,15 @@
 			type : 'post',
 			url : '[[@{/member/doubleChk}]]',
 			data : {
-				'memberId':memberId
+				'memberId':memberId,
 			},
 			dataType : 'json',
 			success : function(res){
 				
-				if(res.code == 00) {
+				if(res.code == '00') {
 					
 					idFlag = true;
 					
-					$("#doubleBtn").empty();
-					$("#doubleBtn").html("통과");
-										
 				} 
 				
 				alert(res.msg);
@@ -103,6 +126,92 @@
 			}
 		});
 		
+	}
+	// 패스워드 같은지 체크
+	function passCheck(){
+		
+		let password1 = $("#password1").val();
+		let password2 = $("#password2").val();
+
+		if(password1 != password2) {
+
+			$("#passNotMsg").show();
+			
+		} else {
+			$("#passNotMsg").hide();
+			pwFlag = true;
+		}
+	}
+	
+	// 메일 인증번호 발송
+	function mailAuthSend(){
+		
+		let email1 = $("#email1").val();
+		let email2 = $("select[name='selectMail'] option:selected").val();
+		
+		if(email2 == undefined) {
+			email2 = $("input[name='inputMail']").val();
+		}
+		
+		if(isNull(email1) || isNull(email2)) {
+			alert("이메일을 입력해주세요.");
+			return;
+		}
+		
+		let email = email1 + "@" + email2;
+		
+		$.ajax({
+			
+			type : 'post',
+			url : '[[@{/member/mailAuthSend}]]',
+			data : {
+				'email' : email
+			},
+			dataType : 'json',
+			success : function(res){
+				
+				if(res.code == '00') {
+					
+					if(currentTimer === null) {
+						timer();
+					} else {
+						clearInterval(currentTimer);
+						timer();
+					}
+					
+					mailFlag = true;
+				} 
+				
+				alert(res.msg);
+			},
+			error: function(res){
+				alert(res);
+			}
+		});
+		
+	}
+	
+	// 타이머
+	function timer(){
+		
+		var time = 600;
+		var min = "";
+		var sec = "";
+		var timerMsg = $("#timerMsg")
+		
+		currentTimer = setInterval(function(){
+			min = parseInt(time/60);
+			sec = time%60;
+			timerMsg.show();
+			console.log(min);
+			timerMsg.text(min + "분 " + sec +"초");
+			time--;
+
+			if(time < 0 ) {
+				clearInterval(currentTimer);
+				timerMsg.html("시간초과");
+			}
+		}, 1000);
 	}
 	
 	</script>
@@ -131,35 +240,34 @@
 							</div>
 							<div class="form-row">
 								<div class="form-holder">
-									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password1">	
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password1" onchange="passCheck()">	
 								</div>
-								<div class="form-holder">
-									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password2">
-									<p id="passNotMsg" style="display: none;">비밀번호가 일치하지 않습니다.</p>
+								<div class="form-holder"> 
+									<input type="password" placeholder="비밀번호를 입력하세요." class="form-control" id="password2" onchange="passCheck()">
+									<p id="passNotMsg" style="display: none; color: red;">비밀번호가 일치하지 않습니다.</p>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="form-holder">
-									<input type="text" placeholder="Age" class="form-control">
+									<input type="text" placeholder="성명" class="form-control" id="memberName">
 								</div>
 								<div class="form-holder" style="align-self: flex-end; transform: translateY(4px);">
 									<div class="checkbox-tick">
 										<label class="male">
-											<input type="radio" name="gender" value="male" checked> Male<br>
+											<input type="radio" name="gender" value="M" checked>남성<br>
 											<span class="checkmark"></span>
 										</label>
 										<label class="female">
-											<input type="radio" name="gender" value="female"> Female<br>
+											<input type="radio" name="gender" value="F">여성<br>
 											<span class="checkmark"></span>
 										</label>
 									</div>
 								</div>
 							</div>
-							<div class="checkbox-circle">
-								<label>
-									<input type="checkbox" checked> Nor again is there anyone who loves or pursues or desires to obtaini.
-									<span class="checkmark"></span>
-								</label>
+							<div class="form-row">
+								<div class="form-holder">
+									<input type="text" placeholder="휴대폰번호 ex)01012341234" class="form-control" id="memberPhone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">	
+								</div>
 							</div>
 						</div>
 					</div>
@@ -176,10 +284,30 @@
 							<div class="form-header">
 								<h3 class="join-h3Tag">Registration</h3>
 							</div>
-							<p>Please fill with additional info</p>
 							<div class="form-row">
-								<div class="form-holder w-100">
-									<input type="text" placeholder="Address" class="form-control">
+								<div class="form-holder w-50" style="margin-right: 0px;">
+									<input type="text" placeholder="Address" class="form-control" id="email1">
+								</div>
+								<p class="m-1">@</p>
+								<div class="form-holder w-100" id="mailInputDiv">
+									<select name="selectMail" class="form-select form-select-sm form-select-border">
+									  <option value="naver.com" selected>naver.com</option>
+									  <option value="daum.net">daum.net</option>
+									  <option value="google.com">google.com</option>
+									  <option value="select">직접입력</option>
+									</select>
+								</div>
+								<div class="form-holder">
+									<button type="button" class="custom-btn" onclick="mailAuthSend()" id="mailBtn">인증발송</button>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-holder2" style="display: inline;">
+									<div class="form-divClass">
+										<input type="text" placeholder="인증번호" class="form-control2" id="mailAuth" name="mailAuth">
+										<button type="button" class="btn-form" onclick="mailAuthCheck()" id="mailChkBtn">인증확인</button>
+									</div>
+									<p id="timerMsg" style="display:none; color: red;"></p>
 								</div>
 							</div>
 							<div class="form-row">
@@ -189,6 +317,12 @@
 								<div class="form-holder">
 									<input type="text" placeholder="Zip Code" class="form-control">
 								</div>
+							</div>
+							<div class="checkbox-circle">
+								<label>
+									<input type="checkbox" checked> Nor again is there anyone who loves or pursues or desires to obtaini.
+									<span class="checkmark"></span>
+								</label>
 							</div>
 
 							<div class="form-row">

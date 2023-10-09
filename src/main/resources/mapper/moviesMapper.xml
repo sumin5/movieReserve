@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- [템플릿 설명] - 해당 파일은 SQL 문을 작성하는 곳입니다. -->
 
 <mapper namespace="com.ezen.movie.mapper.movies.MoviesMapper">
 
-<select resultType="moviesDTO" id="selectMenu">
-	select *from menu 
+<select id="selectMovie" resultType="moviesDTO">
+	SELECT *
+	     , COUNT(*) OVER () TOTAL
+    FROM MOVIES
+    where DATE_FORMAT(opening_dt ,'%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d') and DATE_FORMAT(end_dt  ,'%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d')
+ </select>
+
+<select resultType="moviesDTO" id="selectOneMovie" parameterType="moviesDTO">
+		SELECT * FROM MOVIES 
+		WHERE MOVIES.movie_idx = #{movieIdx}
 </select>
 
-<select resultType="moviesDTO" id="selectMovie">
-	select * from mysql_ssjy.MOVIES
- </select>
+
 
 </mapper>

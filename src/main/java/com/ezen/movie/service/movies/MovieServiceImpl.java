@@ -22,4 +22,10 @@ public class MovieServiceImpl implements MovieService {
 	public List<MoviesDTO> movieList() {
 		return moviesMapper.selectMovie();
 	}
+	
+	@Override
+	public MoviesDTO getOne(MoviesDTO dto) {
+		
+		return moviesMapper.selectOneMovie(dto);
+	}
 }

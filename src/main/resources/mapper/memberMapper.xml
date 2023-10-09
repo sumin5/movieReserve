@@ -12,6 +12,12 @@
         from members
         where member_id = #{memberId}
     </select>
-	
+    
+    <!--메일인증 발송 -->
+    <insert id="sendMail" parameterType="String">
+		insert into MAILAUTH
+		(auth_num)
+		values( #{to} )		
+	</insert>
 
 </mapper>

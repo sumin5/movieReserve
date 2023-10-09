@@ -12,5 +12,22 @@
         from menu
     </select>
 	
+	
+	<select id="getTimetable" parameterType="MoviesDTO" resultType="map">
+		SELECT A.movie_idx 
+			 , B.timetable_idx 
+			 , A.movie_name_hngl 
+			 , A.movie_rate 
+			 , A.running_time 
+			 , B.dimension_gb 
+			 , B.start_time 
+			 , B.finish_time 
+			 , 60 - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx) total
+		  FROM MOVIES A INNER JOIN TIMETABLE B 
+		    ON A.movie_idx = B.movie_idx 
+		   AND B.screening_dt = #{wildCard}
+		 WHERE 1=1
+		   AND A.movie_idx = #{movieIdx} 
+	</select>
 
 </mapper>

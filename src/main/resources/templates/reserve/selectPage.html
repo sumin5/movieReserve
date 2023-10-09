@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
+	layout:decorate="~{layout/reserve_layout}">
+<head>
+	
+<script>
+	
+	let today = "";
+	let initMovieIdx = "[[${initIdx}]]";
+	
+	// 페이지 온로드시
+	$(function(){ 
+		
+		// 데이트피커 옵션설정
+		$('#datepicker').datepicker({
+			closeText: "닫기",
+		    currentText: "오늘",
+		    prevText: '이전 달',
+		    nextText: '다음 달',
+		    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+		    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+		    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+		    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+		    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+		    weekHeader: "주",
+		    yearSuffix: '년',
+			dateFormat:'yy-mm-dd (DD)',
+			dayNamesMin: ['일', '월', '화', '수', '목', '금', '토']
+		});	
+		
+		//데이트피커 초기날짜 부여
+		$('#datepicker').datepicker('setDate', 'today');
+		
+		// 데이터피커의 체인지옵션을 부여
+		$('#datepicker').change(function(){
+			$("#resdate").text($(this).val());
+			today = $("#datepicker").val().slice(0,10);
+			getTimetable(initMovieIdx);
+		})
+		
+		//초기 날짜 설정
+		$("#resdate").text($("#datepicker").val())
+		today = $("#datepicker").val().slice(0,10);
+		
+		// 영화초기설정
+		getTimetable(initMovieIdx);
+		
+  	})
+  	
+  	function cal() {
+		  $('#datepicker').focus();
+	}
+
+
+	function getTimetable(movieIdx){
+		
+		initMovieIdx = movieIdx;
+		
+		if(isNull(movieIdx) || isNull(today)){
+			alert("잘못된 접근입니다.");
+			return false;
+		}
+		
+
+		$.ajax({
+			
+			type : 'post',
+			url : '[[@{/reserve/getTimetable}]]',
+			data : {
+				'movieIdx':movieIdx,
+				'wildCard':today,
+			},
+			dataType : 'json',
+			success : function(res){
+				
+				if(res.code == '00') {
+					
+					let data = res.data;
+					let html = '';
+					
+					if(!isNull(data)){
+						
+						html += `<div class="movie_tit" style="margin-top:50px;">
+								<p class="age age_` + data[0].movie_rate + `">`+ (data[0].movie_rate == 'all' ? '전체' : (data[0].movie_rate == '18' ? '청불' : data[0].movie_rate)) + `</p>
+								<p class="tit">`+ data[0].movie_name_hngl +`</p>
+							</div>`;
+						html +=	 `<div class="time_wrap">
+								<div class="time_wrap_top">
+									<p class="tit">` + data[0].dimension_gb + `</p>
+									<p class="sub_text loc">3관 (1층)</p>
+								</div>
+								<div class="time_list_wrap">`
+							
+						for(let i=0;i<data.length ;i++){
+							
+							if (data[i].timetable_idx == 'undefined') {
+								flag = true;
+							}
+							
+							html += `<div class="time_list">
+										<input type="radio" id="time_`+data[i].timetable_idx+`" name="movie_time">
+										<label class="on" for="time_`+data[i].timetable_idx+`">
+											<p class="start">` + data[i].start_time + `</p>
+											<p class="end">~` + data[i].finish_time + `</p>
+										</label>
+										<p class="num">` + data[i].total + `석</p>
+									</div>`
+						}
+					
+						html += `</div></div>`;
+					}
+					
+					$("#scheduleList").html(html);
+					
+				} 
+				
+			},
+			error: function(res){
+				alert(res);
+			}
+		});
+	}
+	
+	
+
+</script>
+
+<div id="Main" layout:fragment="content">
+	
+	
+	<section style="bottom:0;height:calc(100vh);">
+
+		<!-- start of :: 예매하기 -->
+		<div class="ticketing_box bg_box" style="bottom:0;max-height:calc(100vh - 150px);overflow:auto;">
+			<div class="inner">
+				<p class="box_tit">예매하기</p>
+				<div class="movie_ticket_box">
+
+					<div id="rsvMovie" class="all_movie" style="height:550px;overflow-y:auto">
+						<div class="all_movie_tit">
+							<p class="tit">영화<span id="movieTotalCount" th:text="${movieList.get(0).total}"></span></p>
+							
+							<select id="cinema_list">
+								<option value="81">대한극장</option>
+							</select>
+						</div>
+
+						<div id="movieTotalList" class="movie_list_wrap">
+
+							<div th:each="movie : ${movieList}" class="movie_list">
+								<input type="radio" th:id="|movie_label_${movie.movieIdx}|" name="movie" th:onclick="getTimetable([[${movie.movieIdx}]])">
+								<label th:id="|movie_label_${movie.movieIdx}|" class="movie_title_label" th:for="|movie_label_${movie.movieIdx}|">
+									<div th:text="${movie.movieRate} == 'all' ? '전체' 
+												: (${movie.movieRate} == '18' ? '청불'
+												: ${movie.movieRate})" th:classappend="| age_${movie.movieRate} |"  class="age"></div>
+									<p th:text="${movie.movieNameHngl}" class="movie_title"></p>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!--경계-->
+
+					<div id="rsvSchedule" class="movie_time" style="height:550px;overflow-y:auto">
+						<input class="datepicker" type="hidden" id="datepicker">
+						<p id="resdate" class="resdate date" onclick="cal()"></p>
+						<div class="icon_wrap">
+							<p class="day">조조</p>
+							<p class="night">심야</p>
+						</div>
+						
+						
+						
+						<div id="scheduleList">
+							
+						</div>
+					</div>
+
+					<div id="rsvSeat" class="movie_seat" style="display: none;max-height:550px;overflow-y:auto;">
+						<p class="tit">관람인원선택</p>
+						<button class="refresh">초기화</button>
+						<div class="btn_area reserve_area"></div>
+						<div class="screen">SCREEN</div>
+						<div class="seat_select seating_map_view"></div>
+						<div class="seat_txt">
+							<p class="ex">• 좌석 선택 후 5분이내에 결제를 완료해주시기 바랍니다.</p>
+							<div class="ex_icon">
+								<p class="disablePerson_icon">장애인</p>
+								<p class="select_icon">현재선택</p>
+								<p class="normal_icon">선택가능</p>
+								<p class="blank_icon">좌석건너뜀</p>
+								<p class="done_icon">판매완료</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="movie_seat" id="rsvPayment" style="display: none;">
+						<div class="tit_wrap">
+							<p class="tit">결제수단선택</p>
+							<button class="refresh">초기화</button>
+						</div>
+						<div class="payment_radio_wrap">
+							<div class="payment_list">
+								<input type="radio" id="payment_01" name="payment" class="paymethod" data-type="C"
+									data-method="C" data-val="PWCD0020">
+								<label for="payment_01">신용/체크카드 결제</label>
+							</div>
+							<div class="payment_list">
+								<input type="radio" id="payment_02" name="payment" class="paymethod" data-type="M"
+									data-method="M" data-val="PWCD0040">
+								<label for="payment_02">휴대폰 결제</label>
+							</div>
+							<div class="payment_list">
+								<input type="radio" id="payment_03" name="payment" class="paymethod" data-type="N"
+									data-method="N" data-val="PWCD0090">
+								<label for="payment_03">네이버페이</label>
+							</div>
+						</div>
+						<input id="pay_method_ids" type="hidden" name="pay_method" value="">
+						<div class="card_box">
+							<p class="card_ex" style="margin-top:100px;">• 결재확인을 위해 연락처를 입력하세요</p>
+							<div class="tel-group">
+								<input type="number" id="phone1_ids" class="card_select"
+									style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+								<input type="number" id="phone2_ids" class="card_select"
+									style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+								<input type="number" id="phone3_ids" class="card_select"
+									style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+							</div>
+						</div>
+					</div>
+
+					<div id="rsvInfo" class="movie_info" data-mid="">
+						<div class="movie_poster">
+							<div class="poster">
+								<div class="img"><img
+										src="https://www.daehancinema.co.kr/PETC/assets/images/res_post_default.gif"
+										alt="" title="-"></div>
+							</div>
+							<div class="movie_info_txt">
+								<p class="tit">-</p>
+								<div class="info_box">
+									<div class="info_list">
+										<p class="th">상영</p>
+										<p class="td"><em id="reserveInfoTheaterName"></em>&nbsp;<em
+												id="reserveInfoScreenName"></em></p>
+									</div>
+									<div class="info_list">
+										<p class="th">일시</p>
+										<p class="td" id="reserveInfoPlayDate">-</p>
+									</div>
+									<div class="info_list">
+										<p class="th">인원</p>
+										<p class="td" id="reserveInfoTicket" data-count="0"></p>
+									</div>
+									<div class="info_list">
+										<p class="th">좌석</p>
+										<p class="td" id="reserveInfoSeat" data-count="">좌석 선택 가능</p>
+									</div>
+									<div class="info_list" style="display:none;">
+										<p class="th">할인</p>
+										<p class="td" id="reserveInfoDiscount">0</p>
+									</div>
+									<div class="info_list">
+										<span style="font-size:1.2em;color:#BCBCBC;">* 소셜 로그인 및 비회원 로그인은 청소년 관람 불가 영화를
+											예매 하실 수 없습니다.</span>
+									</div>
+									<div class="info_list">
+										<span style="font-size:1.2em;color:#BCBCBC;">* <b>
+												<font color="#f15f09">휴대폰 결제</font>
+											</b>의 경우, 통신사의 정책에 따라 <font color="#f15f09">익월 취소가 불가능</font>합니다.</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="total_box">
+							<div class="total_num">
+								<p class="total">총 합계</p>
+								<p class="price" id="reserveInfoTotal">0원</p>
+							</div>
+
+							<p class="seatsel" style="display: block;">
+								<button class="btn st_nx_off">좌석선택</button>
+							</p>
+							<p class="seatsel total_btn_wrap" style="display: none;">
+								<button class="btn stlf_on">이전</button>
+								<button class="btn strf_off">다음</button>
+							</p>
+							<p class="seatsel total_btn_wrap" style="display: none;">
+								<button class="btn stlf_on">이전</button>
+								<button class="btn strf_off">다음</button>
+							</p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</section>
+</div>
+
+</html>

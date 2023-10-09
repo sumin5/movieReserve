@@ -14,4 +14,10 @@ public interface MemberMapper {
 	 */
 	public int getDoubleChk(MemberDTO dto);
 	
+	/**
+	 * 메일 인증
+	 * 
+	 */
+	public void sendMail(String to);
+	
 }

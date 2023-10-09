@@ -1,0 +1,24 @@
+<html lang="ko"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout">
+    
+    <!-- config fragment 사용-->
+    <th:block th:replace="~{fragment/config :: configFragment}" ></th:block>
+    
+    <!-- header fragment 사용-->
+    <th:block th:replace="~{fragment/header :: commonHeader}" ></th:block>
+    
+    <!-- topbar fragment 사용-->
+    <th:block th:replace="~{fragment/topbar :: commonTopbar}" ></th:block>
+    
+    <!-- 현재 layout을 사용하는 content fragment의 내용을 삽입-->
+    <th:block layout:fragment="content" ></th:block>
+    
+    <!-- footer fragment 사용-->
+    <footer th:replace="~{fragment/footer :: commonFooter}">asdasd</footer>
+    
+      <!-- Template Main CSS File -->
+    <link th:href="@{/assets/css/style.css}" rel="stylesheet">
+    <script th:src="@{/assets/js/main.js}"></script>
+    <link th:href="@{/assets/css/movie.css}" rel="stylesheet">
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+    [템플릿 설명]  
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.ezen.movie.mapper.file.FileMapper">
+
+    <select id="getOne" parameterType="fileDTO" resultType="fileDTO">
+        select * 
+        from FILE
+        where table_idx = #{tableIdx}
+        	and table_gb = #{tableGb}
+        	and file_top_path is not null
+        	and file_top_name is not null
+        	limit 1
+    </select>
+
+	<select id="getList" parameterType="fileDTO" resultType="fileDTO">
+		select file_path from mysql_ssjy.FILE
+			where
+			table_gb = #{tableGb}
+			and table_idx = #{tableIdx}
+			and file_top_path is null
+			and file_top_name is null
+	</select>
+	
+	<select id="getTop" parameterType="fileDTO" resultType="fileDTO">
+		select file_top_path from FILE
+			where table_gb = #{tableGb}
+			and table_idx = #{tableIdx}
+			and file_top_path is not null
+	</select>
+</mapper>
