@@ -17,7 +17,8 @@
 				</div>
 				<p th:text="${movieDetail.openingDt} + ' 개봉'" style="color:white;"></p>
 				<hr style="width:870px;">
-				<h6 style="color:white; display:inline-block;">감독 : &nbsp;&nbsp; </h6> <p th:text="${movieDetail?.ObChild?.personNameHngl}" style="display:inline-block; color:white;"></p><br>
+				<h6 style="color:white; display:inline-block;">감독 : &nbsp;&nbsp; </h6>
+				<p th:text="${movieDetail?.ObChild?.personNameHngl}" style="display:inline-block; color:white;"></p><br>
 				<h6 style="color:white; display:inline-block;">주연 : &nbsp;&nbsp; </h6>
 				<p style="display:inline-block; color:white;">
 					<th:block th:each="l ,index : ${movieDetail?.personDTO}">
@@ -25,8 +26,10 @@
 						<th:block th:unless="${index.last}" th:text="${l?.personNameHngl} + ','"></th:block>
 					</th:block>
 				</p><br>
-				<h6 style="color:white; display:inline-block;">배급 : &nbsp;&nbsp; </h6><p th:text="${movieDetail.movieDistributor}" style="display:inline-block; color:white;"></p><br>
-				<h6 style="color:white; display:inline-block;">장르/ 기본정보 : &nbsp;&nbsp; </h6> <p th:text="${movieDetail.genre} +',' " style="display:inline-block; color:white;"></p>/
+				<h6 style="color:white; display:inline-block;">배급 : &nbsp;&nbsp; </h6>
+				<p th:text="${movieDetail.movieDistributor}" style="display:inline-block; color:white;"></p><br>
+				<h6 style="color:white; display:inline-block;">장르/ 기본정보 : &nbsp;&nbsp; </h6>
+				<p th:text="${movieDetail.genre} +',' " style="display:inline-block; color:white;"></p>/
 				<p th:text="${movieDetail.movieCountry} + ','" style="display:inline-block; color:white;"></p>
 				<p th:text="${movieDetail.runningTime} + ',' " style="display:inline-block; color:white;"></p>
 				<p th:text="${movieDetail.movieRate}" style="display:inline-block; color:white;"></p><br>
@@ -37,32 +40,33 @@
 
 
 		<h3 th:text="${movieDetail.movieInfo}"
-			style="border:hidden; margin-top:40px;margin-left:200px; margin-bottom:30px; width:80%; color:white;"></h3><br>
-	<div style="text-align:center;">
-		<div style="display:inline-block;"  id="stillCut">
-			<a  th:href="'#images'" style="color:black!important;background-color:#a9a9a9;
+			style="border:hidden; margin-top:40px;margin-left:200px; margin-bottom:30px; width:80%; color:white;"></h3>
+		<br>
+		<div style="text-align:center;">
+			<div style="display:inline-block;" id="stillCut">
+				<a th:href="'#images'" style="color:black!important;background-color:#a9a9a9;
 			 font-size:20px; margin-bottom:50px;" class="btn">스틸 컷</a>
+			</div>
+
+			<div style="display:inline-block;">
+				<a style="background-color:#a9a9a9; font-size:20px; margin-bottom:50px;" class="btn">인물 정보</a>
+			</div>
 		</div>
-		
-		<div style="display:inline-block;">
-			<a  style="background-color:#a9a9a9; font-size:20px; margin-bottom:50px;" class="btn">인물 정보</a>
+
+		<div class="images" id="images" style="display:none;">
+			<div th:each="l : ${movieDetail.fileDTO}" style="text-align:center; margin-bottom:40px;">
+				<img th:src="${l.filePath}" style="width:650px;height:420px;">
+			</div>
 		</div>
-	</div>
-		
-	<div class="images" id="images" style="display:none;">
-		<div th:each="l : ${movieDetail.fileDTO}" style="text-align:center; margin-bottom:40px;">
-			<img th:src="${l.filePath}" style="width:650px;height:420px;">
-		</div>
-	</div>
 
 
-<script>
-$(function (){
-	$("#stillCut").click(function (){
-  	$("#images").toggle();
-  });
-});
-</script>
+		<script>
+			$(function () {
+				$("#stillCut").click(function () {
+					$("#images").toggle();
+				});
+			});
+		</script>
 
 
 </div>

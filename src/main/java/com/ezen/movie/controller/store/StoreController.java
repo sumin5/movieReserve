@@ -37,6 +37,7 @@ public class StoreController extends AbstractController{
 		
 	}
 	
+	//팜콘 & 음료 페이지 이동
 	@GetMapping("/popAndDrinkPage")
 	public ModelAndView popAndDrinkPage() {
 		ModelAndView mav = new ModelAndView();
@@ -45,6 +46,20 @@ public class StoreController extends AbstractController{
 		System.out.println(popdrinkList);
 		
 		mav.addObject("popdrinkList", popdrinkList);
+		return mav;
+	}
+	
+	//스택 페이지 이동
+	@GetMapping("/snackPage")
+	public ModelAndView snackPage() {
+		ModelAndView mav = new ModelAndView("/store/snackPage");
+		return mav;
+	}
+	
+	//티켓 & 기프트카드 페이지 이동
+	@GetMapping("/ticketAndCardPage")
+	public ModelAndView ticketAndCardPage() {
+		ModelAndView mav = new ModelAndView("/store/ticketAndCardPage");
 		return mav;
 	}
 
