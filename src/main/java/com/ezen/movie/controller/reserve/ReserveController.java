@@ -89,7 +89,6 @@ public class ReserveController extends AbstractController{
 			data = new AjaxResVO<>(AJAXPASS, "",timetable);
 			
 		} catch (ValueException e) {
-			System.out.println(e.getMessage());
 			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
