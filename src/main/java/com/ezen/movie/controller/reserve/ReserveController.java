@@ -19,6 +19,7 @@ import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.reserve.ReserveService;
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping("/reserve")
@@ -58,11 +59,17 @@ public class ReserveController extends AbstractController{
 	@PostMapping("/getTimetable")
 	public AjaxResVO<?> getTimetable(MoviesDTO dto) throws ValueException{
 		
+		/*테스트용 콘솔 찍어보기*/
+		System.out.println("getTimetable 컨트롤러 들어옴");
+		System.out.println(new Gson().toJson(dto));
+		/********끝********/
+		
+		
 		AjaxResVO<?> data = new AjaxResVO<>();
 		
 		try {
 			
-			if(!(dto.getMovieIdx() > 0) || isNull(dto.getWildCard())) {
+			if(isNull(dto.getWildCard())) {
 				throw new ValueException("잘못된 접근 경로입니다.");
 			}
 			
@@ -73,16 +80,16 @@ public class ReserveController extends AbstractController{
 			/*영화시간표 정보 가져오기*/
 			List<Map<String, Object>> timetable = reserveService.getTimetable(dto);
 			
+			/*테스트용 콘솔 찍어보기*/
 			for(int i=0 ; i<timetable.size() ; i++) {
 				System.out.println(timetable.get(i));
 			}
+			/********끝********/
 			
 			data = new AjaxResVO<>(AJAXPASS, "",timetable);
 			
-			System.out.println("data: " + data);
-			
 		} catch (ValueException e) {
-			e.getMessage();
+			System.out.println(e.getMessage());
 			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();

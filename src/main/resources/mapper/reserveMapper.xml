@@ -34,7 +34,9 @@
 		 WHERE A.movie_idx 	  = B.movie_idx 
 		   AND A.movie_idx	  = C.table_idx
 		   AND B.screening_dt = #{wildCard}
+		<if test="movieIdx != 0">
 		   AND A.movie_idx 	  = #{movieIdx}
+		</if>
 	</select>
 
 </mapper>

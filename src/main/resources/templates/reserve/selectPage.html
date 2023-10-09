@@ -11,7 +11,6 @@
 <script>
 	
 	let today = "";
-	let initMovieIdx = "[[${initIdx}]]";
 	
 	// 페이지 온로드시
 	$(function(){ 
@@ -48,7 +47,7 @@
 		today = $("#datepicker").val().slice(0,10);
 		
 		// 영화초기설정
-		getTimetable(initMovieIdx);
+		getTimetable();
 		
   	})
   	
@@ -59,9 +58,9 @@
 
 	function getTimetable(movieIdx, movieIdxForGetPhoto){
 		
-		initMovieIdx = movieIdx;
+		alert("getTimetable("+movieIdx+")");
 		
-		if(isNull(movieIdx) || isNull(today)){
+		if(isNull(today)){
 			alert("잘못된 접근입니다.");
 			return false;
 		}
