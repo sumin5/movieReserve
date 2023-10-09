@@ -15,8 +15,8 @@ INFO로 셋팅하면, INFO, WARN, ERROR, FATAL은 기록된다.
   
   <logger name="jdbc.sqlonly" level="INFO"/> 		 <!--SQL문만을 로그로 남김-->
   <logger name="jdbc.sqltiming" level="OFF"/>		 <!--SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보-->
-  <logger name="jdbc.audit" level="OFF"/>			 <!--ResultSet을 제외한 모든 JDBC 호출 정보(많은양의 로그가 생성되므로 권장하지 않음-->
-  <logger name="jdbc.resultset" level="OFF"/>		 <!-- ResultSet을 포함한 모든 JDBC 호출 정보-->
+  <logger name="jdbc.audit" level="OFF"/>			 <!--ResultSet을 제외한 모든 JDBC 호출 정보(많은양의 로그가 생성되므로 권장하지 않음)-->
+  <logger name="jdbc.resultset" level="OFF"/>		 <!--ResultSet을 포함한 모든 JDBC 호출 정보-->
   <logger name="jdbc.resultsettable" level="OFF"/> 	 <!--SQL 결과 조회된 데이터의 table-->
   <logger name="jdbc.connection" level="OFF"/>
   

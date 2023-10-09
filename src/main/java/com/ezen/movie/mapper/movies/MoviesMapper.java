@@ -11,6 +11,9 @@ public interface MoviesMapper {
 	
 	List<MoviesDTO> selectMenu();
 
+	/**
+	 * @Desc: 현재 상영중인 영화 목록과, total 값을 가져온다
+	 * */
 	List<MoviesDTO> selectMovie();
 
 	MoviesDTO selectOneMovie(MoviesDTO dto);

@@ -14,20 +14,27 @@
 	
 	
 	<select id="getTimetable" parameterType="MoviesDTO" resultType="map">
-		SELECT A.movie_idx 
-			 , B.timetable_idx 
-			 , A.movie_name_hngl 
-			 , A.movie_rate 
-			 , A.running_time 
-			 , B.dimension_gb 
-			 , B.start_time 
-			 , B.finish_time 
-			 , 60 - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx) total
-		  FROM MOVIES A INNER JOIN TIMETABLE B 
-		    ON A.movie_idx = B.movie_idx 
+		 SELECT A.movie_idx 		AS movieIdx
+			 , B.timetable_idx 		AS timetableIdx
+			 , A.movie_name_hngl 	AS movieNameHngl
+			 , A.movie_rate 		AS movieRate
+			 , A.running_time 		AS runningTime
+			 , B.dimension_gb 		AS dimensionGb
+			 , B.start_time 		AS startTime
+			 , B.finish_time 		AS finishTime
+			 , 60 - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx) AS total
+			 , C.file_top_path		AS fileTopPath
+		  FROM MOVIES A
+			 , TIMETABLE B 
+			 , (SELECT * 
+			 	  FROM FILE 
+			 	 WHERE table_gb = #{fileDTO2.tableGb}
+			 	   AND file_top_path IS NOT NULL
+			   ) C
+		 WHERE A.movie_idx 	  = B.movie_idx 
+		   AND A.movie_idx	  = C.table_idx
 		   AND B.screening_dt = #{wildCard}
-		 WHERE 1=1
-		   AND A.movie_idx = #{movieIdx} 
+		   AND A.movie_idx 	  = #{movieIdx}
 	</select>
 
 </mapper>

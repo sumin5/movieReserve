@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.comm.AjaxResVO;
 import com.ezen.movie.comm.ValueException;
+import com.ezen.movie.mapper.file.FileMapper;
+import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.reserve.ReserveService;
@@ -22,17 +24,25 @@ import com.ezen.movie.service.reserve.ReserveService;
 @RequestMapping("/reserve")
 public class ReserveController extends AbstractController{
 	
+	/*DI*/
 	@Autowired
 	private MovieService movieService;
-	
 	@Autowired
 	private ReserveService reserveService;
+	@Autowired
+	private FileMapper fileMapper;
+	
+	/*상수*/
+	final static String TABLEGB = "MOVIES";
 	
 	@GetMapping("/selectPage")
 	public ModelAndView main() {
 		
 		ModelAndView mav = new ModelAndView("/reserve/selectPage");
 		List<MoviesDTO> movieList = movieService.movieList();
+		for(int i=0 ; i<movieList.size() ; i ++) {
+			
+		}
 		
 		if(!isNull(movieList)) {
 			mav.addObject("initIdx",movieList.get(0).getMovieIdx());
@@ -56,11 +66,20 @@ public class ReserveController extends AbstractController{
 				throw new ValueException("잘못된 접근 경로입니다.");
 			}
 			
+			FileDTO file = new FileDTO();
+			file.setTableGb(TABLEGB);
+			dto.setFileDTO2(file);
 			
+			/*영화시간표 정보 가져오기*/
 			List<Map<String, Object>> timetable = reserveService.getTimetable(dto);
 			
+			for(int i=0 ; i<timetable.size() ; i++) {
+				System.out.println(timetable.get(i));
+			}
 			
 			data = new AjaxResVO<>(AJAXPASS, "",timetable);
+			
+			System.out.println("data: " + data);
 			
 		} catch (ValueException e) {
 			e.getMessage();
