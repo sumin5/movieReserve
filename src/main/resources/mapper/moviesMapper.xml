@@ -17,6 +17,9 @@
 		WHERE MOVIES.movie_idx = #{movieIdx}
 </select>
 
+<delete parameterType="moviesDTO" id="AutoDelete">
+	DELETE  FROM MOVIES WHERE opening_dt <![CDATA[ < ]]> DATE_ADD(NOW(), INTERVAL - 1 MONTH)
+</delete>
 
 
 </mapper>
