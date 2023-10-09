@@ -49,7 +49,7 @@ public class StoreController extends AbstractController{
 		return mav;
 	}
 	
-	//스택 페이지 이동
+	//스낵 페이지 이동
 	@GetMapping("/snackPage")
 	public ModelAndView snackPage() {
 		ModelAndView mav = new ModelAndView("/store/snackPage");
