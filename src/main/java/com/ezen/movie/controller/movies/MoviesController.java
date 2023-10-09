@@ -91,8 +91,11 @@ public class MoviesController extends AbstractController{
 		FileDTO getOne = new FileDTO();
 		
 		PersonDTO onePerson = new PersonDTO();
-		PersonDTO  listPerson = new PersonDTO();
+		PersonDTO listPerson = new PersonDTO();
+		
+		onePerson.setWildCard("감독");
 		onePerson.setMovieIdx(movieDetail.getMovieIdx());
+		listPerson.setWildCard("주연");
 		listPerson.setMovieIdx(movieDetail.getMovieIdx());
 		
 		getOne.setTableGb("movies");

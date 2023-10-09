@@ -83,7 +83,7 @@ public class MemberController extends AbstractController{
 		
 	}
 
-	//메일인증로직
+	//인증 메일 발송
 	@PostMapping("/mailAuthSend")
 	@ResponseBody
     public AjaxResVO<?> mailConfirm(@RequestParam String email) throws Exception {

@@ -475,3 +475,12 @@ textarea.form-control {
     font-size: 1rem;
 }
 
+.custom-btn {
+	padding: 0;
+    border: none;
+    height: 33px;
+    width: 60%;
+    align-items: center;
+    background: #e9e0cf;
+    color: #666;
+}

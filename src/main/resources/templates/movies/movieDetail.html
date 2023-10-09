@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
-	layout:decorate="~{layout/default_layout}">
+	layout:decorate="~{layout/movie_layout}">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-<div layout:fragment="content">
+<div layout:fragment="content" style="background-color: #242628;">
 	<main>
-		<div style="margin-top:70px; margin-left:120px;">
+		<div style="margin-left:120px; padding:30px">
 			<div style="display:inline-block; margin-left:100px;  vertical-align:top; margin-right:30px;">
 				<img th:src="${movieDetail.fileDTO2.fileTopPath}" style="width:220px; height:330px;">
 			</div>
 			<div style="display:inline-block;">
 				<div>
-					<h2 th:text="${movieDetail.movieNameHngl}"></h2>
+					<h2 th:text="${movieDetail.movieNameHngl}" style="color:white;"></h2>
 				</div>
 				<div>
-					<p th:text=" '(' + ${movieDetail.movieNameEng} + ')' "></p>
+					<p th:text=" '(' + ${movieDetail.movieNameEng} + ')' " style="color:white;"></p>
 				</div>
-				<p th:text="${movieDetail.openingDt} + ' 개봉'"></p>
+				<p th:text="${movieDetail.openingDt} + ' 개봉'" style="color:white;"></p>
 				<hr style="width:870px;">
-				감독 : <p th:text="${movieDetail?.ObChild?.personNameHngl}" style="display:inline-block;"></p><br>
-				출연 :
-				<p style="display:inline-block;">
+				<h6 style="color:white; display:inline-block;">감독 : &nbsp;&nbsp; </h6> <p th:text="${movieDetail?.ObChild?.personNameHngl}" style="display:inline-block; color:white;"></p><br>
+				<h6 style="color:white; display:inline-block;">주연 : &nbsp;&nbsp; </h6>
+				<p style="display:inline-block; color:white;">
 					<th:block th:each="l ,index : ${movieDetail?.personDTO}">
 						<th:block th:if="${index.last}" th:text="${l?.personNameHngl}"></th:block>
-						<th:block th:unless="${index.last}" th:text="${l?.personNameHngl} + ',' "></th:block>
+						<th:block th:unless="${index.last}" th:text="${l?.personNameHngl} + ','"></th:block>
 					</th:block>
 				</p><br>
-				배급 : <p th:text="${movieDetail.movieDistributor}" style="display:inline-block;"></p><br>
-				장르/기본정보 : <p th:text="${movieDetail.genre}" style="display:inline-block;"></p>/
-				<p th:text="${movieDetail.movieCountry}" style="display:inline-block;"></p>,
-				<p th:text="${movieDetail.runningTime}" style="display:inline-block"></p>,
-				<p th:text="${movieDetail.movieRate}" style="display:inline-block"></p><br>
-				<a th:href="@{/reserve/main}" class="btn"
-					style="background-color:paleturquoise; font-size:20px;">예매하기</a>
+				<h6 style="color:white; display:inline-block;">배급 : &nbsp;&nbsp; </h6><p th:text="${movieDetail.movieDistributor}" style="display:inline-block; color:white;"></p><br>
+				<h6 style="color:white; display:inline-block;">장르/ 기본정보 : &nbsp;&nbsp; </h6> <p th:text="${movieDetail.genre} +',' " style="display:inline-block; color:white;"></p>/
+				<p th:text="${movieDetail.movieCountry} + ','" style="display:inline-block; color:white;"></p>
+				<p th:text="${movieDetail.runningTime} + ',' " style="display:inline-block; color:white;"></p>
+				<p th:text="${movieDetail.movieRate}" style="display:inline-block; color:white;"></p><br>
+				<a th:href="@{/reserve/selectPage}" class="btn"
+					style="background-color:#a9a9a9; font-size:20px;">예매하기</a>
 			</div>
 		</div>
 
 
 		<h3 th:text="${movieDetail.movieInfo}"
-			style="border:hidden; margin-top:40px;margin-left:200px; margin-bottom:30px; width:80%;"></h3><br>
+			style="border:hidden; margin-top:40px;margin-left:200px; margin-bottom:30px; width:80%; color:white;"></h3><br>
 	<div style="text-align:center;">
 		<div style="display:inline-block;"  id="stillCut">
-			<a  th:href="'#images'" style="color:black!important;background-color:paleturquoise;
+			<a  th:href="'#images'" style="color:black!important;background-color:#a9a9a9;
 			 font-size:20px; margin-bottom:50px;" class="btn">스틸 컷</a>
 		</div>
 		
 		<div style="display:inline-block;">
-			<a  style="background-color:paleturquoise; font-size:20px; margin-bottom:50px;" class="btn">인물 정보</a>
+			<a  style="background-color:#a9a9a9; font-size:20px; margin-bottom:50px;" class="btn">인물 정보</a>
 		</div>
 	</div>
 		
@@ -63,6 +63,8 @@ $(function (){
   });
 });
 </script>
+
+
 </div>
 
 </main>

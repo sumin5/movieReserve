@@ -8,7 +8,7 @@
 		WHERE persion_idx IN (
 		SELECT persion_idx
 		FROM CAST
-		WHERE cast_gb = '주연'
+		WHERE cast_gb = #{wildCard}
 		AND movie_idx = #{movieIdx}
 		)
 	</select>
@@ -19,7 +19,7 @@
 		WHERE persion_idx IN (
 		SELECT persion_idx
 		FROM CAST
-		WHERE cast_gb = '감독'
+		WHERE cast_gb = #{wildCard}
 		AND movie_idx = #{movieIdx}
 		)
 	</select>
