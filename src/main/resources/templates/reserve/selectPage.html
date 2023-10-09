@@ -39,7 +39,7 @@
 		$('#datepicker').change(function(){
 			$("#resdate").text($(this).val());
 			today = $("#datepicker").val().slice(0,10);
-			getTimetable(initMovieIdx);
+			getTimetable();
 		})
 		
 		//초기 날짜 설정

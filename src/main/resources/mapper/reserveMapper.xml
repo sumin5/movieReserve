@@ -14,7 +14,7 @@
 	
 	
 	<select id="getTimetable" parameterType="MoviesDTO" resultType="map">
-		 SELECT A.movie_idx 		AS movieIdx
+		SELECT A.movie_idx 		AS movieIdx
 			 , B.timetable_idx 		AS timetableIdx
 			 , A.movie_name_hngl 	AS movieNameHngl
 			 , A.movie_rate 		AS movieRate
