@@ -37,7 +37,7 @@ public class StoreController extends AbstractController{
 		
 	}
 	
-	//팜콘 & 음료 페이지 이동
+	//팝콘 & 음료 페이지 이동
 	@GetMapping("/popAndDrinkPage")
 	public ModelAndView popAndDrinkPage() {
 		ModelAndView mav = new ModelAndView();
