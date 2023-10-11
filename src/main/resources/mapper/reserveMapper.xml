@@ -19,6 +19,8 @@
 			 , A.movie_name_hngl 	AS movieNameHngl
 			 , A.movie_rate 		AS movieRate
 			 , A.running_time 		AS runningTime
+			 , D.screen_number		AS screenNumber
+			 , D.floor				AS floor
 			 , B.dimension_gb 		AS dimensionGb
 			 , B.start_time 		AS startTime
 			 , B.finish_time 		AS finishTime
@@ -31,8 +33,10 @@
 			 	 WHERE table_gb = #{fileDTO2.tableGb}
 			 	   AND file_top_path IS NOT NULL
 			   ) C
+			 , SCREEN D
 		 WHERE A.movie_idx 	  = B.movie_idx 
 		   AND A.movie_idx	  = C.table_idx
+		   AND B.screen_idx   = D.screen_idx
 		   AND B.screening_dt = #{wildCard}
 		<if test="movieIdx != 0">
 		   AND A.movie_idx 	  = #{movieIdx}

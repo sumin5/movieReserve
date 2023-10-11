@@ -46,7 +46,7 @@
 		$("#resdate").text($("#datepicker").val())
 		today = $("#datepicker").val().slice(0,10);
 		
-		// 영화초기설정
+		// 영화초기설정 
 		getTimetable();
 		
   	})
@@ -65,6 +65,7 @@
 			return false;
 		}
 
+
 		$.ajax({
 			
 			type : 'post',
@@ -80,51 +81,83 @@
 				if(res.code == '00') {
 					
 					let data = res.data;
-					let html = '';
+					let setArray = new Set();
+					let array = [];
+					let timetableHtml = '';
 					let photoHtml = '';
-					
+
 					if(!isNull(data)){
+
+						/*data에서 배열단위로 중복제거*/
+						for(let i=0 ; i<data.length ; i++){
+							let arr= [{movieIdx: data[i].movieIdx}
+									 ,{movieRate: data[i].movieRate}
+									 ,{movieNameHngl: data[i].movieNameHngl}
+									 ,{dimensionGb: data[i].dimensionGb}
+									 ,{screenNumber: data[i].screenNumber}
+									 ,{floor: data[i].floor}
+									 ];
+							setArray.add(JSON.stringify(arr));
+						}
+						array = Array.from(setArray).map(item => JSON.parse(item));
 						
-						html += `<div class="movie_tit" style="margin-top:50px;">
-								<p class="age age_` + data[0].movieRate + `">`+ (data[0].movieRate == 'all' ? '전체' : (data[0].movieRate == '18' ? '청불' : data[0].movieRate)) + `</p>
-								<p class="tit">`+ data[0].movieNameHngl +`</p>
-							</div>`;
-						html +=	 `<div class="time_wrap">
-								<div class="time_wrap_top">
-									<p class="tit">` + data[0].dimensionGb + `</p>
-									<p class="sub_text loc">3관 (1층)</p>
-								</div>
-								<div class="time_list_wrap">`
+						
+						/*timetable 그리기 (영화제목:시간표, 1:n)*/
+						for(let i=0 ; i<array.length ; i++){
 							
-						for(let i=0;i<data.length ;i++){
+							/*영화제목 부분*/
+							timetableHtml += `<div class="movie_tit" style="margin-top:50px;">
+												  <p class="age age_` + array[i][1].movieRate + `">`+ (array[i][1].movieRate == 'all' ? '전체' : (array[i][1].movieRate == '18' ? '청불' : array[i][1].movieRate)) + `</p>
+												  <p class="tit">`+ array[i][2].movieNameHngl +`</p>
+											  </div>`;
+							timetableHtml += `<div class="time_wrap">
+												  <div class="time_wrap_top">
+													  <p class="tit">` + array[i][3].dimensionGb + `</p>
+													  <p class="sub_text loc">` + array[i][4].screenNumber + ` (` + array[i][5].floor + `)</p>
+												  </div>
+											  <div class="time_list_wrap">`
+
+								/*시간표 + 영화포스터 부분*/
+								for(let j=0 ; j<data.length ; j++){
+									
+									if(array[i][0].movieIdx == data[j].movieIdx){
+										
+										/* 얘는 어떤 기능을 하는건지 기억이 안난다...
+										if (data[i].timetableIdx == undefined) {
+											flag = true;
+										}*/
+										
+										/*시간표*/
+										timetableHtml += `<div class="time_list">
+															  <input type="radio" id="time_`+data[i].timetableIdx+`" name="movie_time">
+															  <label class="on" for="time_`+data[i].timetableIdx+`">
+														  		  <p class="start">` + data[i].startTime + `</p>
+																  <p class="end">~` + data[i].finishTime + `</p>
+															  </label>
+															  <p class="num">` + data[i].total + `석</p>
+														  </div>`
+												
+										/*영화포스터*/
+										if(movieIdxForGetPhoto){
+											photoHtml += `<div class="img">
+												 			  <img src=` +data[i].fileTopPath+ ` alt="" title="-">
+														  </div>`
+											$("#movie_photo").html(photoHtml);	 
+											movieIdxForGetPhoto = false;
+										}
+										
+									}
+									
+								}
+								
+							timetableHtml += `</div></div>`;
 							
-							if (data[i].timetableIdx == undefined) {
-								flag = true;
-							}
-							
-							html += `<div class="time_list">
-										<input type="radio" id="time_`+data[i].timetableIdx+`" name="movie_time">
-										<label class="on" for="time_`+data[i].timetableIdx+`">
-											<p class="start">` + data[i].startTime + `</p>
-											<p class="end">~` + data[i].finishTime + `</p>
-										</label>
-										<p class="num">` + data[i].total + `석</p>
-									</div>`
 						}
 					
-						html += `</div></div>`;
 						
-						if(movieIdxForGetPhoto){
-							alert(movieIdxForGetPhoto);
-							photoHtml += `<div class="img">
-								 			<img src=` +data[1].fileTopPath+ ` alt="" title="-">
-										 </div>`
-							$("#movie_photo").html(photoHtml);	 
-						}
 					}
 					
-					$("#scheduleList").html(html);
-					
+					$("#scheduleList").html(timetableHtml);
 					
 					
 				} 
