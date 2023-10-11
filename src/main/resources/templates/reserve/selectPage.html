@@ -2,11 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
 	layout:decorate="~{layout/reserve_layout}">
 <head>
-	
+	<style>
+		.movie_poster #movie_photo .img img{
+			height: 400px;
+		}
+		
+	</style>
 <script>
 	
 	let today = "";
-	let initMovieIdx = "[[${initIdx}]]";
 	
 	// 페이지 온로드시
 	$(function(){ 
@@ -43,7 +47,7 @@
 		today = $("#datepicker").val().slice(0,10);
 		
 		// 영화초기설정
-		getTimetable(initMovieIdx);
+		getTimetable();
 		
   	})
   	
@@ -52,15 +56,14 @@
 	}
 
 
-	function getTimetable(movieIdx){
+	function getTimetable(movieIdx, movieIdxForGetPhoto){
 		
-		initMovieIdx = movieIdx;
+		alert("getTimetable("+movieIdx+")");
 		
-		if(isNull(movieIdx) || isNull(today)){
+		if(isNull(today)){
 			alert("잘못된 접근입니다.");
 			return false;
 		}
-		
 
 		$.ajax({
 			
@@ -73,44 +76,56 @@
 			dataType : 'json',
 			success : function(res){
 				
+				
 				if(res.code == '00') {
 					
 					let data = res.data;
 					let html = '';
+					let photoHtml = '';
 					
 					if(!isNull(data)){
 						
 						html += `<div class="movie_tit" style="margin-top:50px;">
-								<p class="age age_` + data[0].movie_rate + `">`+ (data[0].movie_rate == 'all' ? '전체' : (data[0].movie_rate == '18' ? '청불' : data[0].movie_rate)) + `</p>
-								<p class="tit">`+ data[0].movie_name_hngl +`</p>
+								<p class="age age_` + data[0].movieRate + `">`+ (data[0].movieRate == 'all' ? '전체' : (data[0].movieRate == '18' ? '청불' : data[0].movieRate)) + `</p>
+								<p class="tit">`+ data[0].movieNameHngl +`</p>
 							</div>`;
 						html +=	 `<div class="time_wrap">
 								<div class="time_wrap_top">
-									<p class="tit">` + data[0].dimension_gb + `</p>
+									<p class="tit">` + data[0].dimensionGb + `</p>
 									<p class="sub_text loc">3관 (1층)</p>
 								</div>
 								<div class="time_list_wrap">`
 							
 						for(let i=0;i<data.length ;i++){
 							
-							if (data[i].timetable_idx == 'undefined') {
+							if (data[i].timetableIdx == undefined) {
 								flag = true;
 							}
 							
 							html += `<div class="time_list">
-										<input type="radio" id="time_`+data[i].timetable_idx+`" name="movie_time">
-										<label class="on" for="time_`+data[i].timetable_idx+`">
-											<p class="start">` + data[i].start_time + `</p>
-											<p class="end">~` + data[i].finish_time + `</p>
+										<input type="radio" id="time_`+data[i].timetableIdx+`" name="movie_time">
+										<label class="on" for="time_`+data[i].timetableIdx+`">
+											<p class="start">` + data[i].startTime + `</p>
+											<p class="end">~` + data[i].finishTime + `</p>
 										</label>
 										<p class="num">` + data[i].total + `석</p>
 									</div>`
 						}
 					
 						html += `</div></div>`;
+						
+						if(movieIdxForGetPhoto){
+							alert(movieIdxForGetPhoto);
+							photoHtml += `<div class="img">
+								 			<img src=` +data[1].fileTopPath+ ` alt="" title="-">
+										 </div>`
+							$("#movie_photo").html(photoHtml);	 
+						}
 					}
 					
 					$("#scheduleList").html(html);
+					
+					
 					
 				} 
 				
@@ -148,7 +163,7 @@
 						<div id="movieTotalList" class="movie_list_wrap">
 
 							<div th:each="movie : ${movieList}" class="movie_list">
-								<input type="radio" th:id="|movie_label_${movie.movieIdx}|" name="movie" th:onclick="getTimetable([[${movie.movieIdx}]])">
+								<input type="radio" th:id="|movie_label_${movie.movieIdx}|" name="movie" th:onclick="getTimetable([[${movie.movieIdx}]], [[${movie.movieIdx}]])">
 								<label th:id="|movie_label_${movie.movieIdx}|" class="movie_title_label" th:for="|movie_label_${movie.movieIdx}|">
 									<div th:text="${movie.movieRate} == 'all' ? '전체' 
 												: (${movie.movieRate} == '18' ? '청불'
@@ -232,10 +247,11 @@
 
 					<div id="rsvInfo" class="movie_info" data-mid="">
 						<div class="movie_poster">
-							<div class="poster">
-								<div class="img"><img
-										src="https://www.daehancinema.co.kr/PETC/assets/images/res_post_default.gif"
-										alt="" title="-"></div>
+							<div id="movie_photo" class="poster">
+								<div class="img">
+									<img src="https://www.daehancinema.co.kr/PETC/assets/images/res_post_default.gif"
+										alt="" title="-">
+								</div>
 							</div>
 							<div class="movie_info_txt">
 								<p class="tit">-</p>

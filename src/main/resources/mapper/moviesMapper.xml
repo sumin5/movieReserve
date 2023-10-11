@@ -9,17 +9,14 @@
 	SELECT *
 	     , COUNT(*) OVER () TOTAL
     FROM MOVIES
-    where DATE_FORMAT(opening_dt ,'%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d') and DATE_FORMAT(end_dt  ,'%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d')
- </select>
+    WHERE DATE_FORMAT(opening_dt ,'%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d') and DATE_FORMAT(end_dt  ,'%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d')
+</select>
 
 <select resultType="moviesDTO" id="selectOneMovie" parameterType="moviesDTO">
 		SELECT * FROM MOVIES 
 		WHERE MOVIES.movie_idx = #{movieIdx}
 </select>
 
-<delete parameterType="moviesDTO" id="AutoDelete">
-	DELETE  FROM MOVIES WHERE opening_dt <![CDATA[ < ]]> DATE_ADD(NOW(), INTERVAL - 1 MONTH)
-</delete>
 
 
 </mapper>

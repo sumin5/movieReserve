@@ -35,10 +35,4 @@ public class MovieServiceImpl implements MovieService {
 		return moviesMapper.selectOneMovie(dto);
 	}
 	
-	//영화 자동 삭제
-	@Scheduled(cron ="0 0 1 * * ?") //매월 1일 자정에 작동
-	@Override
-	public void AutoDelete() {
-		moviesMapper.AutoDelete();
-	}
 }
