@@ -5,14 +5,14 @@ import java.util.Map;
 
 public interface MovieService {
 	
-	List<MoviesDTO> menuList();
-
-	/**
-	 * @Desc: 현재 상영중인 영화 목록과, total 값을 가져온다
-	 * */
+	//영화 리스트 가져오기
 	List<MoviesDTO> movieList();
 
+	//영화 상세보기
 	MoviesDTO getOne(MoviesDTO dto);
+
+	//영화 자동 삭제
+	void AutoDelete();
 	
 
 }
