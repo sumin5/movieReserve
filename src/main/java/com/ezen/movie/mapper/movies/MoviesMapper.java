@@ -9,14 +9,13 @@ import com.ezen.movie.service.movies.MoviesDTO;
 @Mapper
 public interface MoviesMapper {
 	
-
-	/**
-	 * @Desc: 현재 상영중인 영화 목록과, total 값을 가져온다
-	 * */
+	//영화 리스트 가져오기
 	List<MoviesDTO> selectMovie();
 
+	//영화 상세정보
 	MoviesDTO selectOneMovie(MoviesDTO dto);
 
-	List<MoviesDTO> selectMenu();
+	//영화 자동 삭제
+	void AutoDelete();
 	
 }

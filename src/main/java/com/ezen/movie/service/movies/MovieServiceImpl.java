@@ -22,12 +22,6 @@ public class MovieServiceImpl implements MovieService {
 	@Autowired
 	private MoviesMapper moviesMapper;
 
-	@Override
-	public List<MoviesDTO> menuList() {
-		
-		return moviesMapper.selectMenu();
-	}	
-	
 	//영화 리스트 가져오기
 	@Override
 	public List<MoviesDTO> movieList() {
@@ -41,4 +35,10 @@ public class MovieServiceImpl implements MovieService {
 		return moviesMapper.selectOneMovie(dto);
 	}
 	
+	//영화 자동 삭제
+	@Scheduled(cron ="0 0 1 * * ?") //매월 1일 자정에 작동
+	@Override
+	public void AutoDelete() {
+		moviesMapper.AutoDelete();
+	}
 }
