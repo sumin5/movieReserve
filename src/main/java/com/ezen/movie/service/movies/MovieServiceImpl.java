@@ -22,6 +22,12 @@ public class MovieServiceImpl implements MovieService {
 	@Autowired
 	private MoviesMapper moviesMapper;
 
+	@Override
+	public List<MoviesDTO> menuList() {
+		
+		return moviesMapper.selectMenu();
+	}	
+	
 	//영화 리스트 가져오기
 	@Override
 	public List<MoviesDTO> movieList() {

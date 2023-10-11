@@ -16,5 +16,7 @@ public interface MoviesMapper {
 	List<MoviesDTO> selectMovie();
 
 	MoviesDTO selectOneMovie(MoviesDTO dto);
+
+	List<MoviesDTO> selectMenu();
 	
 }
