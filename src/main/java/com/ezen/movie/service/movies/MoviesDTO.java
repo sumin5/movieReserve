@@ -30,6 +30,8 @@ public class MoviesDTO extends CommDTO{
 	private List<FileDTO> fileDTO;
 	private FileDTO fileDTO2;
 	
+	private List<MoviesDTO> movieList;
+	
 	public String getMovieNameHngl() {
 		return movieNameHngl;
 	}
@@ -125,6 +127,12 @@ public class MoviesDTO extends CommDTO{
 	}
 	public void setTimetableIdx(int timetableIdx) {
 		this.timetableIdx = timetableIdx;
+	}
+	public List<MoviesDTO> getMovieList() {
+		return movieList;
+	}
+	public void setMovieList(List<MoviesDTO> movieList) {
+		this.movieList = movieList;
 	}
 	
 	

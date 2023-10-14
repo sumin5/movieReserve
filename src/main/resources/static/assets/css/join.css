@@ -372,7 +372,7 @@ textarea.form-control {
       .checkbox-circle label a:hover {
         color: #89b843; }
   .checkbox-circle input {
-    position: absolute;
+   
     opacity: 0;
     cursor: pointer; }
   .checkbox-circle input:checked ~ .checkmark:after {
