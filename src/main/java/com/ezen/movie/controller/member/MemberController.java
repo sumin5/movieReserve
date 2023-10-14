@@ -24,7 +24,7 @@ public class MemberController extends AbstractController{
 	
 
 	@Autowired
-	private EmailService emailService;
+	private EmailService emailService;	//이메일서비스
 	
 	@Autowired
 	private MemberService memberService;
@@ -117,7 +117,6 @@ public class MemberController extends AbstractController{
 		
     }
 	
-<<<<<<< HEAD
 	//인증 메일 확인
 	@PostMapping("/mailAuthCheck")
 	@ResponseBody
@@ -150,7 +149,5 @@ public class MemberController extends AbstractController{
 		return data;
 		
     }
-	
-=======
->>>>>>> branch 'main' of https://github.com/sumin5/movieReserve.git
+
 }
