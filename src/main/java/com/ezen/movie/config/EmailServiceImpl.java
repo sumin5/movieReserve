@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.ezen.movie.mapper.member.MemberMapper;
+import com.ezen.movie.service.member.MailDTO;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -89,10 +90,22 @@ public class EmailServiceImpl implements EmailService{
         return ePw; // 메일로 보냈던 인증 코드를 서버로 리턴
     }
 
+    /**
+     * DB 인증번호
+     */
 	@Override
-	public void sendMail(String to) {
+	public void sendMail(MailDTO dto) {
 	
-		memberMapper.sendMail(to);
+		memberMapper.sendMail(dto);
 		
+	}
+
+	/**
+	 * 이메일 인증확인
+	 */
+	@Override
+	public boolean authCheck(MailDTO dto) {
+		
+		return memberMapper.authCheck(dto) > 0;
 	}
 }

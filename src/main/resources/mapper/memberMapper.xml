@@ -7,17 +7,30 @@
 -->
 <mapper namespace="com.ezen.movie.mapper.member.MemberMapper">
 
+	<!-- 아이디 중복 확인 -->
     <select id="getDoubleChk" parameterType="memberDTO" resultType="Integer">
         select count(*) 
-        from members
+        from MEMBERS
         where member_id = #{memberId}
     </select>
     
-    <!--메일인증 발송 -->
-    <insert id="sendMail" parameterType="String">
+    <!--메일인증 발송 후 저장-->
+    <insert id="sendMail" parameterType="mailDTO" useGeneratedKeys="true" keyProperty="authId"> 
 		insert into MAILAUTH
 		(auth_num)
-		values( #{to} )		
+		values( #{authNum} )		
 	</insert>
+	
+	<!-- 메일 인증 확인 -->
+	<select id="authCheck" parameterType="mailDTO" resultType="int">
+		select count(*)
+		from MAILAUTH
+		where auth_id = #{authId}
+			and auth_num = #{authNum}
+	
+	</select>
+	
+	
+	
 
 </mapper>

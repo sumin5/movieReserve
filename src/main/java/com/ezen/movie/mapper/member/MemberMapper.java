@@ -2,6 +2,7 @@ package com.ezen.movie.mapper.member;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.ezen.movie.service.member.MailDTO;
 import com.ezen.movie.service.member.MemberDTO;
 
 @Mapper
@@ -15,9 +16,16 @@ public interface MemberMapper {
 	public int getDoubleChk(MemberDTO dto);
 	
 	/**
-	 * 메일 인증
+	 * 메일 인증 저장
 	 * 
 	 */
-	public void sendMail(String to);
+	public void sendMail(MailDTO dto);
+
+	/**
+	 * 메일 인증 확인
+	 * @param dto
+	 * @return
+	 */
+	public int authCheck(MailDTO dto);
 	
 }

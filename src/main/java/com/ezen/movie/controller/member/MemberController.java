@@ -13,6 +13,7 @@ import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.comm.AjaxResVO;
 import com.ezen.movie.comm.ValueException;
 import com.ezen.movie.config.EmailService;
+import com.ezen.movie.service.member.MailDTO;
 import com.ezen.movie.service.member.MemberDTO;
 import com.ezen.movie.service.member.MemberService;
 import com.ezen.movie.service.store.StoreService;
@@ -98,9 +99,11 @@ public class MemberController extends AbstractController{
 
 	        String code = emailService.sendSimpleMessage(email);
 	        
-			emailService.sendMail(code);
+	        MailDTO dto = new MailDTO();
+	        dto.setAuthNum(code);
+			emailService.sendMail(dto);
 			
-			data = new AjaxResVO<>(AJAXPASS,"메일을 확인해주세요.");
+			data = new AjaxResVO<>(AJAXPASS,"메일을 확인해주세요.",dto.getAuthId());
 			
 		} catch (ValueException e) {
 			e.getMessage();
@@ -114,4 +117,40 @@ public class MemberController extends AbstractController{
 		
     }
 	
+<<<<<<< HEAD
+	//인증 메일 확인
+	@PostMapping("/mailAuthCheck")
+	@ResponseBody
+    public AjaxResVO<?> mailAuthCheck(MailDTO dto) throws Exception {
+		
+		AjaxResVO<?> data = new AjaxResVO<>();
+		
+		try {
+			
+			if(dto == null) {
+				throw new ValueException("잘못된 접근 경로입니다.");
+			}
+
+			boolean flag = emailService.authCheck(dto);
+			String msg = "인증에 실패하였습니다.";
+			
+			if(flag) {
+				msg = "인증이 완료되었습니다.";
+			}
+			data = new AjaxResVO<>(AJAXPASS,msg);
+			
+		} catch (ValueException e) {
+			e.getMessage();
+			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		} 
+		
+		return data;
+		
+    }
+	
+=======
+>>>>>>> branch 'main' of https://github.com/sumin5/movieReserve.git
 }

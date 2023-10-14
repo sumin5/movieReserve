@@ -4,10 +4,8 @@
       layout:decorate="~{layout/default_layout}">
 
 <head>
-
 		
 	<script charset="utf-8"> 
-		
 		
 	$(function(){
 		
@@ -69,12 +67,15 @@
 			}
 			
 		})
-		
+	
+		// submit 버튼 조작
+		$("#wizard .actions a[href='#finish']").on("click", function(event) {
+		    event.preventDefault(); // 기본 동작 방지 (페이지 새로고침 방지)
+		   
+			submit();
+		});
 		
 	});
-	
-	
-	
 	
 	// 비밀번호 정규화
 	/* var reg = "^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";	
@@ -92,6 +93,9 @@
 	
 	let currentTimer  = null;
 	let mailFlag = false;
+
+	// 이메일 인덱스
+	let authId = 0;
 	
 	// 아이디 중복체크
 	function doubleChk() {
@@ -172,12 +176,58 @@
 				
 				if(res.code == '00') {
 					
+					authId = res.data;
+					
 					if(currentTimer === null) {
 						timer();
 					} else {
 						clearInterval(currentTimer);
 						timer();
 					}
+					
+				} 
+				
+				alert(res.msg);
+			},
+			error: function(res){
+				alert(res);
+			}
+		});
+		
+	}
+
+	// 인증번호 확인
+	function mailAuthCheck(){
+
+		var mailAuth = $("#mailAuth").val();
+
+		if(isNull(mailAuth)){
+			alert("인증번호를 입력해주세요.");
+			return;
+		}
+
+		if( !(authId > 0) ){
+			alert("인증번호를 입력해주세요.");
+			return;
+		}
+		
+		$.ajax({
+			
+			type : 'post',
+			url : '[[@{/member/mailAuthCheck}]]',
+			data : {
+				'authId' : authId,
+				'authNum' : mailAuth
+			},
+			dataType : 'json',
+			success : function(res){
+				
+				if(res.code == '00') {
+					
+					clearInterval(currentTimer);
+
+					$("#timerMsg").css("color","DodgerBlue");
+					$("#timerMsg").text("인증완료");
 					
 					mailFlag = true;
 				} 
@@ -200,20 +250,132 @@
 		var timerMsg = $("#timerMsg")
 		
 		currentTimer = setInterval(function(){
+			
 			min = parseInt(time/60);
 			sec = time%60;
 			timerMsg.show();
-			console.log(min);
 			timerMsg.text(min + "분 " + sec +"초");
 			time--;
 
 			if(time < 0 ) {
 				clearInterval(currentTimer);
+				authId = 0; // 초기화
 				timerMsg.html("시간초과");
 			}
 		}, 1000);
 	}
-	
+
+
+	function submit() {
+
+		let memberId = $("#memberId").val();
+		
+		let password = $("#password1").val();
+		let memberName = $("#memberName").val();
+		let gender = $('input[name=gender]').val();
+
+		let memberPhone = $("#memberPhone").val();
+
+		let email1 = $("#email1").val();
+		let email2 = $("select[name='selectMail'] option:selected").val();
+		
+		let email = email1 + "@" + email2;
+
+		let emailYn = $('input:checkbox[name=emailYn]').is(":checked");
+		let marketingYn = $('input:checkbox[name=marketingYn]').is(":checked");
+		let smsYn = $('input:checkbox[name=smsYn]').is(":checked");
+
+		let formData = new FormData();
+		
+		if(isNull(memberId)){
+			
+			divAlert("아이디를 입력해주세요.");
+			return;
+		}
+		
+		if(isNull(password)){
+			
+			divAlert("패스워드를 입력해주세요.");
+			return;
+		}
+		
+		if(isNull(memberName)){
+			
+			divAlert("이름을 입력해주세요.");
+			return;
+		}
+		
+		if(isNull(gender)){
+			
+			divAlert("성별을 입력해주세요.");
+			return;
+		}
+		
+		if(isNull(email)){
+			
+			divAlert("이메일을 입력해주세요.");
+			return;
+		}
+
+		if(isNull(memberPhone)){
+			
+			divAlert("휴대폰번호를 입력해주세요.");
+			return;
+		}
+
+		if(emailYn){
+			formData.append("emailYn","Y");
+		}
+
+		if(marketingYn){
+			formData.append("marketingYn","Y");
+		}
+
+		if(smsYn){
+			formData.append("smsYn","Y");
+		}
+
+		if(!idFlag) {
+			divAlert("아이디중복 확인해주세요.");
+			return;
+		}
+		if(!pwFlag) {
+			divAlert("패스워드 확인해주세요.");
+			return;
+		}
+		if(!mailFlag) {
+			divAlert("메일인증 확인해주세요.");
+			return;
+		}
+
+		formData.append("memberId",memberId);
+		formData.append("password",password);
+		formData.append("memberName",memberName);
+		formData.append("gender",gender);
+		formData.append("memberPhone",memberPhone);
+		formData.append("email",email);
+						
+		$.ajax({
+			
+			type : 'post',
+			url : '[[@{/member/join}]]',
+			data : formData,
+			dataType : 'json',
+			success : function(res){
+				
+				if(res.code == '00') {
+					
+					location.href = "[[@{/member/loginForm}]]"
+				} 
+				
+				alert(res.msg);
+			},
+			error: function(res){
+				alert(res);
+			}
+		});
+		
+	}
 	</script>
 </head>
 
@@ -264,11 +426,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-row">
-								<div class="form-holder">
-									<input type="text" placeholder="휴대폰번호 ex)01012341234" class="form-control" id="memberPhone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">	
-								</div>
-							</div>
+							
 						</div>
 					</div>
                 </section>
@@ -310,35 +468,13 @@
 									<p id="timerMsg" style="display:none; color: red;"></p>
 								</div>
 							</div>
+							
 							<div class="form-row">
 								<div class="form-holder">
-									<input type="text" placeholder="City" class="form-control">
+									<input type="text" placeholder="휴대폰 Ex) 01012341234" class="form-control" id="memberPhone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">	
 								</div>
-								<div class="form-holder">
-									<input type="text" placeholder="Zip Code" class="form-control">
-								</div>
-							</div>
-							<div class="checkbox-circle">
-								<label>
-									<input type="checkbox" checked> Nor again is there anyone who loves or pursues or desires to obtaini.
-									<span class="checkmark"></span>
-								</label>
 							</div>
 
-							<div class="form-row">
-								<div class="select">
-									<div class="form-holder">
-										<div class="select-control">Your country</div>
-										<i class="zmdi zmdi-caret-down"></i>
-									</div>
-									<ul class="dropdown">
-										<li rel="United States">United States</li>
-										<li rel="United Kingdom">United Kingdom</li>
-										<li rel="Viet Nam">Viet Nam</li>
-									</ul>
-								</div>
-								<div class="form-holder"></div>
-							</div>
 						</div>
 					</div>
                 </section>
@@ -354,18 +490,27 @@
 							<div class="form-header">
 								<h3>Registration</h3>
 							</div>
-							<p class="join_Ptag">Send an optional message</p>
-							<div class="form-row">
-								<div class="form-holder w-100">
-									<textarea name="" id="" placeholder="Your messagere here!" class="form-control" style="height: 99px;"></textarea>
-								</div>
-							</div>
+							<p class="join_Ptag">마케팅 관련 수신</p>
 							<div class="checkbox-circle mt-24">
 								<label>
-									<input type="checkbox" checked>  Please accept <a href="#">terms and conditions ?</a>
+									<input type="checkbox" id="emailYn"> 이메일 수신 체크여부
 									<span class="checkmark"></span>
 								</label>
 							</div>
+							
+							<div class="checkbox-circle mt-24">
+								<label>
+									<input type="checkbox" id="marketingYn"> 마케팅 동의 여부
+									<span class="checkmark"></span>
+								</label>
+							</div>
+							<div class="checkbox-circle mt-24">
+								<label>
+									<input type="checkbox" id="smsYn"> SMS 수신 여부
+									<span class="checkmark"></span>
+								</label>
+							</div>
+							
 						</div>
 					</div>
                 </section>
