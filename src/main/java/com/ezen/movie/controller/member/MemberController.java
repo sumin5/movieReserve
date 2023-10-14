@@ -117,6 +117,7 @@ public class MemberController extends AbstractController{
 		
     }
 	
+<<<<<<< HEAD
 	//인증 메일 확인
 	@PostMapping("/mailAuthCheck")
 	@ResponseBody
@@ -150,4 +151,6 @@ public class MemberController extends AbstractController{
 		
     }
 	
+=======
+>>>>>>> branch 'main' of https://github.com/sumin5/movieReserve.git
 }

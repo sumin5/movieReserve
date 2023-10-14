@@ -2,6 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
 	layout:decorate="~{layout/default_layout}">
 
+<head>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
+	<script>
+		function change(type) {
+			var title = $("#title");
+			title.text(type);
+		}
+	</script>
+</head>
+
 <div layout:fragment="content">
 	<main id="main">
 
@@ -26,31 +36,32 @@
 				<div class="row">
 					<div class="col-lg-12 d-flex justify-content-center">
 						<ul id="portfolio-flters">
-							<li data-filter="*" class="filter-active" onclick="alert('hi')">All</li>
-							<li data-filter=".filter-app">콤보</li>
-							<li data-filter=".filter-card">팝콘</li>
-							<li data-filter=".filter-web">음료</li>
+							<li data-filter="*" class="filter-active" onclick='change("All")'>All</li>
+							<li data-filter=".filter-app" onclick='change("콤보")'>콤보</li>
+							<li data-filter=".filter-card" onclick='change("팝콘")'>팝콘</li>
+							<li data-filter=".filter-web" onclick='change("음료")'>음료</li>
 						</ul>
 					</div>
 				</div>
 
 				<div class="thirteen">
-					<h1>콤보</h1>
+					<h1 id="title">All</h1>
 				</div>
-				<br/>
-				
+				<br />
+
 				<div class="row portfolio-container">
 
 					<div class="col-lg-4 col-md-6 portfolio-item filter-app">
 						<div class="portfolio-wrap">
-							<img th:src="@{/assets/img/portfolio/portfolio-1.jpg}" class="img-fluid" alt="">
+							<img th:src="@{/assets/img/store/smallSet.jpg}" class="img-fluid" alt="스몰세트">
 							<div class="portfolio-info">
-								<h4>App 1</h4>
-								<p>App</p>
+								<h4>스몰세트</h4>
+								<p>팝콘(M) 1 + 탄산음료(M) 1</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="App 1"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="App 1"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -58,14 +69,15 @@
 
 					<div class="col-lg-4 col-md-6 portfolio-item filter-app">
 						<div class="portfolio-wrap">
-							<img th:src="@{/assets/img/portfolio/portfolio-3.jpg}" class="img-fluid" alt="">
+							<img th:src="@{/assets/img/portfolio/portfolio-3.jpg}" class="img-fluid" alt="라지콤보">
 							<div class="portfolio-info">
-								<h4>App 2</h4>
-								<p>App</p>
+								<h4>라지콤보</h4>
+								<p>팝콘(L) 2 + 탄산음료(L) 2</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-3.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="App 2"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="App 2"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -75,12 +87,13 @@
 						<div class="portfolio-wrap">
 							<img th:src="@{/assets/img/portfolio/portfolio-6.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>App 3</h4>
-								<p>App</p>
+								<h4>더블콤보</h4>
+								<p>팝콘(M) 2 + 탄산(M) 2</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-6.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="App 3"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="App 3"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -88,14 +101,15 @@
 
 					<div class="col-lg-4 col-md-6 portfolio-item filter-card">
 						<div class="portfolio-wrap">
-							<img th:src="@{/assets/img/portfolio/portfolio-4.jpg}" class="img-fluid" alt="">
+							<img th:src="@{/assets/img/store/popcornSmall.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>Card 2</h4>
-								<p>Card</p>
+								<h4>고소팝콘</h4>
+								<p>M / L</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-4.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="Card 2"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="Card 2"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -105,12 +119,13 @@
 						<div class="portfolio-wrap">
 							<img th:src="@{/assets/img/portfolio/portfolio-7.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>Card 1</h4>
-								<p>Card</p>
+								<h4>달콤팝콘</h4>
+								<p>M / L</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-7.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="Card 1"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="Card 1"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -120,12 +135,13 @@
 						<div class="portfolio-wrap">
 							<img th:src="@{/assets/img/portfolio/portfolio-8.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>Card 3</h4>
-								<p>Card</p>
+								<h4>어니언팝콘</h4>
+								<p>M / L</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-8.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="Card 3"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="Card 3"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -135,12 +151,13 @@
 						<div class="portfolio-wrap">
 							<img th:src="@{/assets/img/portfolio/portfolio-2.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>Web 3</h4>
-								<p>Web</p>
+								<h4>탄산음료</h4>
+								<p>M / L</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-2.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="Web 3"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="Web 3"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -150,12 +167,13 @@
 						<div class="portfolio-wrap">
 							<img th:src="@{/assets/img/portfolio/portfolio-5.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>Web 2</h4>
-								<p>Web</p>
+								<h4>커피</h4>
+								<p>HOT / ICE</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-5.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="Web 2"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="Web 2"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
@@ -165,12 +183,13 @@
 						<div class="portfolio-wrap">
 							<img th:src="@{/assets/img/portfolio/portfolio-9.jpg}" class="img-fluid" alt="">
 							<div class="portfolio-info">
-								<h4>Web 3</h4>
-								<p>Web</p>
+								<h4>에이드</h4>
+								<p>ONLY ICE</p>
 								<div class="portfolio-links">
 									<a href="assets/img/portfolio/portfolio-9.jpg" data-gallery="portfolioGallery"
-										class="portfolio-lightbox" title="Web 3"><i class="bx bx-plus"></i></a>
-									<a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+										class="portfolio-lightbox" title="Web 3"><i class="fi fi-ss-shopping-cart-add"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-gift"></i></a>
+									<a href="portfolio-details.html" title="More Details"><i class="fi fi-ss-shopping-bag-add"></i></a>
 								</div>
 							</div>
 						</div>
