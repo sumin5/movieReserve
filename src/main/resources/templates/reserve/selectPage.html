@@ -129,18 +129,18 @@
 										
 										/*시간표*/
 										timetableHtml += `<div class="time_list">
-															  <input type="radio" id="time_`+data[i].timetableIdx+`" name="movie_time">
-															  <label class="on" for="time_`+data[i].timetableIdx+`">
-														  		  <p class="start">` + data[i].startTime + `</p>
-																  <p class="end">~` + data[i].finishTime + `</p>
+															  <input type="radio" id="time_`+data[j].timetableIdx+`" name="movie_time">
+															  <label class="on" for="time_`+data[j].timetableIdx+`">
+														  		  <p class="start">` + data[j].startTime + `</p>
+																  <p class="end">~` + data[j].finishTime + `</p>
 															  </label>
-															  <p class="num">` + data[i].total + `석</p>
+															  <p class="num">` + data[j].total + `석</p>
 														  </div>`
 												
 										/*영화포스터*/
 										if(movieIdxForGetPhoto){
 											photoHtml += `<div class="img">
-												 			  <img src=` +data[i].fileTopPath+ ` alt="" title="-">
+												 			  <img src=` +data[j].fileTopPath+ ` alt="" title="-">
 														  </div>`
 											$("#movie_photo").html(photoHtml);	 
 											movieIdxForGetPhoto = false;
