@@ -1,124 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
+
+<head>
+	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+	<style>
+		.swipter-slide img{
+			width: 100% !important;
+			height:100% !important;
+			object-fit : cover !important;
+		}
+	</style>
 
 
+</head>
 <script type="text/javascript">
 
-$("#main")
-$(".breadcrumbs")
+	$("#main")
+	$(".breadcrumbs")
 </script>
 <main id="main" layout:fragment="content">
-	
+
 	<!-- ======= Breadcrumbs ======= -->
 	<section id="breadcrumbs" class="breadcrumbs">
-		<div class="container">
-
-			<ol>
-				<li><a href="index.html">Home</a></li>
-				<li>Portfolio</li>
-			</ol>
-			<h2>Portfolio</h2>
-
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+				<div th:each="list : ${fileList}" class="swiper-slide">
+					<img th:src="${list?.fileTopPath}">
+				</div>
+				<div class="swiper-pagination"></div>
+				<div class="swiper-prev"></div>
+				<div class="swiper-next"></div>
+				<div class="swiper-scrollbar"></div>
+				<div class="swiper-scrollbar"></div>
+			</div>
 		</div>
 	</section>
 	<!-- End Breadcrumbs -->
 
-	<!-- ======= Portfolio Section ======= -->
-	<section id="portfolio" class="portfolio">
-		<div class="container">
 
-			<div class="row">
-				<div class="col-lg-12 d-flex justify-content-center">
-					<ul id="portfolio-flters">
-						<li data-filter="*" class="filter-active">All</li>
-						<li data-filter=".filter-app">App</li>
-						<li data-filter=".filter-card">Card</li>
-						<li data-filter=".filter-web">Web</li>
-					</ul>
-				</div>
-			</div>
 
-			<div class="row portfolio-container">
 
-				<div class="col-lg-4 col-md-6 portfolio-item filter-app" th:each="l : ${menuList}" th:if="${menuList.size > 0 }">
-					<div class="portfolio-wrap">
-						<img src="assets/img/portfolio/portfolio-1.jpg" class="img-fluid"
-							alt="">
-						<div class="portfolio-info">
-							<h4 th:text="${l.menuUid}"></h4>
-							<p th:text="${l.menuName}"></p>
-							<div class="portfolio-links">
-								<a th:href="${l.menuPicture}"
-									data-gallery="portfolioGallery" class="portfolio-lightbox"
-									title="App 1"><i class="bx bx-plus"></i></a> <a
-									href="portfolio-details.html" title="More Details"><i
-									class="bx bx-link"></i></a>
-							</div>
-						</div>
-					</div>
-				</div>
 
-			</div>
+	
 
-		</div>
-	</section>
-	<!-- End Portfolio Section -->
-
-	<!-- ======= Clients Section ======= -->
-	<section id="clients" class="clients">
-		<div class="container">
-
-			<div class="section-title">
-				<h2>Clients</h2>
-				<p>Magnam dolores commodi suscipit. Necessitatibus eius
-					consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit.
-					Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit
-					alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-			</div>
-
-			<div class="clients-slider swiper">
-				<div class="swiper-wrapper align-items-center">
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-1.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-2.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-3.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-4.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-5.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-6.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-7.png" class="img-fluid"
-							alt="">
-					</div>
-					<div class="swiper-slide">
-						<img src="assets/img/clients/client-8.png" class="img-fluid"
-							alt="">
-					</div>
-				</div>
-				<div class="swiper-pagination"></div>
-			</div>
-
-		</div>
-	</section>
-	<!-- End Clients Section -->
+	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<script>
+		const swiper = new Swiper('.swiper-container', {
+			loop: true,
+			pagination: {
+				el: '.swiper-pagination'
+			},
+			navigation: {
+				nextEl: '.swiper-next',
+				prevEl: '.swiper-prev'
+			},
+			autoplay : {
+				delay : 4100,
+			},
+			speed : 1000,
+		})
+	</script>
 
 </main>
+
 </html>

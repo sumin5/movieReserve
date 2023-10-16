@@ -112,7 +112,7 @@ a:hover {
 	transition: all 0.5s;
 	z-index: 997;
 	transition: all 0.5s;
-	background: #fff;
+	background: #444444;
 	box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
 }
 
@@ -129,7 +129,7 @@ a:hover {
 
 #header .logo h1 a,
 #header .logo h1 a:hover {
-	color: #545454;
+	color: #fff;
 	text-decoration: none;
 }
 
@@ -172,7 +172,7 @@ a:hover {
 	justify-content: space-between;
 	padding: 10px 0 10px 30px;
 	font-size: 14px;
-	color: #545454;
+	color: #fff;
 	white-space: nowrap;
 	transition: 0.3s;
 }
@@ -605,38 +605,6 @@ section {
 /*--------------------------------------------------------------
 # Breadcrumbs
 --------------------------------------------------------------*/
-.breadcrumbs {
-	padding: 20px 0 20px 0;
-	background: #f7f7f7;
-	border-bottom: 1px solid #ededed;
-	margin-bottom: 40px;
-}
-
-.breadcrumbs h2 {
-	font-size: 28px;
-	font-weight: 700;
-	color: #545454;
-}
-
-.breadcrumbs ol {
-	display: flex;
-	flex-wrap: wrap;
-	list-style: none;
-	padding: 0 0 5px 0;
-	margin: 0;
-	font-size: 14px;
-}
-
-.breadcrumbs ol li+li {
-	padding-left: 10px;
-}
-
-.breadcrumbs ol li+li::before {
-	display: inline-block;
-	padding-right: 10px;
-	color: #6e6e6e;
-	content: "/";
-}
 
 /*--------------------------------------------------------------
 # Featured
@@ -2129,8 +2097,8 @@ section {
 
 #footer .footer-top {
 	background: #3b3b3b;
-	border-top: 1px solid #474747;
-	border-bottom: 1px solid #474747;
+	border-top: 1px solid #3b3b3b;
+	border-bottom: 1px solid #3b3b3b;
 	padding: 60px 0 30px 0;
 }
 

@@ -32,4 +32,10 @@
 			and table_idx = #{tableIdx}
 			and file_top_path is not null
 	</select>
+	
+	<select id="getListMain" parameterType="fileDTO" resultType="fileDTO"> 
+		select file_top_path from FILE
+		where table_gb = #{wildCard}
+		and file_top_path is not null
+	</select>
 </mapper>

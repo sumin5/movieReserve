@@ -5,36 +5,31 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
-import com.ezen.movie.config.EmailService;
-import com.ezen.movie.config.EmailServiceImpl;
-import com.ezen.movie.service.main.MainDTO;
-import com.ezen.movie.service.main.MainService;
-import com.ezen.movie.service.store.StoreDTO;
-import com.ezen.movie.service.store.StoreService;
+import com.ezen.movie.mapper.file.FileMapper;
+import com.ezen.movie.service.file.FileDTO;
+import com.ezen.movie.service.movies.MovieService;
+import com.ezen.movie.service.movies.MoviesDTO;
 
 @Controller
 @RequestMapping(value = {"/main","/" } )
 public class MainController extends AbstractController{
 	
 	@Autowired
-	private MainService menuService;
+	private FileMapper fileMapper;
 	
 	@GetMapping("/")
 	public ModelAndView main() {
-		
 		ModelAndView mav = new ModelAndView("/main/main");
 		
-		List<MainDTO> menuList = menuService.menuList();
-		System.err.println(menuList);
-		
-		mav.addObject("menuList",menuList);
+		FileDTO dto = new FileDTO();
+		dto.setWildCard("movies");
+		List<FileDTO> fileList = fileMapper.getListMain(dto);
+		System.out.println("sad" +fileList);
+		mav.addObject("fileList",fileList);
 		return mav;
 		
 	}
