@@ -4,15 +4,6 @@
 
 <head>
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-	<style>
-		.swipter-slide img{
-			width: 100% !important;
-			height:100% !important;
-			object-fit : cover !important;
-		}
-	</style>
-
-
 </head>
 <script type="text/javascript">
 
@@ -21,44 +12,23 @@
 </script>
 <main id="main" layout:fragment="content">
 
-	<!-- ======= Breadcrumbs ======= -->
-	<section id="breadcrumbs" class="breadcrumbs">
-		<div class="swiper-container">
-			<div class="swiper-wrapper">
-				<div th:each="list : ${fileList}" class="swiper-slide">
-					<img th:src="${list?.fileTopPath}">
-				</div>
-				<div class="swiper-pagination"></div>
-				<div class="swiper-prev"></div>
-				<div class="swiper-next"></div>
-				<div class="swiper-scrollbar"></div>
-				<div class="swiper-scrollbar"></div>
+	<div class="swiper-container">
+		<div class="swiper-wrapper">
+			<div th:each="list : ${fileList}" class="swiper-slide">
+				<img th:src="${list?.fileTopPath}" style="width:1600px !important;height:900px !important;">
 			</div>
 		</div>
-	</section>
+	</div>
 	<!-- End Breadcrumbs -->
-
-
-
-
-
-	
 
 	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 	<script>
 		const swiper = new Swiper('.swiper-container', {
 			loop: true,
-			pagination: {
-				el: '.swiper-pagination'
+			autoplay: {
+				delay: 4100,
 			},
-			navigation: {
-				nextEl: '.swiper-next',
-				prevEl: '.swiper-prev'
-			},
-			autoplay : {
-				delay : 4100,
-			},
-			speed : 1000,
+			speed: 500,
 		})
 	</script>
 

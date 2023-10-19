@@ -28,12 +28,10 @@ public class MainController extends AbstractController{
 		FileDTO dto = new FileDTO();
 		dto.setWildCard("movies");
 		List<FileDTO> fileList = fileMapper.getListMain(dto);
-		System.out.println("sad" +fileList);
 		mav.addObject("fileList",fileList);
 		return mav;
-		
 	}
-
+	
 	//스토어 메인화면 이동
 	@GetMapping("/storeMain")
 	public ModelAndView storeMain() {
