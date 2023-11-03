@@ -15,6 +15,8 @@ public class FileDTO extends CommDTO {
 	private String tableGb;		//테이블구분
 	private String fileTopPath; // 파일대표이미지경로
 	private String fileTopName; // 파일대표이미지이름
+	private Boolean PathGb; 		// 파일 넣을때 대표이미지인지,아닌지 구분용도 // true면 대표이미지,false면 대표이미지X
+	
 	public String getFileIdx() {
 		return fileIdx;
 	}
@@ -57,6 +59,10 @@ public class FileDTO extends CommDTO {
 	public void setFileTopName(String fileTopName) {
 		this.fileTopName = fileTopName;
 	}
-	
-	
+	public Boolean getPathGb() {
+		return PathGb;
+	}
+	public void setPathGb(Boolean pathGb) {
+		PathGb = pathGb;
+	}
 }

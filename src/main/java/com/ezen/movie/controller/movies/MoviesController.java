@@ -1,23 +1,31 @@
 package com.ezen.movie.controller.movies;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
+import com.ezen.movie.comm.AjaxResVO;
+import com.ezen.movie.comm.ValueException;
 import com.ezen.movie.mapper.cast.CastMapper;
 import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.mapper.person.PersonMapper;
-import com.ezen.movie.service.cast.CastDTO;
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.main.MainService;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.person.PersonDTO;
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping("/movies")
@@ -61,7 +69,6 @@ public class MoviesController extends AbstractController{
 					file.setTableIdx(moviesDTO.getMovieIdx());
 					file.setTableGb("movies");
 					file = fileMapper.getOne(file);
-					
 //					Map<String, Object> map = new HashMap<>();
 //					map.put("file",file);
 //					moviesDTO.setChild(map);
@@ -122,5 +129,54 @@ public class MoviesController extends AbstractController{
 		return mav;
 	}
 
+	@GetMapping("/movieRegister")
+	public ModelAndView movieRegister() {
+		ModelAndView mav = new ModelAndView("/movies/movieRegister");
+		 
+		return mav;
+	}
+	
+	/*
+	 * @PostMapping("/upload") public String movieInsert(MultipartFile file,FileDTO
+	 * dto,Model model) throws Exception {
+	 * 
+	 * dto.setTableIdx(1); dto.setPathGb(true); movieService.movieInsert(dto,file);
+	 * 
+	 * model.addAttribute("message", "등록되었습니다.");
+	 * model.addAttribute("movieList","/movieList"); return "message"; }
+	 */
+	
+	@ResponseBody
+	@PostMapping("/upload")
+	public AjaxResVO<?> getTimetable(MultipartFile file, FileDTO dto) throws ValueException{
+	
+		AjaxResVO<?> data = new AjaxResVO<>();
+		
+		try {
+			
+			if(isNull(file.getOriginalFilename())) {
+				throw new ValueException("정상적인 접근이 아닙니다.");
+			}
+			
+			dto.setTableIdx(1);
+			dto.setPathGb(true);
+			movieService.movieInsert(dto,file);
+			
+			String msg = "등록되었습니다";
+			
+			data = new AjaxResVO<>(AJAXPASS, msg);
+			
+		} catch (ValueException e) {
+			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		} 
+		
+		return data;
+		
+	}
+	
+	
 	
 }

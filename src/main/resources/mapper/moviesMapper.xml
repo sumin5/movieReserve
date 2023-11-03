@@ -5,21 +5,66 @@
 
 <mapper namespace="com.ezen.movie.mapper.movies.MoviesMapper">
 
-<select id="selectMovie" resultType="moviesDTO">
-	SELECT *
-	     , COUNT(*) OVER () TOTAL
-    FROM MOVIES
-    WHERE DATE_FORMAT(opening_dt ,'%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d') and DATE_FORMAT(end_dt  ,'%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d')
-</select>
+	<select id="selectMovie" resultType="moviesDTO">
+		SELECT *
+		, COUNT(*) OVER () TOTAL
+		FROM MOVIES
+		WHERE DATE_FORMAT(opening_dt ,'%Y-%m-%d') <![CDATA[ <= ]]>
+		DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d') and
+		DATE_FORMAT(end_dt ,'%Y-%m-%d') <![CDATA[ >= ]]>
+		DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 9 HOUR),'%Y-%m-%d')
+	</select>
 
-<select resultType="moviesDTO" id="selectOneMovie" parameterType="moviesDTO">
-		SELECT * FROM MOVIES 
+	<select resultType="moviesDTO" id="selectOneMovie"
+		parameterType="moviesDTO">
+		SELECT * FROM MOVIES
 		WHERE MOVIES.movie_idx = #{movieIdx}
-</select>
+	</select>
 
-<delete parameterType="moviesDTO" id="AutoDelete">
-	DELETE  FROM MOVIES WHERE opening_dt <![CDATA[ < ]]> DATE_ADD(NOW(), INTERVAL - 1 MONTH)
-</delete>
-
+	<delete parameterType="moviesDTO" id="AutoDelete">
+		DELETE m, f
+		FROM MOVIES m
+		JOIN FILE f ON m.movie_idx = f.table_idx
+		WHERE f.table_gb = #{tableGb} AND opening_dt <![CDATA[ < ]]> DATE_ADD(NOW(), INTERVAL -1
+		MONTH)
+	</delete>
+	
+	<insert id="movieInsert" parameterType="fileDTO">
+		insert into FILE
+		(
+		create_dt,
+		table_idx,
+		<if test="filePath != null and FilePath.length > 0">
+			file_path,
+		</if>
+		<if test="fileName != null and FileName.length > 0">
+			file_name,
+		</if>
+		<if test="fileTopPath != null and fileTopPath.length > 0">
+			file_top_path,
+		</if>
+		<if test="fileTopName != null and fileTopName.length > 0">
+			file_top_name,
+		</if>
+		table_gb
+		)
+		values(
+		now(),
+		#{tableIdx},
+		<if test="filePath != null and FilePath.length > 0">
+			#{filePath},
+		</if>
+		<if test="fileName != null and FileName.length > 0">
+			#{fileName},
+		</if>
+		<if test="fileTopPath != null and fileTopPath.length > 0">
+			#{fileTopPath},
+		</if>
+		<if test="fileTopName != null and fileTopName.length > 0">
+			#{fileTopName},
+		</if>
+		'movies'
+		)
+	</insert>
 
 </mapper>

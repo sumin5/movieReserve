@@ -1,14 +1,17 @@
 package com.ezen.movie.service.movies;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.movie.mapper.movies.MoviesMapper;
+import com.ezen.movie.service.file.FileDTO;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -36,9 +39,41 @@ public class MovieServiceImpl implements MovieService {
 	}
 	
 	//영화 자동 삭제
-	@Scheduled(cron ="0 0 1 * * ?") //매월 1일 자정에 작동
+	//@Scheduled(cron = "0 0 0 1 * ?") 
+	//매월 1일 자정에 작동
 	@Override
 	public void AutoDelete() {
-		moviesMapper.AutoDelete();
+		FileDTO dto  = new FileDTO();
+		dto.setTableGb("movies");
+		
+		moviesMapper.AutoDelete(dto);
+	}
+	
+	@Override
+	public void movieInsert(FileDTO dto,MultipartFile file) throws Exception {
+		
+		String path = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
+
+		String fileName = file.getOriginalFilename();
+		
+		File saveFile = new File(path , fileName);
+		
+		if(saveFile.exists()) {
+			UUID uuid = UUID.randomUUID();
+			fileName = uuid + "_" + file.getOriginalFilename();
+			saveFile = new File(path,fileName);
+		}
+	
+		file.transferTo(saveFile);
+	
+		if(dto.getPathGb()) {
+			dto.setFileTopName(fileName);
+			dto.setFileTopPath("/files/" + fileName);
+		} else {
+			dto.setFileName(fileName);
+			dto.setFilePath("/files/" + fileName);
+		}
+		
+		moviesMapper.movieInsert(dto);
 	}
 }
