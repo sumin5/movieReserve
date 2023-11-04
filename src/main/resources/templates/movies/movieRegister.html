@@ -1,153 +1,219 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
 	layout:decorate="~{layout/movie_layout}">
+
 <head>
-	
-<script type="text/javascript">
-	
-	function thumbNailImage(event) {
-  const fileInput = event.target;
-  const thumbNailImage = document.getElementById('thumbNail');
 
-  if (fileInput.files && fileInput.files[0]) {
-    const reader = new FileReader();
+	<script type="text/javascript">
 
-    reader.onload = function (e) {
-      thumbNailImage.src = e.target.result;
-      thumbNailImage.style.display = 'block';
-      thumbNailImage.style.width = '200px';
-      thumbNailImage.style.height = '150px';
-      thumbNailImage.style.margin = '0px 0px 20px 118px';
-    };
+		//썸네일 파일 첨부시 이미지 미리보기
+		function thumbNailImage(event) {
+			const fileInput = event.target;
+			const thumbNailImage = document.getElementById('thumbNail');
 
-    reader.readAsDataURL(fileInput.files[0]);
-  } else {
-    thumbNailImage.src = '';
-    thumbNailImage.style.display = 'none';
-  }
-}
-	
-	function stillCutImage(event) {
-		const filesInput = event.target;
-		const stillCutImage = document.getElementById('stillCut1');
-		
-		if(filesInput.files && filesInput.files[0]) {
-			const reader = new FileReader();
-			
-			reader.onload = function(e) {
-				stillCutImage.src = e.target.result;
-				stillCutImage.style.display = 'block';
-				stillCutImage.style.width = '200px';
-				stillCutImage.style.height = '150px';
-				stillCutImage.style.margin = '0px 0px 20px 118px';
-			};
-			
-			reader.readAsDataURL(filesInput.files[0]);
-		} else {
-			stillCutImage.src = '';
-			stillCutImage.style.display = 'none';
+			if (fileInput.files && fileInput.files[0]) {
+				const reader = new FileReader();
+
+				reader.onload = function (e) {
+					thumbNailImage.src = e.target.result;
+					thumbNailImage.style.display = 'block';
+					thumbNailImage.style.width = '200px';
+					thumbNailImage.style.height = '150px';
+					thumbNailImage.style.margin = '0px 0px 20px 118px';
+				};
+
+				reader.readAsDataURL(fileInput.files[0]);
+			} else {
+				thumbNailImage.src = '';
+				thumbNailImage.style.display = 'none';
+			}
 		}
-	}
-	
-	$("#addFile").click(function() {
-		let max = document.getElementsByClassName("stC").length;
-		
-		if(max < 5) {
-			
-		let steps = document.getElementsByClassName("stC").length+1;
-		let newDiv = document.createElement("div");
-		newDiv.setAttribute("id","stC" + steps);
-		newDiv.setAttribute("class","stC");
-		newDiv.setAttribute("style","margin : 0px 0px 14px 118px");
-		newDiv.innerHTML ="<input type='file'' id='file' name='file' onchange='stillCutImage(event)'>"
-		+ " <img src='' style='display:none;' id='stillCut'>";
-		$("#recycle").append(newDiv);
-		} else {
-			alert("최대 5개까지 추가할 수 있습니다.");
-		}
-		
-	});
-	
-	function fileSubmit(){
-		
-		
-		var fileUploadForm = $("#fileUploadForm")[0];
-		
-		if(isNull($("#file").val())){
-			alert("파일이 없습니다.");
-			return;
-		}
-		
-		var formData = new FormData(fileUploadForm);
-		
-		if(confirm("파일을 등록하시겠습니까?")) {
-			$.ajax({
-				type:"post",
-				enctype:'multipart/form-data',
-			    url : '[[@{/movies/upload}]]',
-			    data : formData,
-			    dataType : 'json',
-			    processData : false,
-			    contentType : false,
-			    cache : false,
-				success : function(res){
-					alert(res.msg);
-						
-					if(res.code == '00'){
-						window.location.href = "[[@{/movies/movieList}]]";	
-					}
+
+		//스틸 컷 첨부시 이미지 미리보기		
+		let stillCutImages = [];
+
+		function stillCutImage(input) {
+			const filesInput = input;
+			const stillCutImage = input.nextElementSibling;
+
+			if (filesInput.files && filesInput.files[0]) {
+				const reader = new FileReader();
+
+				reader.onload = function (e) {
+					stillCutImage.src = e.target.result;
+					stillCutImage.style.display = 'block';
+					stillCutImage.style.width = '200px';
+					stillCutImage.style.height = '150px';
+					stillCutImage.style.margin = '0px 0px 20px 118px';
 					
-				},
-				error: function(res){
-					alert(res);
-				}
-			});
+				};
+
+				reader.readAsDataURL(filesInput.files[0]);
+			} else {
+				stillCutImage.src = '';
+				stillCutImage.style.display = 'none';
+			}
 		}
+
+		// 버튼 클릭시 파일 첨부 하나씩 추가하기
+		$("#addFile").click(function () {
+			let max = document.getElementsByClassName("imgFile").length;
+
+			if (max < 5) {
+				let newInput = document.createElement("input");
+				newInput.setAttribute("type", "file");
+				newInput.setAttribute("style","margin:0px 0px 14px 118px");
+				newInput.setAttribute("class", "imgFile");
+				newInput.setAttribute("onchange", "stillCutImage(this)");
+				let newImage = document.createElement("img");
+				newImage.setAttribute("src", "");
+				newImage.style.display = "none";
+
+				let newDiv = document.createElement("div");
+				newDiv.setAttribute("class", "stC");
+				newDiv.appendChild(newInput);
+				newDiv.appendChild(newImage);
+
+				stillCutImages.push(newImage);
+
+				$("#recycle").append(newDiv);
+			} else {
+				alert("최대 5개까지 추가할 수 있습니다.");
+			}
+		});
 		
-	}
-	
-</script>
+		//영화 등록시 비어있는 값 체크하기
+		function Submit() {
+
+			var movieNameHngl = document.querySelector('input[id="movieNameHngl"]').value;
+			var movieNameEng = document.querySelector('input[id="movieNameEng"]').value;
+			var openingDt = document.querySelector('input[id="openingDt"]').value;
+			var movieRate = document.querySelector('input[id="movieRate"]').value;
+			var genre = document.querySelector('input[id="genre"]').value;
+			var movieCountry = document.querySelector('input[id="movieCountry"]').value;
+			var runningTime = document.querySelector('input[id="runningTime"]').value;
+			var movieDistributor = document.querySelector('input[id="movieDistributor"]').value;
+			var movieInfo = document.querySelector('textarea[id="movieInfo"]').value;
+			var thumbNail = document.querySelector('input[id="file"]').value;
+			var stillCut = document.querySelector('input[id="stillCut"]').value;
+			
+			
+			if(movieNameHngl == "") {
+				alert("영화제목을 입력해주세요");
+				return false;
+			} else if(movieNameEng == "") {
+				alert("영화제목을 영어로 입력해주세요");
+				return false;
+			} else if(openingDt == "") {
+				alert("개봉일 입력해주세요");
+				return false;
+			} else if(movieRate == "") {
+				alert("영화등급을 입력해주세요");
+				return false;
+			} else if(genre == "") {
+				alert("장르를 입력해주세요");
+				return false;
+			} else if(movieCountry == "") {
+				alert("국가명을 입력해주세요");
+				return false;
+			} else if(runningTime == "") {
+				alert("상영시간을 입력해주세요");
+				return false;
+			} else if(movieDistributor == "") {
+				alert("배급회사를 입력해주세요");
+				return false;
+			} else if(movieInfo == "") {
+				alert("영화소개를 입력해주세요");
+				return false;
+			} else if(thumbNail== "") {
+				alert("썸네일을 넣어주세요");
+				return false;
+			} else if(stillCut== "") {
+				alert("스틸 컷을 넣어주세요");
+				return false;
+			} 
+
+
+
+
+			if (confirm("파일을 등록하시겠습니까?")) {
+			var formData = new FormData(fileUploadForm);
+				$.ajax({
+					type: "post",
+					enctype: 'multipart/form-data',
+					url: '[[@{/movies/upload}]]',
+					data: formData,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					cache: false,
+					success: function (res) {
+						alert(res.msg);
+
+						if (res.code == '00') {
+							window.location.href = "[[@{/movies/movieList}]]";
+						}
+
+					},
+					error: function (res) {
+						alert(res);
+					}
+				});
+			}
+
+		}
+
+		$("")
+	</script>
 </head>
 <div layout:fragment="content" style="background-color:#242628;">
 	<h1 style="color:white; margin-left:100px; padding-top:30px;">영화 등록</h1>
 	<hr style="color:white !important; width:80%; margin-left:100px; border:solid;">
 	<form method="post" enctype="multipart/form-data" id="fileUploadForm">
 		<div style="margin-left:100px;">
-			<p style="display:inline-block; color : white;">영화 제목(한글) : &nbsp; </p><input type="text" name="movieNameHngl"><br>
-			<p style="display:inline-block; color : white;">영화 제목(영어) : &nbsp;</p><input type="text" name="movieNameEng"><br>
-			<p style="display:inline-block; color : white; margin-right:58px;"> 개봉일 : &nbsp;</p><input type="text" name="openingDt"><br>
-			<p style="display:inline-block; color : white; margin-right:72px;">등급 : &nbsp;</p><input type="text" name="movieRate"><br>
-			<p style="display:inline-block; color : white; margin-right:72px;">장르 : &nbsp;</p><input type="text" name="genre"><br>
-			<p style="display:inline-block; color : white; margin-right:72px;">국가 : &nbsp;</p><input type="text" name="movieCountry"><br>
-			<p style="display:inline-block; color : white; margin-right:44px;">상영시간 : &nbsp;</p><input type="text" name="runningTime"><br>
-			<p style="display:inline-block; color : white; margin-right:72px;" >배급 : &nbsp;</p><input type="text" name="movieDistributor"><br>
+			<p style="display:inline-block; color : white;">영화 제목(한글) : &nbsp; </p>
+			<input type="text" id="movieNameHngl" name="movieNameHngl"><br>
+			<p style="display:inline-block; color : white;">영화 제목(영어) : &nbsp;</p>
+			<input type="text" id="movieNameEng" name="movieNameEng"><br>
+			<p style="display:inline-block; color : white; margin-right:58px;"> 개봉일 : &nbsp;</p>
+			<input type="text" id="openingDt" name="openingDt"><br>
+			<p style="display:inline-block; color : white; margin-right:72px;">등급 : &nbsp;</p>
+			<input type="text" id="movieRate" name="movieRate"><br>
+			<p style="display:inline-block; color : white; margin-right:72px;">장르 : &nbsp;</p>
+			<input type="text" id="genre" name="genre"><br>
+			<p style="display:inline-block; color : white; margin-right:72px;">국가 : &nbsp;</p>
+			<input type="text" id="movieCountry" name="movieCountry"><br>
+			<p style="display:inline-block; color : white; margin-right:44px;">상영시간 : &nbsp;</p>
+			<input type="text" id="runningTime" name="runningTime"><br>
+			<p style="display:inline-block; color : white; margin-right:72px;">배급 : &nbsp;</p>
+			<input type="text" id="movieDistributor" name="movieDistributor"><br>
 			<p style="color : white; margin-right:44px; float:left;">영화소개 : &nbsp;</p>
-			<textarea style=" width:500px; height:80px; margin-bottom:20px;" name="movieInfo"></textarea><br>
-		<div style="margin-bottom:20px;">
-			<p style="display:inline-block; color:white; margin-right : 22px;">영화 썸네일 : &nbsp;</p>
-			<input type="file" id="file" name="file" onchange="thumbNailImage(event)"><br>
-			<img src="" style="display:none;" id="thumbNail">
+			<textarea style=" width:500px; height:80px; margin-bottom:20px;" id="movieInfo" name="movieInfo"></textarea><br>
+			<div style="margin-bottom:20px;">
+				<p style="display:inline-block; color:white; margin-right : 22px;">영화 썸네일 : &nbsp;</p>
+				<input type="file" id="file" name="file" onchange="thumbNailImage(event)"><br>
+				<img src="" style="display:none;" id="thumbNail">
+			</div>
+
+
+			<div id="recycle" style="display:inline-block">
+				<div class="stC">
+					<p style="display:inline-block; color:white; margin-right : 50px;">스틸 컷 : &nbsp;</p>
+					<input type="file" id="stillCut" class="imgFile" onchange="stillCutImage(this)">
+					<img src="" style="display:none;">
+				</div>
+			</div>
+
+			<button type="button" id="addFile" style="margin-left:-140px;">
+				<img src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-plus-icon-png-image_4196464.jpg"
+					style="width: 25px; height: 25px; display:inline-block;">
+			</button>
+
+			<div>
+				<button type="button"  onclick="Submit();">등록</button>
+			</div>
 		</div>
-		
-		<div id="recycle" style="display:inline-block" >
-			<div class="stC" id="stC">
-				 <p style="display:inline-block; color:white; margin-right : 50px;">스틸 컷 : &nbsp;</p>
-				 <input type="file" id="files" name="files" class="imgFile" onchange="stillCutImage(event)">
-				 <img src="" style="display:none;" id="stillCut1">
-			</div> 
-		</div>
-		
-		<button type="button" id="addFile" style="margin-left:-140px;">
-			 <img src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-plus-icon-png-image_4196464.jpg" 
-			  style="width: 25px; height: 25px; display:inline-block;">
-		</button>
-		
-		
-			 <div>
-				<button type="button" onclick="fileSubmit();">등록</button>
-			 </div>
-		</div>
-		
+
 	</form>
 </div>
 
