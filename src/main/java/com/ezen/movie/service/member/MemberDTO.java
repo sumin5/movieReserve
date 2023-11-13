@@ -8,7 +8,7 @@ import com.ezen.movie.service.comm.CommDTO;
 public class MemberDTO extends CommDTO{
 	
 	private String memberId;	// 회원Idx
-	private String passWord;	// 패스워드
+	private String password;	// 패스워드
 	private String memberName;	// 회원이름
 	private String memberPhone;	// 회원폰번호
 	private String email;		// 회원메일
@@ -18,18 +18,25 @@ public class MemberDTO extends CommDTO{
 	private String naverIdGb;	// 네이버메일구분
 	private String memberGb;	// 구분
 	private String authNum;		// 인증번호
+	private String memberGender;// 성별
 	
+	public String getMemberGender() {
+		return memberGender;
+	}
+	public void setMemberGender(String memberGender) {
+		this.memberGender = memberGender;
+	}
 	public String getMemberId() {
 		return memberId;
 	}
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
 	}
-	public String getPassWord() {
-		return passWord;
+	public String getPassword() {
+		return password;
 	}
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getMemberName() {
 		return memberName;

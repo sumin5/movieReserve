@@ -244,7 +244,7 @@
 	// 타이머
 	function timer(){
 		
-		var time = 600;
+		var time = 60;
 		var min = "";
 		var sec = "";
 		var timerMsg = $("#timerMsg")
@@ -260,19 +260,20 @@
 			if(time < 0 ) {
 				clearInterval(currentTimer);
 				authId = 0; // 초기화
-				timerMsg.html("시간초과");
+				timerMsg.html("시간초과 다시 받기를 눌러주세요");
+				$("#mailChkBtn").prop("disabled",true);
 			}
 		}, 1000);
 	}
 
 
 	function submit() {
-
+		
 		let memberId = $("#memberId").val();
 		
 		let password = $("#password1").val();
 		let memberName = $("#memberName").val();
-		let gender = $('input[name=gender]').val();
+		let gender = $('input[name=gender]:checked').val();
 
 		let memberPhone = $("#memberPhone").val();
 
@@ -281,45 +282,45 @@
 		
 		let email = email1 + "@" + email2;
 
-		let emailYn = $('input:checkbox[name=emailYn]').is(":checked");
-		let marketingYn = $('input:checkbox[name=marketingYn]').is(":checked");
-		let smsYn = $('input:checkbox[name=smsYn]').is(":checked");
+		let emailYn = $('#emailYn').is(":checked");
+		let marketingYn = $('#marketingYn').is(":checked");
+		let smsYn = $('#smsYn').is(":checked");
 
 		let formData = new FormData();
 		
 		if(isNull(memberId)){
 			
-			divAlert("아이디를 입력해주세요.");
+			alert("아이디를 입력해주세요.");
 			return;
 		}
 		
 		if(isNull(password)){
 			
-			divAlert("패스워드를 입력해주세요.");
+			alert("패스워드를 입력해주세요.");
 			return;
 		}
 		
 		if(isNull(memberName)){
 			
-			divAlert("이름을 입력해주세요.");
+			alert("이름을 입력해주세요.");
 			return;
 		}
 		
 		if(isNull(gender)){
 			
-			divAlert("성별을 입력해주세요.");
+			alert("성별을 입력해주세요.");
 			return;
 		}
 		
 		if(isNull(email)){
 			
-			divAlert("이메일을 입력해주세요.");
+			alert("이메일을 입력해주세요.");
 			return;
 		}
 
 		if(isNull(memberPhone)){
 			
-			divAlert("휴대폰번호를 입력해주세요.");
+			alert("휴대폰번호를 입력해주세요.");
 			return;
 		}
 
@@ -336,36 +337,38 @@
 		}
 
 		if(!idFlag) {
-			divAlert("아이디중복 확인해주세요.");
+			alert("아이디중복 확인해주세요.");
 			return;
 		}
 		if(!pwFlag) {
-			divAlert("패스워드 확인해주세요.");
+			alert("패스워드 확인해주세요.");
 			return;
 		}
 		if(!mailFlag) {
-			divAlert("메일인증 확인해주세요.");
+			alert("메일인증 확인해주세요.");
 			return;
 		}
 
 		formData.append("memberId",memberId);
 		formData.append("password",password);
 		formData.append("memberName",memberName);
-		formData.append("gender",gender);
+		formData.append("memberGender",gender);
 		formData.append("memberPhone",memberPhone);
 		formData.append("email",email);
-						
+
 		$.ajax({
 			
 			type : 'post',
 			url : '[[@{/member/join}]]',
 			data : formData,
 			dataType : 'json',
+			processData: false,
+			contentType: false,
 			success : function(res){
 				
 				if(res.code == '00') {
 					
-					location.href = "[[@{/member/loginForm}]]"
+					//location.href = "[[@{/member/loginForm}]]"
 				} 
 				
 				alert(res.msg);

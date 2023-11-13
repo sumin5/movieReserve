@@ -1,5 +1,6 @@
 package com.ezen.movie.controller.member;
 
+import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,9 +68,10 @@ public class MemberController extends AbstractController{
 			String msg = "";
 			
 			if(flag) {
-				msg ="이미 있는 계정입니다.";
+				throw new ValueException("이미 있는 계정입니다.");
 			}
-			msg ="없는 계정입니다.";
+			msg = "없는 계정입니다.";
+			
 			data = new AjaxResVO<>(AJAXPASS, msg);
 			
 		} catch (ValueException e) {
@@ -137,6 +139,76 @@ public class MemberController extends AbstractController{
 				msg = "인증이 완료되었습니다.";
 			}
 			data = new AjaxResVO<>(AJAXPASS,msg);
+			
+		} catch (ValueException e) {
+			e.getMessage();
+			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		} 
+		
+		return data;
+		
+    }
+	
+	@PostMapping("/join")
+	@ResponseBody
+    public AjaxResVO<?> join(MemberDTO dto) throws Exception {
+		
+		
+	
+		/*
+		 * String asd = "yemawoo"; int a = asd.indexOf("ye"); System.err.println(a);
+		 * asd=asd.substring(a+1); System.err.println("asd ? " + asd);
+		 */
+		
+		String [] babbling = {"aya", "yee", "u", "maa", "yemawoowoaya"};
+		int answer = 0;
+		String[] ok = {"aya","ye","woo","ma"};
+		int bigInt = 0; 
+		for(String str : babbling) { //5번 루프
+			
+			for(int i=0; i<ok.length; i++) {
+				System.err.println((i+1)+ "번쨰");
+				System.err.println("포문 str ? " + str);
+				System.err.println("포문 answser? " + ok[i]);
+				if( str.contains(ok[i]) ) {
+					/*
+					 * int idx = str.indexOf(answers[i]);
+					 * 
+					 * 
+					 * System.err.println("idx ? " +idx);
+					 */
+					str = str.replace(ok[i], "/");
+					
+					
+					System.err.println("str ?" + str);
+					
+				}
+				
+			}
+		
+			int aCount = str.length() - str.replace("/", "").length();
+			if(str=="/") {
+				answer+= 1;
+			}
+			
+		}
+		answer = bigInt;
+		System.err.println(answer);
+		
+		AjaxResVO<?> data = new AjaxResVO<>();
+		
+		try {
+			
+			if(dto == null) {
+				throw new ValueException("잘못된 접근 경로입니다.");
+			}
+
+			//memberService.join(dto);
+			
+			data = new AjaxResVO<>(AJAXPASS,"회원가입에 성공하였습니다.");
 			
 		} catch (ValueException e) {
 			e.getMessage();
