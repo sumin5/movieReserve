@@ -27,5 +27,11 @@ public interface MemberMapper {
 	 * @return
 	 */
 	public int authCheck(MailDTO dto);
+
+	/**
+	 * 일반회원가입
+	 * @param dto
+	 */
+	public void join(MemberDTO dto);
 	
 }

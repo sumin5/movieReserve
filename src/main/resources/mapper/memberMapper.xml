@@ -30,6 +30,35 @@
 	
 	</select>
 	
+	<!-- 일반 회원 가입 -->
+	<insert id="join" parameterType="memberDTO">
+		insert into MEMBERS (
+			member_id,
+			password,
+			member_name,
+			member_phone,
+			email,
+			marketing_yn,
+			sms_yn,
+			email_yn,
+			member_gender
+		)
+		values(
+			#{memberId},
+			sha2(#{password},512),
+			#{memberName},
+			#{memberPhone},
+			#{email},
+			#{smsYn},
+			#{marketingYn},
+			#{emailYn},
+			#{memberGender}
+		)
+		
+		
+	
+	</insert>
+	
 	
 	
 

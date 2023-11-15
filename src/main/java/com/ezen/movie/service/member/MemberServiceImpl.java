@@ -14,8 +14,13 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public boolean getDoubleChk(MemberDTO dto) {
-		
 		return memberMapper.getDoubleChk(dto) > 0; 
+	}
+
+	@Override
+	public void join(MemberDTO dto) {
+		memberMapper.join(dto);
+		
 	}
 
 }
