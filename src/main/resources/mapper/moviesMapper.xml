@@ -29,15 +29,15 @@
 		MONTH)
 	</delete>
 	
-	<insert id="movieInsert" parameterType="fileDTO">
+	<insert id="movieThumbNailInsert" parameterType="fileDTO">
 		insert into FILE
 		(
 		create_dt,
 		table_idx,
-		<if test="filePath != null and FilePath.length > 0">
+		<if test="filePath != null and filePath.length > 0">
 			file_path,
 		</if>
-		<if test="fileName != null and FileName.length > 0">
+		<if test="fileName != null and fileName.length > 0">
 			file_name,
 		</if>
 		<if test="fileTopPath != null and fileTopPath.length > 0">
@@ -51,10 +51,10 @@
 		values(
 		now(),
 		#{tableIdx},
-		<if test="filePath != null and FilePath.length > 0">
+		<if test="filePath != null and filePath.length > 0">
 			#{filePath},
 		</if>
-		<if test="fileName != null and FileName.length > 0">
+		<if test="fileName != null and fileName.length > 0">
 			#{fileName},
 		</if>
 		<if test="fileTopPath != null and fileTopPath.length > 0">
@@ -66,5 +66,74 @@
 		'movies'
 		)
 	</insert>
+	
+	<insert id="movieInsert" parameterType="moviesDTO">
+		INSERT INTO mysql_ssjy.MOVIES
+		(
+		create_dt, 
+		change_dt, 
+		end_dt, 
+		movie_name_hngl, 
+		movie_name_eng, 
+		opening_dt, 
+		movie_rate, 
+		genre, 
+		movie_country,
+		running_time,
+		movie_distributor,
+		movie_info) 
+		VALUES
+		(
+		now(),
+		null,
+		null,
+		#{movieNameHngl},
+		#{movieNameEng},
+		#{openingDt},
+		#{movieRate},
+		#{genre},
+		#{movieCountry},
+		#{runningTime},
+		#{movieDistributor},
+		#{movieInfo}) 
+	</insert>
 
+	<insert id="movieStillCutInsert" parameterType="fileDTO">
+		insert into FILE
+		(
+		create_dt,
+		table_idx,
+		<if test="filePath != null and filePath.length > 0">
+			file_path,
+		</if>
+		<if test="fileName != null and fileName.length > 0">
+			file_name,
+		</if>
+		<if test="fileTopPath != null and fileTopPath.length > 0">
+			file_top_path,
+		</if>
+		<if test="fileTopName != null and fileTopName.length > 0">
+			file_top_name,
+		</if>
+		table_gb
+		)
+		values(
+		now(),
+		#{tableIdx},
+		<if test="filePath != null and filePath.length > 0">
+			#{filePath},
+		</if>
+		<if test="fileName != null and fileName.length > 0">
+			#{fileName},
+		</if>
+		<if test="fileTopPath != null and fileTopPath.length > 0">
+			#{fileTopPath},
+		</if>
+		<if test="fileTopName != null and fileTopName.length > 0">
+			#{fileTopName},
+		</if>
+		'movies'
+		)
+	</insert>
+	
 </mapper>

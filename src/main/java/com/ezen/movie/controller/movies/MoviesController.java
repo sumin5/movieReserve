@@ -1,11 +1,9 @@
 package com.ezen.movie.controller.movies;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -148,20 +146,32 @@ public class MoviesController extends AbstractController{
 	
 	@ResponseBody
 	@PostMapping("/upload")
-	public AjaxResVO<?> getTimetable(MultipartFile file, FileDTO dto) throws ValueException{
+	public AjaxResVO<?> movieInsert(MultipartFile file, FileDTO dto, MultipartFile[] files,  MoviesDTO mDto) throws ValueException{
 	
+		
+		System.err.println(files);
 		AjaxResVO<?> data = new AjaxResVO<>();
 		
 		try {
 			
 			if(isNull(file.getOriginalFilename())) {
 				throw new ValueException("정상적인 접근이 아닙니다.");
+			} else {
+				for(MultipartFile filess : files) {
+					if(isNull(filess.getOriginalFilename())) {
+						throw new ValueException("정상적인 접근이 아닙니다.");
+					}
+				}
 			}
+			System.err.println(dto);
+			System.err.println(new Gson().toJson(dto));
 			
 			dto.setTableIdx(1);
 			dto.setPathGb(true);
-			movieService.movieInsert(dto,file);
-			
+			movieService.movieThumbNailInsert(dto,file);
+			movieService.movieInsert(mDto);
+			dto.setPathGb(false);
+			movieService.movieStillCutInsert(dto,files);
 			String msg = "등록되었습니다";
 			
 			data = new AjaxResVO<>(AJAXPASS, msg);

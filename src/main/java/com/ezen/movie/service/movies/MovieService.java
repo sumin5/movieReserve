@@ -1,5 +1,6 @@
 package com.ezen.movie.service.movies;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,12 @@ public interface MovieService {
 	void AutoDelete();
 
 	//영화 등록
-	void movieInsert(FileDTO dto,MultipartFile file) throws Exception;
+	void movieThumbNailInsert(FileDTO dto,MultipartFile file) throws Exception;
+
+	void movieInsert(MoviesDTO mDto);
+
+	void movieStillCutInsert(FileDTO dto, MultipartFile[] files) throws Exception;
+
 	
 
 }

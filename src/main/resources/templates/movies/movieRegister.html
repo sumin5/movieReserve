@@ -64,6 +64,7 @@
 				newInput.setAttribute("type", "file");
 				newInput.setAttribute("style","margin:0px 0px 14px 118px");
 				newInput.setAttribute("class", "imgFile");
+				newInput.setAttribute("name", "files");
 				newInput.setAttribute("onchange", "stillCutImage(this)");
 				let newImage = document.createElement("img");
 				newImage.setAttribute("src", "");
@@ -134,10 +135,12 @@
 			} 
 
 
-
-
 			if (confirm("파일을 등록하시겠습니까?")) {
-			var formData = new FormData(fileUploadForm);
+			var form = $("#fileUploadForm");
+			console.log(form);
+			var formData = new FormData(form[0]);
+			console.log(formData);
+			event.preventDefault();
 				$.ajax({
 					type: "post",
 					enctype: 'multipart/form-data',
@@ -163,12 +166,12 @@
 
 		}
 
-		$("")
 	</script>
 </head>
 <div layout:fragment="content" style="background-color:#242628;">
 	<h1 style="color:white; margin-left:100px; padding-top:30px;">영화 등록</h1>
 	<hr style="color:white !important; width:80%; margin-left:100px; border:solid;">
+	
 	<form method="post" enctype="multipart/form-data" id="fileUploadForm">
 		<div style="margin-left:100px;">
 			<p style="display:inline-block; color : white;">영화 제목(한글) : &nbsp; </p>
@@ -199,7 +202,7 @@
 			<div id="recycle" style="display:inline-block">
 				<div class="stC">
 					<p style="display:inline-block; color:white; margin-right : 50px;">스틸 컷 : &nbsp;</p>
-					<input type="file" id="stillCut" class="imgFile" onchange="stillCutImage(this)">
+					<input type="file" id="stillCut" name="files" class="imgFile" onchange="stillCutImage(this)">
 					<img src="" style="display:none;">
 				</div>
 			</div>

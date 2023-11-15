@@ -3,7 +3,6 @@ package com.ezen.movie.mapper.movies;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.movies.MoviesDTO;
@@ -21,6 +20,12 @@ public interface MoviesMapper {
 	void AutoDelete(FileDTO dto);
 
 	//영화 등록
-	void movieInsert(FileDTO dto);
+	void movieThumbNailInsert(FileDTO dto);
+	
+	void movieStillCutInsert(FileDTO dto);
+	
+	void movieInsert(MoviesDTO mDto);
+
+	
 	
 }
