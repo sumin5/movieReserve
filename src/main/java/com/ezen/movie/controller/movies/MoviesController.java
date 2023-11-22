@@ -152,6 +152,7 @@ public class MoviesController extends AbstractController{
 		System.err.println(files);
 		AjaxResVO<?> data = new AjaxResVO<>();
 		
+		// file의 null 여부 확인 후 메서드 호출  
 		try {
 			
 			if(isNull(file.getOriginalFilename())) {

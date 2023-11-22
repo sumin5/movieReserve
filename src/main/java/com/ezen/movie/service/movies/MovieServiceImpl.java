@@ -1,14 +1,12 @@
 package com.ezen.movie.service.movies;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,8 +39,8 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	// 영화 자동 삭제
-	// @Scheduled(cron = "0 0 0 1 * ?")
-	// 매월 1일 자정에 작동
+	 //@Scheduled(cron = "0 0 0 1 * ?")
+	//매월 1일 자정에 작동
 	@Override
 	public void AutoDelete() {
 		FileDTO dto = new FileDTO();
@@ -80,16 +78,19 @@ public class MovieServiceImpl implements MovieService {
 		moviesMapper.movieThumbNailInsert(dto);
 	}
 
+	//영화 스틸컷
 	public void movieStillCutInsert(FileDTO dto, MultipartFile[] files) throws Exception {
 
 		String path = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img";
 
 		System.err.println(files.length);
 		
+		// 썸네일의 이미지 파일들을 배열로 받아와서 for문으로 랜덤 파일이름을 하나씩 생성
 		for (MultipartFile file : files) {
 				
 			FileDTO fDto = new FileDTO();
 			
+			//객체를 새로 생성 후 원래 저장되어있는 dto의 pathGb의 값을 넣어줌 (썸네일인지 스틸컷인지 구분해서 값을 넣기 위해)
 			fDto.setPathGb(dto.getPathGb());
 			String fileName = file.getOriginalFilename();
 			
@@ -113,6 +114,7 @@ public class MovieServiceImpl implements MovieService {
 				fDto.setFileName(fileName);
 				fDto.setFilePath("/files/" + fileName);
 			}
+			// 메서드를 for문 안에서  파일 개수만큼 호출
 			moviesMapper.movieStillCutInsert(fDto);
 
 		}

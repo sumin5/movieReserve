@@ -45,7 +45,7 @@
 					stillCutImage.style.width = '200px';
 					stillCutImage.style.height = '150px';
 					stillCutImage.style.margin = '0px 0px 20px 118px';
-					
+
 				};
 
 				reader.readAsDataURL(filesInput.files[0]);
@@ -57,32 +57,46 @@
 
 		// 버튼 클릭시 파일 첨부 하나씩 추가하기
 		$("#addFile").click(function () {
-			let max = document.getElementsByClassName("imgFile").length;
+    // 현재 페이지에 있는 이미지 파일 입력 요소의 개수를 확인합니다.
+    let max = document.getElementsByClassName("imgFile").length;
 
-			if (max < 5) {
-				let newInput = document.createElement("input");
-				newInput.setAttribute("type", "file");
-				newInput.setAttribute("style","margin:0px 0px 14px 118px");
-				newInput.setAttribute("class", "imgFile");
-				newInput.setAttribute("name", "files");
-				newInput.setAttribute("onchange", "stillCutImage(this)");
-				let newImage = document.createElement("img");
-				newImage.setAttribute("src", "");
-				newImage.style.display = "none";
+    // 최대 5개까지만 추가
+    if (max < 5) {
+        let newInput = document.createElement("input");
+        newInput.setAttribute("type", "file");
+        newInput.setAttribute("style", "margin:0px 0px 14px 118px;");
+        newInput.setAttribute("class", "imgFile");
+        newInput.setAttribute("name", "files");
+        newInput.setAttribute("onchange", "stillCutImage(this)");
 
-				let newDiv = document.createElement("div");
-				newDiv.setAttribute("class", "stC");
-				newDiv.appendChild(newInput);
-				newDiv.appendChild(newImage);
+        let newImage = document.createElement("img");
+        newImage.setAttribute("src", "");
 
-				stillCutImages.push(newImage);
+        let newDiv = document.createElement("div");
+        newDiv.setAttribute("class", "stC");
+        newDiv.appendChild(newInput);
+        newDiv.appendChild(newImage);
 
-				$("#recycle").append(newDiv);
-			} else {
-				alert("최대 5개까지 추가할 수 있습니다.");
-			}
-		});
-		
+        let deleteButton = document.createElement("button");
+        deleteButton.setAttribute("type", "button");
+        deleteButton.setAttribute("style", "margin-left:-80px; display:inline-block;");
+        deleteButton.setAttribute("class", "deleteFile");
+        deleteButton.innerHTML = '<img src="https://pngimg.com/d/minus_PNG65.png" style="width: 25px; height: 25px; display:inline-block;">';
+
+        newDiv.appendChild(deleteButton);
+
+        stillCutImages.push(newImage);
+
+        $("#recycle").append(newDiv);
+    } else {
+        alert("최대 5개까지 추가할 수 있습니다.");
+    }
+});
+
+// 삭제 버튼 클릭 시 실행되는 함수
+$(document).on("click", ".deleteFile", function () {
+    $(this).closest(".stC").remove();
+});
 		//영화 등록시 비어있는 값 체크하기
 		function Submit() {
 
@@ -97,50 +111,50 @@
 			var movieInfo = document.querySelector('textarea[id="movieInfo"]').value;
 			var thumbNail = document.querySelector('input[id="file"]').value;
 			var stillCut = document.querySelector('input[id="stillCut"]').value;
-			
-			
-			if(movieNameHngl == "") {
+
+
+			if (movieNameHngl == "") {
 				alert("영화제목을 입력해주세요");
 				return false;
-			} else if(movieNameEng == "") {
+			} else if (movieNameEng == "") {
 				alert("영화제목을 영어로 입력해주세요");
 				return false;
-			} else if(openingDt == "") {
+			} else if (openingDt == "") {
 				alert("개봉일 입력해주세요");
 				return false;
-			} else if(movieRate == "") {
+			} else if (movieRate == "") {
 				alert("영화등급을 입력해주세요");
 				return false;
-			} else if(genre == "") {
+			} else if (genre == "") {
 				alert("장르를 입력해주세요");
 				return false;
-			} else if(movieCountry == "") {
+			} else if (movieCountry == "") {
 				alert("국가명을 입력해주세요");
 				return false;
-			} else if(runningTime == "") {
+			} else if (runningTime == "") {
 				alert("상영시간을 입력해주세요");
 				return false;
-			} else if(movieDistributor == "") {
+			} else if (movieDistributor == "") {
 				alert("배급회사를 입력해주세요");
 				return false;
-			} else if(movieInfo == "") {
+			} else if (movieInfo == "") {
 				alert("영화소개를 입력해주세요");
 				return false;
-			} else if(thumbNail== "") {
+			} else if (thumbNail == "") {
 				alert("썸네일을 넣어주세요");
 				return false;
-			} else if(stillCut== "") {
+			} else if (stillCut == "") {
 				alert("스틸 컷을 넣어주세요");
 				return false;
-			} 
+			}
 
 
 			if (confirm("파일을 등록하시겠습니까?")) {
-			var form = $("#fileUploadForm");
-			console.log(form);
-			var formData = new FormData(form[0]);
-			console.log(formData);
-			event.preventDefault();
+				var form = $("#fileUploadForm");
+				console.log(form);
+				var formData = new FormData(form[0]);
+				console.log(formData);
+				event.preventDefault();
 				$.ajax({
 					type: "post",
 					enctype: 'multipart/form-data',
@@ -171,7 +185,7 @@
 <div layout:fragment="content" style="background-color:#242628;">
 	<h1 style="color:white; margin-left:100px; padding-top:30px;">영화 등록</h1>
 	<hr style="color:white !important; width:80%; margin-left:100px; border:solid;">
-	
+
 	<form method="post" enctype="multipart/form-data" id="fileUploadForm">
 		<div style="margin-left:100px;">
 			<p style="display:inline-block; color : white;">영화 제목(한글) : &nbsp; </p>
@@ -191,13 +205,13 @@
 			<p style="display:inline-block; color : white; margin-right:72px;">배급 : &nbsp;</p>
 			<input type="text" id="movieDistributor" name="movieDistributor"><br>
 			<p style="color : white; margin-right:44px; float:left;">영화소개 : &nbsp;</p>
-			<textarea style=" width:500px; height:80px; margin-bottom:20px;" id="movieInfo" name="movieInfo"></textarea><br>
+			<textarea style=" width:500px; height:80px; margin-bottom:20px;" id="movieInfo"
+				name="movieInfo"></textarea><br>
 			<div style="margin-bottom:20px;">
 				<p style="display:inline-block; color:white; margin-right : 22px;">영화 썸네일 : &nbsp;</p>
 				<input type="file" id="file" name="file" onchange="thumbNailImage(event)"><br>
 				<img src="" style="display:none;" id="thumbNail">
 			</div>
-
 
 			<div id="recycle" style="display:inline-block">
 				<div class="stC">
@@ -207,13 +221,13 @@
 				</div>
 			</div>
 
-			<button type="button" id="addFile" style="margin-left:-140px;">
+			<button type="button" id="addFile" style="margin-left:-140px; display:inline-block">
 				<img src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-plus-icon-png-image_4196464.jpg"
 					style="width: 25px; height: 25px; display:inline-block;">
 			</button>
 
 			<div>
-				<button type="button"  onclick="Submit();">등록</button>
+				<button type="button" onclick="Submit();">등록</button>
 			</div>
 		</div>
 
