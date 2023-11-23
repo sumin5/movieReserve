@@ -99,4 +99,22 @@ public class ReserveController extends AbstractController{
 		
 	}
 	
+	@GetMapping("/selectSeat")
+	public ModelAndView selectSeat() {
+		
+		ModelAndView mav = new ModelAndView("/reserve/selectSeat");
+		List<MoviesDTO> movieList = movieService.movieList();
+		for(int i=0 ; i<movieList.size() ; i ++) {
+			
+		}
+		
+		if(!isNull(movieList)) {
+			mav.addObject("initIdx",movieList.get(0).getMovieIdx());
+		}
+		
+		mav.addObject("movieList", movieList);
+		return mav;
+		
+	}
+	
 }

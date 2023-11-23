@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net/nz/thymeleaf/layout"
+	layout:decorate="~{layout/reserve_layout}">
+
+<head>
+	<style>
+		.movie_poster #movie_photo .img img {
+			height: 400px;
+		}
+	</style>
+	<script>
+
+		let today = "";
+
+		// 페이지 온로드시
+		$(function () {
+
+			// 데이트피커 옵션설정
+			$('#datepicker').datepicker({
+				closeText: "닫기",
+				currentText: "오늘",
+				prevText: '이전 달',
+				nextText: '다음 달',
+				monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+				monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+				dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+				dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+				dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+				weekHeader: "주",
+				yearSuffix: '년',
+				dateFormat: 'yy-mm-dd (DD)',
+				dayNamesMin: ['일', '월', '화', '수', '목', '금', '토']
+			});
+
+			//데이트피커 초기날짜 부여
+			$('#datepicker').datepicker('setDate', 'today');
+
+			// 데이터피커의 체인지옵션을 부여
+			$('#datepicker').change(function () {
+				$("#resdate").text($(this).val());
+				today = $("#datepicker").val().slice(0, 10);
+				getTimetable();
+			})
+
+			//초기 날짜 설정
+			$("#resdate").text($("#datepicker").val())
+			today = $("#datepicker").val().slice(0, 10);
+
+			// 영화초기설정 
+			getTimetable();
+
+		})
+
+		function cal() {
+			$('#datepicker').focus();
+		}
+
+
+		function getTimetable(movieIdx, movieIdxForGetPhoto) {
+
+			alert("getTimetable(" + movieIdx + ")");
+
+			if (isNull(today)) {
+				alert("잘못된 접근입니다.");
+				return false;
+			}
+
+
+			$.ajax({
+
+				type: 'post',
+				url: '[[@{/reserve/getTimetable}]]',
+				data: {
+					'movieIdx': movieIdx,
+					'wildCard': today,
+				},
+				dataType: 'json',
+				success: function (res) {
+
+
+					if (res.code == '00') {
+
+						let data = res.data;
+						let setArray = new Set();
+						let array = [];
+						let timetableHtml = '';
+						let photoHtml = '';
+
+						if (!isNull(data)) {
+
+							/*data에서 배열단위로 중복제거*/
+							for (let i = 0; i < data.length; i++) {
+								let arr = [{movieIdx: data[i].movieIdx}
+									, {movieRate: data[i].movieRate}
+									, {movieNameHngl: data[i].movieNameHngl}
+									, {dimensionGb: data[i].dimensionGb}
+									, {screenNumber: data[i].screenNumber}
+									, {floor: data[i].floor}
+								];
+								setArray.add(JSON.stringify(arr));
+							}
+							array = Array.from(setArray).map(item => JSON.parse(item));
+
+
+							/*timetable 그리기 (영화제목:시간표, 1:n)*/
+							for (let i = 0; i < array.length; i++) {
+
+								/*영화제목 부분*/
+								timetableHtml += `<div class="movie_tit" style="margin-top:50px;">
+												  <p class="age age_` + array[i][1].movieRate + `">` + (array[i][1].movieRate == 'all' ? '전체' : (array[i][1].movieRate == '18' ? '청불' : array[i][1].movieRate)) + `</p>
+												  <p class="tit">`+ array[i][2].movieNameHngl + `</p>
+											  </div>`;
+								timetableHtml += `<div class="time_wrap">
+												  <div class="time_wrap_top">
+													  <p class="tit">` + array[i][3].dimensionGb + `</p>
+													  <p class="sub_text loc">` + array[i][4].screenNumber + ` (` + array[i][5].floor + `)</p>
+												  </div>
+											  <div class="time_list_wrap">`
+
+								/*시간표 + 영화포스터 부분*/
+								for (let j = 0; j < data.length; j++) {
+
+									if (array[i][0].movieIdx == data[j].movieIdx) {
+
+										/*시간표*/
+										timetableHtml += `<div class="time_list">
+															  <input type="radio" id="time_`+ data[j].timetableIdx + `" name="movie_time">
+															  <label class="on" for="time_`+ data[j].timetableIdx + `">
+														  		  <p class="start">` + data[j].startTime + `</p>
+																  <p class="end">~` + data[j].finishTime + `</p>
+															  </label>
+															  <p class="num">` + data[j].total + `석</p>
+														  </div>`
+
+										/*영화포스터*/
+										if (movieIdxForGetPhoto) {
+											photoHtml += `<div class="img">
+												 			  <img src=` + data[j].fileTopPath + ` alt="" title="-">
+														  </div>`
+											$("#movie_photo").html(photoHtml);
+											movieIdxForGetPhoto = false;
+										}
+
+									}
+
+								}
+
+								timetableHtml += `</div></div>`;
+
+							}
+
+
+						}
+
+						$("#scheduleList").html(timetableHtml);
+
+
+					}
+
+				},
+				error: function (res) {
+					alert(res);
+				}
+			});
+		}
+
+
+
+	</script>
+
+	<div id="Main" layout:fragment="content">
+
+
+		<section style="bottom:0;height:calc(100vh);">
+			<div class="ticketing_box bg_box" style="bottom:0;max-height:calc(100vh - 150px);overflow:auto;">
+				<div class="inner">
+					<p class="box_tit">예매하기</p>
+					<div class="movie_ticket_box">
+
+						<div id="rsvMovie" class="all_movie" style="height: 550px; overflow-y: auto; display: none;">
+							<div class="all_movie_tit">
+								<p class="tit">영화<span id="movieTotalCount">8</span></p>
+								<select id="cinema_list">
+									<option value="81">대한극장</option>
+								</select>
+							</div>
+
+							<div id="movieTotalList" class="movie_list_wrap">
+								<div class="movie_list"> <input type="radio" id="movie_1348" name="movie"> <label
+										id="movie_label_1348" class="movie_title_label live" for="movie_1348"
+										data-mid="1348" data-mkey="0">
+										<div class="age age_all">전체</div>
+										<p class="movie_title" data-mid="1348" data-mkey="0">[자막] 그대들은 어떻게 살 것인가</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1361" name="movie"> <label
+										id="movie_label_1361" class="movie_title_label" for="movie_1361" data-mid="1361"
+										data-mkey="1">
+										<div class="age age_15">15</div>
+										<p class="movie_title" data-mid="1361" data-mkey="1">소년들</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1366" name="movie"> <label
+										id="movie_label_1366" class="movie_title_label" for="movie_1366" data-mid="1366"
+										data-mkey="2">
+										<div class="age age_15">15</div>
+										<p class="movie_title" data-mid="1366" data-mkey="2">톡 투 미</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1382" name="movie"> <label
+										id="movie_label_1382" class="movie_title_label live" for="movie_1382"
+										data-mid="1382" data-mkey="3">
+										<div class="age age_12">12</div>
+										<p class="movie_title" data-mid="1382" data-mkey="3">더 마블스</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1391" name="movie"> <label
+										id="movie_label_1391" class="movie_title_label live" for="movie_1391"
+										data-mid="1391" data-mkey="4">
+										<div class="age age_12">12</div>
+										<p class="movie_title" data-mid="1391" data-mkey="4">프레디의 피자가게</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1392" name="movie"> <label
+										id="movie_label_1392" class="movie_title_label live" for="movie_1392"
+										data-mid="1392" data-mkey="5">
+										<div class="age age_15">15</div>
+										<p class="movie_title" data-mid="1392" data-mkey="5">헝거게임: 노래하는 새와 뱀의 발라드</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1398" name="movie" checked="">
+									<label id="movie_label_1398" class="movie_title_label live" for="movie_1398"
+										data-mid="1398" data-mkey="6">
+										<div class="age age_12">12</div>
+										<p class="movie_title" data-mid="1398" data-mkey="6">서울의 봄</p>
+									</label></div>
+								<div class="movie_list"> <input type="radio" id="movie_1404" name="movie"> <label
+										id="movie_label_1404" class="movie_title_label live" for="movie_1404"
+										data-mid="1404" data-mkey="7">
+										<div class="age age_15">15</div>
+										<p class="movie_title" data-mid="1404" data-mkey="7">만추 리마스터링</p>
+									</label></div>
+							</div>
+						</div>
+
+						<div id="rsvSchedule" class="movie_time"
+							style="height: 550px; overflow-y: auto; display: none;">
+							<p class="resdate date" data-default="2023-11-24">2023-11-24(금)</p>
+							<div class="icon_wrap">
+								<p class="day">조조</p>
+								<p class="night">심야</p>
+							</div>
+							<div id="scheduleList">
+								<div class="movie_tit" style="margin-top:50px;">
+									<p class="age age_12">12</p>
+									<p class="tit">서울의 봄</p>
+									<p class="sub_txt"><span>드라마</span><span>2023-11-22 개봉</span><span>141분</span></p>
+								</div>
+								<div class="time_wrap">
+									<div class="time_wrap_top">
+										<p class="tit">2D 디지털</p>
+										<p class="sub_text loc">5관 (3층)</p>
+										<p class="sub_text">총 298석</p>
+										<div class="location">
+											<p class="loc">5관 (3층)</p>
+											<p class="chair">총 298석</p>
+										</div>
+									</div>
+									<div class="time_list_wrap">
+										<div class="time_list day"> <input type="radio" id="time_13980050"
+												name="movie_time"> <label class="on" for="time_13980050" data-key="0"
+												data-skey="005" data-cid="81" data-tid="103" data-mid="1398"
+												data-scrncode="05" data-amt-gid="55" data-scode="110746"
+												data-showtime="01" data-theacd="110746" data-mdate="20231124"
+												data-mtime="1300">
+												<p class="start">13:00</p>
+												<p class="end">~15:21</p>
+											</label>
+											<p class="num">296석</p>
+										</div>
+										<div class="time_list"> <input type="radio" id="time_13980051"
+												name="movie_time"> <label class="on" for="time_13980051" data-key="1"
+												data-skey="005" data-cid="81" data-tid="103" data-mid="1398"
+												data-scrncode="05" data-amt-gid="54" data-scode="110747"
+												data-showtime="02" data-theacd="110747" data-mdate="20231124"
+												data-mtime="1600">
+												<p class="start">16:00</p>
+												<p class="end">~18:21</p>
+											</label>
+											<p class="num">296석</p>
+										</div>
+										<div class="time_list"> <input type="radio" id="time_13980052"
+												name="movie_time"> <label class="on" for="time_13980052" data-key="2"
+												data-skey="005" data-cid="81" data-tid="103" data-mid="1398"
+												data-scrncode="05" data-amt-gid="54" data-scode="110748"
+												data-showtime="03" data-theacd="110748" data-mdate="20231124"
+												data-mtime="1900">
+												<p class="start">19:00</p>
+												<p class="end">~21:21</p>
+											</label>
+											<p class="num">297석</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div id="rsvSeat" class="movie_seat" style="max-height: 550px; overflow-y: auto;">
+							<p class="tit">관람인원선택</p>
+							<button class="refresh">초기화</button>
+							<div class="btn_area reserve_area">
+								<div class="btn_list">
+									<p class="tit">우대2D</p>
+									<div class="btn_box"><button data-acid="161" class="minus">&nbsp;</button><input
+											type="text" class="num" id="txt_161" data-key="0" value="0"
+											readonly=""><button data-acid="161" class="plus">&nbsp;</button></div>
+								</div>
+								<div class="btn_list">
+									<p class="tit">조조2D</p>
+									<div class="btn_box"><button data-acid="293" class="minus">&nbsp;</button><input
+											type="text" class="num" id="txt_293" data-key="1" value="0"
+											readonly=""><button data-acid="293" class="plus">&nbsp;</button></div>
+								</div>
+							</div>
+							<div class="screen">SCREEN</div>
+							<div class="seat_select seating_map_view">
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">A</button><button class="disable">
+										</button><button class="normal" data-xc="A" data-yc="1" data-x="0" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="A" data-yc="2" data-x="0" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="A" data-yc="3" data-x="0" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="A" data-yc="4" data-x="0" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="A" data-yc="5"
+											data-x="0" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="A" data-yc="6"
+											data-x="0" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="A" data-yc="7"
+											data-x="0" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="A" data-yc="8"
+											data-x="0" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="A" data-yc="9"
+											data-x="0" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="A" data-yc="10"
+											data-x="0" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="A" data-yc="11"
+											data-x="0" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="A" data-yc="12"
+											data-x="0" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="A" data-yc="13"
+											data-x="0" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="A" data-yc="14"
+											data-x="0" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="A" data-yc="15"
+											data-x="0" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="disablePerson" data-xc="A" data-yc="16" data-x="0" data-y="19"
+											data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 16
+										</button><button class="disablePerson" data-xc="A" data-yc="17" data-x="0"
+											data-y="20" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 17
+										</button><button class="disablePerson" data-xc="A" data-yc="18" data-x="0"
+											data-y="21" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 18
+										</button><button class="disablePerson" data-xc="A" data-yc="19" data-x="0"
+											data-y="22" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">A</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">B</button><button class="disable">
+										</button><button class="normal" data-xc="B" data-yc="1" data-x="1" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="B" data-yc="2" data-x="1" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="B" data-yc="3" data-x="1" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="B" data-yc="4" data-x="1" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="B" data-yc="5"
+											data-x="1" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="B" data-yc="6"
+											data-x="1" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="B" data-yc="7"
+											data-x="1" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="B" data-yc="8"
+											data-x="1" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="B" data-yc="9"
+											data-x="1" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="B" data-yc="10"
+											data-x="1" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="B" data-yc="11"
+											data-x="1" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="B" data-yc="12"
+											data-x="1" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="B" data-yc="13"
+											data-x="1" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="B" data-yc="14"
+											data-x="1" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="B" data-yc="15"
+											data-x="1" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="B" data-yc="16" data-x="1" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="B" data-yc="17" data-x="1" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="B" data-yc="18" data-x="1" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="B" data-yc="19" data-x="1" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">B</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">C</button><button class="disable">
+										</button><button class="normal" data-xc="C" data-yc="1" data-x="2" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="C" data-yc="2" data-x="2" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="C" data-yc="3" data-x="2" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="C" data-yc="4" data-x="2" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="C" data-yc="5"
+											data-x="2" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="C" data-yc="6"
+											data-x="2" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="C" data-yc="7"
+											data-x="2" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="C" data-yc="8"
+											data-x="2" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="C" data-yc="9"
+											data-x="2" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="C" data-yc="10"
+											data-x="2" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="C" data-yc="11"
+											data-x="2" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="C" data-yc="12"
+											data-x="2" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="C" data-yc="13"
+											data-x="2" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="C" data-yc="14"
+											data-x="2" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="C" data-yc="15"
+											data-x="2" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="C" data-yc="16" data-x="2" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="C" data-yc="17" data-x="2" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="C" data-yc="18" data-x="2" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="C" data-yc="19" data-x="2" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">C</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">D</button><button class="disable">
+										</button><button class="normal" data-xc="D" data-yc="1" data-x="3" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="D" data-yc="2" data-x="3" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="D" data-yc="3" data-x="3" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="D" data-yc="4" data-x="3" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="D" data-yc="5"
+											data-x="3" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="D" data-yc="6"
+											data-x="3" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="D" data-yc="7"
+											data-x="3" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="D" data-yc="8"
+											data-x="3" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="D" data-yc="9"
+											data-x="3" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="D" data-yc="10"
+											data-x="3" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="D" data-yc="11"
+											data-x="3" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="D" data-yc="12"
+											data-x="3" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="D" data-yc="13"
+											data-x="3" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="D" data-yc="14"
+											data-x="3" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="D" data-yc="15"
+											data-x="3" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="D" data-yc="16" data-x="3" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="D" data-yc="17" data-x="3" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="D" data-yc="18" data-x="3" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="D" data-yc="19" data-x="3" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">D</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">E</button><button class="disable">
+										</button><button class="disable"> </button><button class="normal" data-xc="E"
+											data-yc="2" data-x="4" data-y="3" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 2 </button><button class="normal" data-xc="E" data-yc="3"
+											data-x="4" data-y="4" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 3 </button><button class="normal" data-xc="E" data-yc="4"
+											data-x="4" data-y="5" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 4 </button><button class="disable"> </button><button
+											class="normal" data-xc="E" data-yc="5" data-x="4" data-y="7"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button><button
+											class="normal" data-xc="E" data-yc="6" data-x="4" data-y="8"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button><button
+											class="normal" data-xc="E" data-yc="7" data-x="4" data-y="9"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button><button
+											class="normal" data-xc="E" data-yc="8" data-x="4" data-y="10"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 8 </button><button
+											class="normal" data-xc="E" data-yc="9" data-x="4" data-y="11"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 9 </button><button
+											class="normal" data-xc="E" data-yc="10" data-x="4" data-y="12"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 10
+										</button><button class="normal" data-xc="E" data-yc="11" data-x="4" data-y="13"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 11
+										</button><button class="normal" data-xc="E" data-yc="12" data-x="4" data-y="14"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 12
+										</button><button class="normal" data-xc="E" data-yc="13" data-x="4" data-y="15"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 13
+										</button><button class="normal" data-xc="E" data-yc="14" data-x="4" data-y="16"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14
+										</button><button class="normal" data-xc="E" data-yc="15" data-x="4" data-y="17"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 15
+										</button><button class="disable"> </button><button class="normal" data-xc="E"
+											data-yc="16" data-x="4" data-y="19" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 16 </button><button class="normal"
+											data-xc="E" data-yc="17" data-x="4" data-y="20" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 17 </button><button class="normal"
+											data-xc="E" data-yc="18" data-x="4" data-y="21" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 18 </button><button class="disable">
+										</button><button class="disable"> </button><button
+											class="seating_tit">E</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">F</button><button class="disable">
+										</button><button class="normal" data-xc="F" data-yc="1" data-x="5" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="F" data-yc="2" data-x="5" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="F" data-yc="3" data-x="5" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="F" data-yc="4" data-x="5" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="F" data-yc="5"
+											data-x="5" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="F" data-yc="6"
+											data-x="5" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="F" data-yc="7"
+											data-x="5" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="F" data-yc="8"
+											data-x="5" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="F" data-yc="9"
+											data-x="5" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="F" data-yc="10"
+											data-x="5" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="F" data-yc="11"
+											data-x="5" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="F" data-yc="12"
+											data-x="5" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="F" data-yc="13"
+											data-x="5" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="F" data-yc="14"
+											data-x="5" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="F" data-yc="15"
+											data-x="5" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="F" data-yc="16" data-x="5" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="F" data-yc="17" data-x="5" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="F" data-yc="18" data-x="5" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="F" data-yc="19" data-x="5" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">F</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">G</button><button class="disable">
+										</button><button class="normal" data-xc="G" data-yc="1" data-x="6" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="G" data-yc="2" data-x="6" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="G" data-yc="3" data-x="6" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="G" data-yc="4" data-x="6" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="G" data-yc="5"
+											data-x="6" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="G" data-yc="6"
+											data-x="6" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="G" data-yc="7"
+											data-x="6" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="G" data-yc="8"
+											data-x="6" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="G" data-yc="9"
+											data-x="6" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="G" data-yc="10"
+											data-x="6" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="G" data-yc="11"
+											data-x="6" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="G" data-yc="12"
+											data-x="6" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="G" data-yc="13"
+											data-x="6" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="G" data-yc="14"
+											data-x="6" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="G" data-yc="15"
+											data-x="6" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="G" data-yc="16" data-x="6" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="G" data-yc="17" data-x="6" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="G" data-yc="18" data-x="6" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="G" data-yc="19" data-x="6" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">G</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">H</button><button class="disable">
+										</button><button class="normal" data-xc="H" data-yc="1" data-x="7" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="H" data-yc="2" data-x="7" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="H" data-yc="3" data-x="7" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="H" data-yc="4" data-x="7" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="H" data-yc="5"
+											data-x="7" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="H" data-yc="6"
+											data-x="7" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="H" data-yc="7"
+											data-x="7" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="H" data-yc="8"
+											data-x="7" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="H" data-yc="9"
+											data-x="7" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="H" data-yc="10"
+											data-x="7" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="H" data-yc="11"
+											data-x="7" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="H" data-yc="12"
+											data-x="7" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="H" data-yc="13"
+											data-x="7" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="H" data-yc="14"
+											data-x="7" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="H" data-yc="15"
+											data-x="7" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="H" data-yc="16" data-x="7" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="H" data-yc="17" data-x="7" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="H" data-yc="18" data-x="7" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="H" data-yc="19" data-x="7" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">H</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">I</button><button class="disable">
+										</button><button class="normal" data-xc="I" data-yc="1" data-x="8" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="I" data-yc="2" data-x="8" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="I" data-yc="3" data-x="8" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="I" data-yc="4" data-x="8" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="I" data-yc="5"
+											data-x="8" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="I" data-yc="6"
+											data-x="8" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="I" data-yc="7"
+											data-x="8" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="I" data-yc="8"
+											data-x="8" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="I" data-yc="9"
+											data-x="8" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="I" data-yc="10"
+											data-x="8" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="I" data-yc="11"
+											data-x="8" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="I" data-yc="12"
+											data-x="8" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="I" data-yc="13"
+											data-x="8" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="I" data-yc="14"
+											data-x="8" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="I" data-yc="15"
+											data-x="8" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="I" data-yc="16" data-x="8" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="I" data-yc="17" data-x="8" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="I" data-yc="18" data-x="8" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="I" data-yc="19" data-x="8" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">I</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">J</button><button class="disable">
+										</button><button class="normal" data-xc="J" data-yc="1" data-x="9" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="J" data-yc="2" data-x="9" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="J" data-yc="3" data-x="9" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="J" data-yc="4" data-x="9" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="J" data-yc="5"
+											data-x="9" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="J" data-yc="6"
+											data-x="9" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="J" data-yc="7"
+											data-x="9" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="J" data-yc="8"
+											data-x="9" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="J" data-yc="9"
+											data-x="9" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="J" data-yc="10"
+											data-x="9" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="J" data-yc="11"
+											data-x="9" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="J" data-yc="12"
+											data-x="9" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="J" data-yc="13"
+											data-x="9" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="J" data-yc="14"
+											data-x="9" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="J" data-yc="15"
+											data-x="9" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="J" data-yc="16" data-x="9" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="J" data-yc="17" data-x="9" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="J" data-yc="18" data-x="9" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="J" data-yc="19" data-x="9" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">J</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">K</button><button class="disable">
+										</button><button class="disable"> </button><button class="normal" data-xc="K"
+											data-yc="2" data-x="10" data-y="3" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 2 </button><button class="done" data-xc="K" data-yc="3"
+											data-x="10" data-y="4" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="N"> 3 </button><button class="done" data-xc="K" data-yc="4"
+											data-x="10" data-y="5" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="N"> 4 </button><button class="disable"> </button><button
+											class="normal" data-xc="K" data-yc="5" data-x="10" data-y="7"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button><button
+											class="normal" data-xc="K" data-yc="6" data-x="10" data-y="8"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button><button
+											class="normal" data-xc="K" data-yc="7" data-x="10" data-y="9"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button><button
+											class="normal" data-xc="K" data-yc="8" data-x="10" data-y="10"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 8 </button><button
+											class="normal" data-xc="K" data-yc="9" data-x="10" data-y="11"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 9 </button><button
+											class="normal" data-xc="K" data-yc="10" data-x="10" data-y="12"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 10
+										</button><button class="normal" data-xc="K" data-yc="11" data-x="10" data-y="13"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 11
+										</button><button class="normal" data-xc="K" data-yc="12" data-x="10" data-y="14"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 12
+										</button><button class="normal" data-xc="K" data-yc="13" data-x="10" data-y="15"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 13
+										</button><button class="normal" data-xc="K" data-yc="14" data-x="10" data-y="16"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14
+										</button><button class="normal" data-xc="K" data-yc="15" data-x="10" data-y="17"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 15
+										</button><button class="disable"> </button><button class="normal" data-xc="K"
+											data-yc="16" data-x="10" data-y="19" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 16 </button><button class="normal"
+											data-xc="K" data-yc="17" data-x="10" data-y="20" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 17 </button><button class="normal"
+											data-xc="K" data-yc="18" data-x="10" data-y="21" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 18 </button><button class="disable">
+										</button><button class="disable"> </button><button
+											class="seating_tit">K</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">L</button><button class="disable">
+										</button><button class="normal" data-xc="L" data-yc="1" data-x="11" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="L" data-yc="2" data-x="11" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="L" data-yc="3" data-x="11" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="L" data-yc="4" data-x="11" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="L" data-yc="5"
+											data-x="11" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="L" data-yc="6"
+											data-x="11" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="L" data-yc="7"
+											data-x="11" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="L" data-yc="8"
+											data-x="11" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="L" data-yc="9"
+											data-x="11" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="L" data-yc="10"
+											data-x="11" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="L" data-yc="11"
+											data-x="11" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="L" data-yc="12"
+											data-x="11" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="L" data-yc="13"
+											data-x="11" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="L" data-yc="14"
+											data-x="11" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="L" data-yc="15"
+											data-x="11" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="L" data-yc="16" data-x="11" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="L" data-yc="17" data-x="11" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="L" data-yc="18" data-x="11" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="L" data-yc="19" data-x="11" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">L</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">M</button><button class="disable">
+										</button><button class="normal" data-xc="M" data-yc="1" data-x="12" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="M" data-yc="2" data-x="12" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="M" data-yc="3" data-x="12" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="M" data-yc="4" data-x="12" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="M" data-yc="5"
+											data-x="12" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="M" data-yc="6"
+											data-x="12" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="M" data-yc="7"
+											data-x="12" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="M" data-yc="8"
+											data-x="12" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="M" data-yc="9"
+											data-x="12" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="M" data-yc="10"
+											data-x="12" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="M" data-yc="11"
+											data-x="12" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="M" data-yc="12"
+											data-x="12" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="M" data-yc="13"
+											data-x="12" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="M" data-yc="14"
+											data-x="12" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="M" data-yc="15"
+											data-x="12" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="M" data-yc="16" data-x="12" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="M" data-yc="17" data-x="12" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="M" data-yc="18" data-x="12" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="M" data-yc="19" data-x="12" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">M</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">N</button><button class="disable">
+										</button><button class="normal" data-xc="N" data-yc="1" data-x="13" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="N" data-yc="2" data-x="13" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="N" data-yc="3" data-x="13" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="N" data-yc="4" data-x="13" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="N" data-yc="5"
+											data-x="13" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="N" data-yc="6"
+											data-x="13" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="N" data-yc="7"
+											data-x="13" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="N" data-yc="8"
+											data-x="13" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="N" data-yc="9"
+											data-x="13" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="N" data-yc="10"
+											data-x="13" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="N" data-yc="11"
+											data-x="13" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="N" data-yc="12"
+											data-x="13" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="N" data-yc="13"
+											data-x="13" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="N" data-yc="14"
+											data-x="13" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="N" data-yc="15"
+											data-x="13" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="N" data-yc="16" data-x="13" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="N" data-yc="17" data-x="13" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="N" data-yc="18" data-x="13" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="N" data-yc="19" data-x="13" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">N</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">O</button><button class="disable">
+										</button><button class="normal" data-xc="O" data-yc="1" data-x="14" data-y="2"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button><button
+											class="normal" data-xc="O" data-yc="2" data-x="14" data-y="3"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button><button
+											class="normal" data-xc="O" data-yc="3" data-x="14" data-y="4"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button><button
+											class="normal" data-xc="O" data-yc="4" data-x="14" data-y="5"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button><button
+											class="disable"> </button><button class="normal" data-xc="O" data-yc="5"
+											data-x="14" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="O" data-yc="6"
+											data-x="14" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="O" data-yc="7"
+											data-x="14" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="O" data-yc="8"
+											data-x="14" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="O" data-yc="9"
+											data-x="14" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="O" data-yc="10"
+											data-x="14" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="O" data-yc="11"
+											data-x="14" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="O" data-yc="12"
+											data-x="14" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="O" data-yc="13"
+											data-x="14" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="O" data-yc="14"
+											data-x="14" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="O" data-yc="15"
+											data-x="14" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="O" data-yc="16" data-x="14" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="O" data-yc="17" data-x="14" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="O" data-yc="18" data-x="14" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="O" data-yc="19" data-x="14" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">O</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">P</button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="normal" data-xc="P"
+											data-yc="5" data-x="15" data-y="7" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 5 </button><button class="normal" data-xc="P" data-yc="6"
+											data-x="15" data-y="8" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 6 </button><button class="normal" data-xc="P" data-yc="7"
+											data-x="15" data-y="9" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 7 </button><button class="normal" data-xc="P" data-yc="8"
+											data-x="15" data-y="10" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 8 </button><button class="normal" data-xc="P" data-yc="9"
+											data-x="15" data-y="11" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 9 </button><button class="normal" data-xc="P" data-yc="10"
+											data-x="15" data-y="12" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 10 </button><button class="normal" data-xc="P" data-yc="11"
+											data-x="15" data-y="13" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 11 </button><button class="normal" data-xc="P" data-yc="12"
+											data-x="15" data-y="14" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 12 </button><button class="normal" data-xc="P" data-yc="13"
+											data-x="15" data-y="15" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 13 </button><button class="normal" data-xc="P" data-yc="14"
+											data-x="15" data-y="16" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 14 </button><button class="normal" data-xc="P" data-yc="15"
+											data-x="15" data-y="17" data-mtime="110746" data-stype="STCD0010"
+											data-useyn="Y"> 15 </button><button class="disable"> </button><button
+											class="normal" data-xc="P" data-yc="16" data-x="15" data-y="19"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 16
+										</button><button class="normal" data-xc="P" data-yc="17" data-x="15" data-y="20"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 17
+										</button><button class="normal" data-xc="P" data-yc="18" data-x="15" data-y="21"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 18
+										</button><button class="normal" data-xc="P" data-yc="19" data-x="15" data-y="22"
+											data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 19
+										</button><button class="disable"> </button><button
+											class="seating_tit">P</button></div>
+								</div>
+								<div class="seat_list">
+									<div class="seat_btn"><button class="seating_tit">Q</button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="disable"> </button><button class="normal" data-xc="Q"
+											data-yc="16" data-x="16" data-y="19" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 16 </button><button class="normal"
+											data-xc="Q" data-yc="17" data-x="16" data-y="20" data-mtime="110746"
+											data-stype="STCD0010" data-useyn="Y"> 17 </button><button class="disable">
+										</button><button class="disable"> </button><button class="disable">
+										</button><button class="seating_tit">Q</button></div>
+								</div>
+							</div>
+							<div class="seat_txt">
+								<p class="ex">• 좌석 선택 후 5분이내에 결제를 완료해주시기 바랍니다.</p>
+								<div class="ex_icon">
+									<p class="disablePerson_icon">장애인</p>
+									<p class="select_icon">현재선택</p>
+									<p class="normal_icon">선택가능</p>
+									<p class="blank_icon">좌석건너뜀</p>
+									<p class="done_icon">판매완료</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="movie_seat" id="rsvPayment" style="display: none;">
+							<div class="tit_wrap">
+								<p class="tit">결제수단선택</p>
+								<button class="refresh">초기화</button>
+							</div>
+							<div class="payment_radio_wrap">
+								<div class="payment_list">
+									<input type="radio" id="payment_01" name="payment" class="paymethod" data-type="C"
+										data-method="C" data-val="PWCD0020">
+									<label for="payment_01">신용/체크카드 결제</label>
+								</div>
+								<div class="payment_list">
+									<input type="radio" id="payment_02" name="payment" class="paymethod" data-type="M"
+										data-method="M" data-val="PWCD0040">
+									<label for="payment_02">휴대폰 결제</label>
+								</div>
+								<div class="payment_list">
+									<input type="radio" id="payment_03" name="payment" class="paymethod" data-type="N"
+										data-method="N" data-val="PWCD0090">
+									<label for="payment_03">네이버페이</label>
+								</div>
+							</div>
+							<input id="pay_method_ids" type="hidden" name="pay_method" value="">
+							<div class="card_box">
+								<p class="card_ex" style="margin-top:100px;">• 결재확인을 위해 연락처를 입력하세요</p>
+								<div class="tel-group">
+									<input type="number" id="phone1_ids" class="card_select"
+										style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+									<input type="number" id="phone2_ids" class="card_select"
+										style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+									<input type="number" id="phone3_ids" class="card_select"
+										style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+								</div>
+							</div>
+						</div>
+
+						<div id="rsvInfo" class="movie_info" data-mid="1398">
+							<div class="movie_poster">
+								<div class="poster">
+									<div class="img">
+										<img src="/auth/W9021/POST/202311/db753f6a087841a5a00c032b43852fce.jpg" style="height: 400px"lt="" title="-"></div>
+								</div>
+								<div class="movie_info_txt">
+									<p class="tit">서울의 봄</p>
+									<div class="info_box">
+										<div class="info_list">
+											<p class="th">상영</p>
+											<p class="td"><em id="reserveInfoTheaterName">대한극장</em>&nbsp;<em
+													id="reserveInfoScreenName">5관 (3층)</em></p>
+										</div>
+										<div class="info_list">
+											<p class="th">일시</p>
+											<p class="td" id="reserveInfoPlayDate">2023-11-24 13:00</p>
+										</div>
+										<div class="info_list">
+											<p class="th">인원</p>
+											<p class="td" id="reserveInfoTicket" data-count="0"></p>
+										</div>
+										<div class="info_list">
+											<p class="th">좌석</p>
+											<p class="td" id="reserveInfoSeat" data-count="">좌석 선택 가능</p>
+										</div>
+										<div class="info_list" style="display:none;">
+											<p class="th">할인</p>
+											<p class="td" id="reserveInfoDiscount">0</p>
+										</div>
+										<div class="info_list">
+											<span style="font-size:1.2em;color:#BCBCBC;">* 소셜 로그인 및 비회원 로그인은 청소년 관람 불가
+												영화를 예매 하실 수 없습니다.</span>
+										</div>
+										<div class="info_list">
+											<span style="font-size:1.2em;color:#BCBCBC;">* <b>
+													<font color="#f15f09">휴대폰 결제</font>
+												</b>의 경우, 통신사의 정책에 따라 <font color="#f15f09">익월 취소가 불가능</font>합니다.</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="total_box">
+								<div class="total_num">
+									<p class="total">총 합계</p>
+									<p class="price" id="reserveInfoTotal">0원</p>
+								</div>
+
+								<p class="seatsel" style="display: none;">
+									<button class="btn st_nx">좌석선택</button>
+								</p>
+								<p class="seatsel total_btn_wrap" style="">
+									<button class="btn stlf_on">이전</button>
+									<button class="btn strf_off">다음</button>
+								</p>
+								<p class="seatsel total_btn_wrap" style="display: none;">
+									<button class="btn stlf_on">이전</button>
+									<button class="btn strf_off">다음</button>
+								</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+</html>
