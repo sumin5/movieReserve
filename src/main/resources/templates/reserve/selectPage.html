@@ -11,7 +11,9 @@
 <script>
 	
 	let today = "";
-	
+	let array = [];
+	let selectMovieIdx = "";
+	let selectTimeTableIdx = "";
 	// 페이지 온로드시
 	$(function(){ 
 		
@@ -58,8 +60,6 @@
 
 	function getTimetable(movieIdx, movieIdxForGetPhoto){
 		
-		alert("getTimetable("+movieIdx+")");
-		
 		if(isNull(today)){
 			alert("잘못된 접근입니다.");
 			return false;
@@ -82,7 +82,7 @@
 					
 					let data = res.data;
 					let setArray = new Set();
-					let array = [];
+					array = 0;
 					let timetableHtml = '';
 					let photoHtml = '';
 
@@ -125,7 +125,7 @@
 										/*시간표*/
 										timetableHtml += `<div class="time_list">
 															  <input type="radio" id="time_`+data[j].timetableIdx+`" name="movie_time">
-															  <label class="on" for="time_`+data[j].timetableIdx+`">
+															  <label class="on" for="time_`+data[j].timetableIdx+`" onclick='selectTime(`+data[j].movieIdx+`,`+data[j].timetableIdx+`)'>
 														  		  <p class="start">` + data[j].startTime + `</p>
 																  <p class="end">~` + data[j].finishTime + `</p>
 															  </label>
@@ -164,7 +164,69 @@
 		});
 	}
 	
+	// 타임선택시 (우측 정보창 내용 표기)
+	function selectTime(movieIdx,timeTableIdx){
+		
+		for(let i=0; i<array.length; i++) {
+			
+			if(array[i][0].movieIdx == movieIdx){
+				$("#movieTitle").text(array[i][2].movieNameHngl)
+				$("#reserveInfoTheaterName").text('세수정유극장 '+array[i][4].screenNumber+'('+array[i][3].dimensionGb+')')
+				$("#reserveInfoPlayDate").text($("#resdate").text())
+			}	
+				
+		}
+		
+		$("#seatBtn").removeClass("st_nx_off");
+		$("#seatBtn").addClass("stlf_on");
+		$("#seatBtn").prop("disabled",false);
+		
+		selectMovieIdx = movieIdx;
+		selectTimeTableIdx = timeTableIdx;
+	}	
 	
+	// 좌석 불러오기
+	function seatLoad(){
+		
+		let movieIdx = selectMovieIdx;
+		
+		if(isNull(movieIdx)){
+			alert("영화를 선택해주세요.");
+			return;
+		}
+		
+		let timeTableIdx = selectTimeTableIdx;
+		
+		if(isNull(timeTableIdx)){
+			alert("시간을 선택해주세요.");
+			return;
+		}
+		
+		$.ajax({
+			
+			type : 'post',
+			url : '[[@{/reserve/seatLoad}]]',
+			data : {
+				'movieIdx' : movieIdx,
+				'timeTableIdx' : timeTableIdx
+			},
+			dataType : 'html',
+			success : function(res){
+				
+				if(res.code == '00') {
+					
+					
+				} 
+				
+				alert(res.msg);
+			},
+			error: function(res){
+				alert(res);
+			}
+		});
+		
+		
+	}
 
 </script>
 
@@ -178,8 +240,7 @@
 			<div class="inner">
 				<p class="box_tit">예매하기</p>
 				<div class="movie_ticket_box">
-
-					<div id="rsvMovie" class="all_movie" style="height:550px;overflow-y:auto">
+					<div id="rsvMovie" class="all_movie" style="height:550px;overflow-y:auto;">
 						<div class="all_movie_tit">
 							<p class="tit">영화<span id="movieTotalCount" th:text="${movieList.get(0).total}"></span></p>
 							
@@ -204,7 +265,7 @@
 
 					<!--경계-->
 
-					<div id="rsvSchedule" class="movie_time" style="height:550px;overflow-y:auto">
+					<div id="rsvSchedule" class="movie_time" style="height:550px;overflow-y:autol;">
 						<input class="datepicker" type="hidden" id="datepicker">
 						<p id="resdate" class="resdate date" onclick="cal()"></p>
 						<div class="icon_wrap">
@@ -224,7 +285,31 @@
 						<button class="refresh">초기화</button>
 						<div class="btn_area reserve_area"></div>
 						<div class="screen">SCREEN</div>
-						<div class="seat_select seating_map_view"></div>
+						<div class="seat_select seating_map_view">
+							<div class="seat_list">
+								<div class="seat_btn">
+									<button class="seating_tit">A</button>
+									<button class="disable"></button>
+									<button class="normal" data-xc="A" data-yc="1" data-x="0" data-y="2" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button>
+									<button class="normal" data-xc="A" data-yc="2" data-x="0" data-y="3" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button>
+									<button class="normal" data-xc="A" data-yc="3" data-x="0" data-y="4" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button>
+									<button class="normal" data-xc="A" data-yc="4" data-x="0" data-y="5" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button>
+									<button class="disable"></button>
+									<button class="normal" data-xc="A" data-yc="5" data-x="0" data-y="7" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button>
+									<button class="normal" data-xc="A" data-yc="6" data-x="0" data-y="8" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button>
+									<button class="normal" data-xc="A" data-yc="7" data-x="0" data-y="9" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button>
+									<button class="normal" data-xc="A" data-yc="8" data-x="0" data-y="16" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14 </button>
+									<button class="disable"> </button>
+									<button class="disablePerson" data-xc="A" data-yc="16" data-x="0" data-y="19" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 16 </button>
+									<button class="disablePerson" data-xc="A" data-yc="17" data-x="0" data-y="20" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 17 </button>
+									<button class="disablePerson" data-xc="A" data-yc="18" data-x="0" data-y="21" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 18 </button>
+									<button class="disablePerson" data-xc="A" data-yc="19" data-x="0" data-y="22" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 19 </button>
+									<button class="disable"> </button>
+									<button class="seating_tit">A</button>
+								</div>
+							</div>
+							
+						</div>
 						<div class="seat_txt">
 							<p class="ex">• 좌석 선택 후 5분이내에 결제를 완료해주시기 바랍니다.</p>
 							<div class="ex_icon">
@@ -236,42 +321,43 @@
 							</div>
 						</div>
 					</div>
+					
+					<!--<div class="movie_seat" id="rsvPayment" style="">
+							<div class="tit_wrap">
+								<p class="tit">결제수단선택</p>
+								<button class="refresh">초기화</button>
+							</div>
+							<div class="payment_radio_wrap">
+								<div class="payment_list">
+									<input type="radio" id="payment_01" name="payment" class="paymethod" data-type="C"
+										data-method="C" data-val="PWCD0020">
+									<label for="payment_01">신용/체크카드 결제</label>
+								</div>
+								<div class="payment_list">
+									<input type="radio" id="payment_02" name="payment" class="paymethod" data-type="M"
+										data-method="M" data-val="PWCD0040">
+									<label for="payment_02">휴대폰 결제</label>
+								</div>
+								<div class="payment_list">
+									<input type="radio" id="payment_03" name="payment" class="paymethod" data-type="N"
+										data-method="N" data-val="PWCD0090">
+									<label for="payment_03">네이버페이</label>
+								</div>
+							</div>
+							<input id="pay_method_ids" type="hidden" name="pay_method" value="">
+							<div class="card_box">
+								<p class="card_ex" style="margin-top:100px;">• 결재확인을 위해 연락처를 입력하세요</p>
+								<div class="tel-group">
+									<input type="number" id="phone1_ids" class="card_select"
+										style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+									<input type="number" id="phone2_ids" class="card_select"
+										style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+									<input type="number" id="phone3_ids" class="card_select"
+										style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
+								</div>
+							</div>
+						</div>-->
 
-					<div class="movie_seat" id="rsvPayment" style="display: none;">
-						<div class="tit_wrap">
-							<p class="tit">결제수단선택</p>
-							<button class="refresh">초기화</button>
-						</div>
-						<div class="payment_radio_wrap">
-							<div class="payment_list">
-								<input type="radio" id="payment_01" name="payment" class="paymethod" data-type="C"
-									data-method="C" data-val="PWCD0020">
-								<label for="payment_01">신용/체크카드 결제</label>
-							</div>
-							<div class="payment_list">
-								<input type="radio" id="payment_02" name="payment" class="paymethod" data-type="M"
-									data-method="M" data-val="PWCD0040">
-								<label for="payment_02">휴대폰 결제</label>
-							</div>
-							<div class="payment_list">
-								<input type="radio" id="payment_03" name="payment" class="paymethod" data-type="N"
-									data-method="N" data-val="PWCD0090">
-								<label for="payment_03">네이버페이</label>
-							</div>
-						</div>
-						<input id="pay_method_ids" type="hidden" name="pay_method" value="">
-						<div class="card_box">
-							<p class="card_ex" style="margin-top:100px;">• 결재확인을 위해 연락처를 입력하세요</p>
-							<div class="tel-group">
-								<input type="number" id="phone1_ids" class="card_select"
-									style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
-								<input type="number" id="phone2_ids" class="card_select"
-									style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
-								<input type="number" id="phone3_ids" class="card_select"
-									style="height:27px;border: 1px solid rgba(0, 0, 0, 0.2);">
-							</div>
-						</div>
-					</div>
 
 					<div id="rsvInfo" class="movie_info" data-mid="">
 						<div class="movie_poster">
@@ -282,12 +368,11 @@
 								</div>
 							</div>
 							<div class="movie_info_txt">
-								<p class="tit">-</p>
+								<p class="tit" id="movieTitle">-</p>
 								<div class="info_box">
 									<div class="info_list">
 										<p class="th">상영</p>
-										<p class="td"><em id="reserveInfoTheaterName"></em>&nbsp;<em
-												id="reserveInfoScreenName"></em></p>
+										<p class="td"><em id="reserveInfoTheaterName"></em></p>
 									</div>
 									<div class="info_list">
 										<p class="th">일시</p>
@@ -324,7 +409,7 @@
 							</div>
 
 							<p class="seatsel" style="display: block;">
-								<button class="btn st_nx_off">좌석선택</button>
+								<button class="btn st_nx_off" id="seatBtn" disabled onclick="seatLoad()">좌석선택</button>
 							</p>
 							<p class="seatsel total_btn_wrap" style="display: none;">
 								<button class="btn stlf_on">이전</button>

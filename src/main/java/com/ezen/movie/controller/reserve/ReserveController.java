@@ -18,6 +18,7 @@ import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
+import com.ezen.movie.service.reserve.ReserveDTO;
 import com.ezen.movie.service.reserve.ReserveService;
 import com.google.gson.Gson;
 
@@ -97,6 +98,12 @@ public class ReserveController extends AbstractController{
 		
 		return data;
 		
+	}
+	
+	@ResponseBody
+	@PostMapping("seatLoad")
+	public ModelAndView seatLoad(ReserveDTO dto) {
+		return new ModelAndView();
 	}
 	
 	@GetMapping("/selectSeat")

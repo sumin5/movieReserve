@@ -24,7 +24,7 @@
 			 , B.dimension_gb 		AS dimensionGb
 			 , B.start_time 		AS startTime
 			 , B.finish_time 		AS finishTime
-			 , 60 - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx) AS total
+			 , D.seat_total - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx) AS total
 			 , C.file_top_path		AS fileTopPath
 		  FROM MOVIES A
 			 , TIMETABLE B 
