@@ -101,6 +101,11 @@ public class ReserveController extends AbstractController{
 		
 	}
 	
+	/**
+	 * @DESC : 좌석 불러오기
+	 * @param dto
+	 * @return
+	 */
 	@ResponseBody
 	@PostMapping("/seatLoad")
 	public ModelAndView seatLoad(ReserveDTO dto) {
@@ -115,7 +120,7 @@ public class ReserveController extends AbstractController{
 			List<ReserveDTO> seatLists = reserveService.getSeatLoad(dto);
 
 			List<List<ReserveDTO>> seatList = Lists.partition(seatLists, 12);
-			System.out.println("new Gson().toJson(seatList) = " + new Gson().toJson(seatList));
+			
 			mav.addObject("seatList",seatList);
 
 		} catch (ValueException e) {
@@ -124,33 +129,9 @@ public class ReserveController extends AbstractController{
 
 		return mav;
 	}
-	
-	@GetMapping("/selectSeat")
-	public ModelAndView selectSeat() {
-		
-		ModelAndView mav = new ModelAndView("/reserve/selectSeat");
-		List<MoviesDTO> movieList = movieService.movieList();
-		for(int i=0 ; i<movieList.size() ; i ++) {
-			
-		}
-
-		/*
-		Type listType = new TypeToken<List<CouponContentVO>>() {
-		}.getType();
-		List<CouponContentVO> subList = new Gson().fromJson(contlist, listType);
-		 */
-
-		if(!isNull(movieList)) {
-			mav.addObject("initIdx",movieList.get(0).getMovieIdx());
-		}
-		
-		mav.addObject("movieList", movieList);
-		return mav;
-		
-	}
 
 	/**
-	 * 예약하기
+	 * @DESC : 예약하기
 	 * @param dto
 	 * @param seatList
 	 * @return
@@ -161,7 +142,6 @@ public class ReserveController extends AbstractController{
 	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray) throws ValueException{
 
 		AjaxResVO<?> data = new AjaxResVO<>();
-
 		
 		try {
 			

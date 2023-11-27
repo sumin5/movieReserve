@@ -11,7 +11,6 @@ public class CommDTO {
 	private Map<String, Object> child;	//자식
 	private boolean flag;		// 여부
 	private Object obChild;		// 자식
-	private Object obChild2;
 	private int total;			// 총합
 	
 	public String getCreateDt() {

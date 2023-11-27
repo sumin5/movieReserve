@@ -124,6 +124,7 @@
 						let photoHtml = '';
 
 						if(!isNull(data)){
+							console.log(data);
 
 							/*data에서 배열단위로 중복제거*/
 							for(let i=0 ; i<data.length ; i++){
@@ -134,6 +135,7 @@
 									,{screenNumber: data[i].screenNumber}
 									,{floor: data[i].floor}
 									,{screenIdx: data[i].screenIdx}
+									,{fileTopPath : data[i].fileTopPath}
 								];
 								setArray.add(JSON.stringify(arr));
 							}
@@ -172,7 +174,7 @@
 
 										/*영화포스터*/
 										if(movieIdxForGetPhoto){
-											photoHtml += `<div class="img">
+											photoHtml += `<div class="img" id="imgId">
 												 			  <img src=` +data[j].fileTopPath+ ` alt="" title="-">
 														  </div>`
 											$("#movie_photo").html(photoHtml);
@@ -206,13 +208,15 @@
 		function selectTime(movieIdx,timetableIdx,screenIdx){
 			selectScreenIdx = "";
 			selectTimetableIdx = "";
-
+			
+			console.log(array);
 			for(let i=0; i<array.length; i++) {
 
 				if(array[i][0].movieIdx == movieIdx){
 					$("#movieTitle").text(array[i][2].movieNameHngl)
 					$("#reserveInfoTheaterName").text('세수정유극장 '+array[i][4].screenNumber+'('+array[i][3].dimensionGb+')')
 					$("#reserveInfoPlayDate").text($("#resdate").text())
+					$("#imgId").attr("src",array[i][7].fileTopPath)
 				}
 
 			}
@@ -333,7 +337,6 @@
 					}
 					
 					alert(res.msg);
-		
 
 				},
 				error: function(res){
@@ -422,29 +425,6 @@
 							</div>
 							<div class="screen">SCREEN</div>
 							<div class="seat_select seating_map_view" id="seatView">
-								<div class="seat_list">
-									<div class="seat_btn">
-										<button class="seating_tit">A</button>
-										<button class="disable"></button>
-										<button class="normal" data-xc="A" data-yc="1" data-x="0" data-y="2" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button>
-										<button class="normal" data-xc="A" data-yc="2" data-x="0" data-y="3" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button>
-										<button class="normal" data-xc="A" data-yc="3" data-x="0" data-y="4" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button>
-										<button class="normal" data-xc="A" data-yc="4" data-x="0" data-y="5" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button>
-										<button class="disable"></button>
-										<button class="normal" data-xc="A" data-yc="5" data-x="0" data-y="7" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button>
-										<button class="normal" data-xc="A" data-yc="6" data-x="0" data-y="8" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button>
-										<button class="normal" data-xc="A" data-yc="7" data-x="0" data-y="9" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button>
-										<button class="normal" data-xc="A" data-yc="8" data-x="0" data-y="16" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14 </button>
-										<button class="disable"> </button>
-										<button class="disablePerson" data-xc="A" data-yc="16" data-x="0" data-y="19" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 16 </button>
-										<button class="disablePerson" data-xc="A" data-yc="17" data-x="0" data-y="20" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 17 </button>
-										<button class="disablePerson" data-xc="A" data-yc="18" data-x="0" data-y="21" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 18 </button>
-										<button class="disablePerson" data-xc="A" data-yc="19" data-x="0" data-y="22" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 19 </button>
-										<button class="disable"> </button>
-										<button class="seating_tit">A</button>
-									</div>
-								</div>
-
 							</div>
 							<div class="seat_txt">
 								<p class="ex">• 좌석 선택 후 5분이내에 결제를 완료해주시기 바랍니다.</p>
@@ -499,7 +479,7 @@
 							<div class="movie_poster">
 								<div id="movie_photo" class="poster">
 									<div class="img">
-										<img src="https://www.daehancinema.co.kr/PETC/assets/images/res_post_default.gif"
+										<img id="imgId" src="https://www.daehancinema.co.kr/PETC/assets/images/res_post_default.gif"
 											 alt="" title="-">
 									</div>
 								</div>

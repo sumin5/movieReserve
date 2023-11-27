@@ -11,8 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.service.file.FileDTO;
-import com.ezen.movie.service.movies.MovieService;
-import com.ezen.movie.service.movies.MoviesDTO;
 
 @Controller
 @RequestMapping(value = {"/main","/" } )

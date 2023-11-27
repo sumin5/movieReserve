@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ezen.movie.mapper.customerService.CustomerMapper;
 import com.ezen.movie.mapper.reserve.ReserveMapper;
 import com.ezen.movie.service.movies.MoviesDTO;
 
