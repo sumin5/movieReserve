@@ -4,23 +4,26 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.comm.AjaxResVO;
 import com.ezen.movie.comm.ValueException;
-import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.reserve.ReserveDTO;
 import com.ezen.movie.service.reserve.ReserveService;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Controller
 @RequestMapping("/reserve")
@@ -31,8 +34,6 @@ public class ReserveController extends AbstractController{
 	private MovieService movieService;
 	@Autowired
 	private ReserveService reserveService;
-	@Autowired
-	private FileMapper fileMapper;
 	
 	/*상수*/
 	final static String TABLEGB = "MOVIES";
@@ -148,24 +149,38 @@ public class ReserveController extends AbstractController{
 		
 	}
 
+	/**
+	 * 예약하기
+	 * @param dto
+	 * @param seatList
+	 * @return
+	 * @throws ValueException
+	 */
 	@ResponseBody
-	@PostMapping("/reserve")
-	public AjaxResVO<?> reserve(ReserveDTO dto,@RequestParam("seatList") String seatList) throws ValueException{
+	@PostMapping("/insert")
+	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray) throws ValueException{
 
 		AjaxResVO<?> data = new AjaxResVO<>();
 
+		
 		try {
+			
+			// TODO : 수정해야함
+			dto.setMemberId("osn9274");
 
-
-			if(isNull(seatList) && (dto.getScreenIdx() < 0)){
+			if(isNull(seatArray) && (dto.getScreenIdx() < 0)){
 				throw new ValueException("잘못된 접근입니다");
 			}
 
-			Type listType = new TypeToken<List<String >>() {
+			Type listType = new TypeToken<List<String>>() {
 			}.getType();
-			List<String> seatList1 = new Gson().fromJson(seatList, listType);
-
-			//data = new AjaxResVO<>(AJAXPASS, "",timetable);
+			List<String> seatList = new Gson().fromJson(seatArray, listType);
+			
+			dto.setSeatList(seatList);
+			
+			reserveService.insert(dto);
+			
+			data = new AjaxResVO<>(AJAXPASS, "예약이 완료되었습니다");
 
 		} catch (ValueException e) {
 			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());

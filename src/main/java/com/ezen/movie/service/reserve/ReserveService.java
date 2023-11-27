@@ -6,18 +6,22 @@ import java.util.Map;
 import com.ezen.movie.service.movies.MoviesDTO;
 
 public interface ReserveService {
-	
-	List<ReserveDTO> menuList();
 
 	/**
 	 * @Desc: 영화 시간표를 가져온다 
 	 */
-	List<Map<String, Object>> getTimetable(MoviesDTO dto);
+	public List<Map<String, Object>> getTimetable(MoviesDTO dto);
 
 	/**
 	 * @Desc : 시트 불러오기
 	 * @param dto
 	 * @return
 	 */
-    List<ReserveDTO> getSeatLoad(ReserveDTO dto);
+	public List<ReserveDTO> getSeatLoad(ReserveDTO dto);
+
+	/**
+	 * @Desc : 영화예약하기
+	 * @param dto
+	 */
+	public void insert(ReserveDTO dto);
 }

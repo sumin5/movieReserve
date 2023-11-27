@@ -16,11 +16,6 @@ public class ReserveServiceImpl implements ReserveService {
 	private ReserveMapper reserveMapper;
 
 	@Override
-	public List<ReserveDTO> menuList() {
-		return reserveMapper.selectMenu();
-	}
-
-	@Override
 	public List<Map<String, Object>> getTimetable(MoviesDTO dto) {
 //		List<Map<String, Object>> timetable = reserveMapper.getTimetable(dto);
 		return reserveMapper.getTimetable(dto);
@@ -29,6 +24,12 @@ public class ReserveServiceImpl implements ReserveService {
 	@Override
 	public List<ReserveDTO> getSeatLoad(ReserveDTO dto) {
 		return reserveMapper.getSeatLoad(dto);
+	}
+
+	@Override
+	public void insert(ReserveDTO dto) {
+		reserveMapper.insert(dto);
+		
 	}
 
 }

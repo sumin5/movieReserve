@@ -38,6 +38,20 @@
 				$("#reserveInfoSeat").text(seatArray);
 			}
 			checkCnt += Number(btnCnt);
+			
+			if(ticketCnt==checkCnt){
+				nextBtnFlag = true;
+				$("#nextBtn").prop("disabled",false);
+				$("#nextBtn").removeClass("strf_off");
+				$("#nextBtn").addClass("stlf_on");
+				
+			} else {
+				nextBtnFlag = false;
+				$("#nextBtn").prop("disabled",true);
+				$("#nextBtn").removeClass("stlf_on");
+				$("#nextBtn").addClass("strf_off");
+			}
+		
 
 		})
 
@@ -48,15 +62,15 @@
 	<div class="seat_list" th:each="list,listStat:${seatList}">
 		<div class="seat_btn">
 			<th:block th:each="seat,seatStat:${list}">
-				<button class="seating_tit" th:if="${seatStat?.first}" th:text="${seat?.seatRowTitle}"></button>
-				<button class="disable" th:if="${seatStat?.index%4 == 0}"></button>
+				<button class="seating_tit" th:if="${seatStat?.first}" th:text="${seat?.seatRowTitle}" type="button"></button>
+				<button class="disable" th:if="${seatStat?.index%4 == 0}" type="button"></button>
 				<th:block th:if="${seat?.seatReserveChk}"> <!--예약유무 판단-->
-					<button class="done seat" th:data-seat_num="${seat?.seatNumber}"></button>
+					<button class="done seat" th:data-seat_num="${seat?.seatNumber}" type="button"></button>
 				</th:block>
 				<th:block th:unless="${seat?.seatReserveChk}"> <!--예약유무 판단-->
-					<button class="normal seat" th:text="${seat?.seatRowNum}" th:data-seat_num="${seat?.seatNumber}"></button>
+					<button class="normal seat" th:text="${seat?.seatRowNum}" th:data-seat_num="${seat?.seatNumber}" type="button"></button>
 				</th:block>
-				<button class="seating_tit" th:if="${seatStat?.last}" th:text="${seat?.seatRowTitle}"></button>
+				<button class="seating_tit" th:if="${seatStat?.last}" th:text="${seat?.seatRowTitle}" type="button"></button>
 			</th:block>
 		</div>
 	</div>

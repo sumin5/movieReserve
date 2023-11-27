@@ -1,5 +1,7 @@
 package com.ezen.movie.service.reserve;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 import com.ezen.movie.service.comm.CommDTO;
@@ -17,6 +19,7 @@ public class ReserveDTO extends CommDTO {
 	private boolean seatReserveChk;    // 좌석 유무
 	private String seatRowTitle;    // 시트좌석타이틀
 	private String seatRowNum;        // 시트좌석번호
+	private List<String> seatList;		// 좌석시트담을곳
 
 
 	public int getSeatReserveIdx() {
@@ -82,4 +85,13 @@ public class ReserveDTO extends CommDTO {
 	public void setSeatRowNum(String seatRowNum) {
 		this.seatRowNum = seatRowNum;
 	}
+
+	public List<String> getSeatList() {
+		return seatList;
+	}
+
+	public void setSeatList(List<String> seatList) {
+		this.seatList = seatList;
+	}
+	
 }

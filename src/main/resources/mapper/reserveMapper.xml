@@ -7,12 +7,6 @@
 -->
 <mapper namespace="com.ezen.movie.mapper.reserve.ReserveMapper">
 
-    <select id="selectMenu" resultType="reserveDTO" >
-        select *
-        from menu
-    </select>
-	
-	
 	<select id="getTimetable" parameterType="MoviesDTO" resultType="map">
 		SELECT A.movie_idx 		AS movieIdx
 			 , B.screen_idx 		AS screenIdx
@@ -57,4 +51,15 @@
 		left outer join SEAT_RESERVE
 			b on b.seat_number = a.seat_number and b.timetable_idx = #{timetableIdx};
 	</select>
+	
+	
+	<insert id="insert" parameterType="reserveDTO">
+		insert into SEAT_RESERVE(
+			create_dt,screen_idx,timetable_idx,member_id,seat_number
+		)
+		values
+		<foreach collection="seatList" item="item" separator=" , ">
+			( now(), #{screenIdx}, #{timetableIdx}, #{memberId} , #{item} )
+		</foreach>
+	</insert>
 </mapper>
