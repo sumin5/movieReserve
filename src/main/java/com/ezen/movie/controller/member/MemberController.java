@@ -156,48 +156,6 @@ public class MemberController extends AbstractController{
 	@ResponseBody
     public AjaxResVO<?> join(MemberDTO dto) throws Exception {
 		
-		
-	
-		/*
-		 * String asd = "yemawoo"; int a = asd.indexOf("ye"); System.err.println(a);
-		 * asd=asd.substring(a+1); System.err.println("asd ? " + asd);
-		 */
-		
-		String [] babbling = {"aya", "yee", "u", "maa", "yemawoowoaya"};
-		int answer = 0;
-		String[] ok = {"aya","ye","woo","ma"};
-		int bigInt = 0; 
-		for(String str : babbling) { //5번 루프
-			
-			for(int i=0; i<ok.length; i++) {
-				System.err.println((i+1)+ "번쨰");
-				System.err.println("포문 str ? " + str);
-				System.err.println("포문 answser? " + ok[i]);
-				if( str.contains(ok[i]) ) {
-					/*
-					 * int idx = str.indexOf(answers[i]);
-					 * 
-					 * 
-					 * System.err.println("idx ? " +idx);
-					 */
-					str = str.replace(ok[i], "/");
-					
-					
-					System.err.println("str ?" + str);
-					
-				}
-				
-			}
-		
-			int aCount = str.length() - str.replace("/", "").length();
-			if(str=="/") {
-				answer+= 1;
-			}
-			
-		}
-		answer = bigInt;
-		System.err.println(answer);
-		
 		AjaxResVO<?> data = new AjaxResVO<>();
 		
 		try {
@@ -206,7 +164,7 @@ public class MemberController extends AbstractController{
 				throw new ValueException("잘못된 접근 경로입니다.");
 			}
 
-			//memberService.join(dto);
+			memberService.join(dto);
 			
 			data = new AjaxResVO<>(AJAXPASS,"회원가입에 성공하였습니다.");
 			

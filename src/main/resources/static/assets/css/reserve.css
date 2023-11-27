@@ -1782,12 +1782,12 @@ button {
 
 .movie_seat .btn_area .btn_list .btn_box button.minus {
     border-radius: 5px 0 0 5px;
-    background: url(/PETC/assets/images/common/minus.png) center no-repeat;
+    background: url(/assets/img/common/minus.png) center no-repeat;
 }
 
 .movie_seat .btn_area .btn_list .btn_box button.plus {
     border-radius: 0 5px 5px 0;
-    background: url(/PETC/assets/images/common/plus.png) center no-repeat;
+    background: url(/assets/img/common/plus.png) center no-repeat;
 }
 
 .movie_seat .btn_area .btn_list .btn_box .num {

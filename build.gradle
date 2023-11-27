@@ -60,6 +60,8 @@ dependencies {
 	
 	//SQL 로그
 	implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
+	// Guava
+	implementation 'com.google.guava:guava:11.0.2'
 }
 
 tasks.named('test') {

@@ -18,4 +18,11 @@ public interface ReserveMapper {
 	 * @Desc: 영화 시간표를 가져온다 
 	 */
 	List<Map<String, Object>> getTimetable(MoviesDTO dto);
+
+	/**
+	 * @Desc: 시트 불러오기
+	 * @param dto
+	 * @return
+	 */
+    List<ReserveDTO> getSeatLoad(ReserveDTO dto);
 }

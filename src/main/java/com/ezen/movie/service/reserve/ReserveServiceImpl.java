@@ -26,4 +26,9 @@ public class ReserveServiceImpl implements ReserveService {
 		return reserveMapper.getTimetable(dto);
 	}
 
+	@Override
+	public List<ReserveDTO> getSeatLoad(ReserveDTO dto) {
+		return reserveMapper.getSeatLoad(dto);
+	}
+
 }

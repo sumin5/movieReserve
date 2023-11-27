@@ -15,6 +15,7 @@
 	
 	<select id="getTimetable" parameterType="MoviesDTO" resultType="map">
 		SELECT A.movie_idx 		AS movieIdx
+			 , B.screen_idx 		AS screenIdx
 			 , B.timetable_idx 		AS timetableIdx
 			 , A.movie_name_hngl 	AS movieNameHngl
 			 , A.movie_rate 		AS movieRate
@@ -43,4 +44,17 @@
 		</if>
 	</select>
 
+	<select id="getSeatLoad" resultType="reserveDTO" parameterType="reserveDTO">
+		select
+		    a.*,
+		    IF(b.seat_reserve_idx is null,false,true) as seat_reserve_chk,
+			SUBSTR(a.seat_number,1,1) as seat_row_title,
+			SUBSTR(a.seat_number,2) as seat_row_num
+		from
+			(select *
+			 FROM SEAT
+			 where screen_idx = #{screenIdx}) a
+		left outer join SEAT_RESERVE
+			b on b.seat_number = a.seat_number and b.timetable_idx = #{timetableIdx};
+	</select>
 </mapper>

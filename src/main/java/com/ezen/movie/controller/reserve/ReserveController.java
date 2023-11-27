@@ -1,14 +1,14 @@
 package com.ezen.movie.controller.reserve;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
@@ -101,9 +101,27 @@ public class ReserveController extends AbstractController{
 	}
 	
 	@ResponseBody
-	@PostMapping("seatLoad")
+	@PostMapping("/seatLoad")
 	public ModelAndView seatLoad(ReserveDTO dto) {
-		return new ModelAndView();
+
+		ModelAndView mav = new ModelAndView("/reserve/seatType/Aseat");
+
+		try{
+			if(dto.getScreenIdx() < 0 && dto.getTimetableIdx() < 0){
+				throw new ValueException("잘못된 접근입니다.");
+			}
+
+			List<ReserveDTO> seatLists = reserveService.getSeatLoad(dto);
+
+			List<List<ReserveDTO>> seatList = Lists.partition(seatLists, 12);
+			System.out.println("new Gson().toJson(seatList) = " + new Gson().toJson(seatList));
+			mav.addObject("seatList",seatList);
+
+		} catch (ValueException e) {
+			mav = new ModelAndView("/reserve/selectPage");
+		}
+
+		return mav;
 	}
 	
 	@GetMapping("/selectSeat")
@@ -114,7 +132,13 @@ public class ReserveController extends AbstractController{
 		for(int i=0 ; i<movieList.size() ; i ++) {
 			
 		}
-		
+
+		/*
+		Type listType = new TypeToken<List<CouponContentVO>>() {
+		}.getType();
+		List<CouponContentVO> subList = new Gson().fromJson(contlist, listType);
+		 */
+
 		if(!isNull(movieList)) {
 			mav.addObject("initIdx",movieList.get(0).getMovieIdx());
 		}
@@ -123,5 +147,35 @@ public class ReserveController extends AbstractController{
 		return mav;
 		
 	}
-	
+
+	@ResponseBody
+	@PostMapping("/reserve")
+	public AjaxResVO<?> reserve(ReserveDTO dto,@RequestParam("seatList") String seatList) throws ValueException{
+
+		AjaxResVO<?> data = new AjaxResVO<>();
+
+		try {
+
+
+			if(isNull(seatList) && (dto.getScreenIdx() < 0)){
+				throw new ValueException("잘못된 접근입니다");
+			}
+
+			Type listType = new TypeToken<List<String >>() {
+			}.getType();
+			List<String> seatList1 = new Gson().fromJson(seatList, listType);
+
+			//data = new AjaxResVO<>(AJAXPASS, "",timetable);
+
+		} catch (ValueException e) {
+			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		}
+
+		return data;
+
+	}
+
 }

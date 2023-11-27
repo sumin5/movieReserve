@@ -1,24 +1,109 @@
-<div class="seat_select seating_map_view">
-								<div class="seat_list">
-									<!--<div class="seat_btn">
-										<button class="seating_tit">A</button>
-										<button class="disable"></button>
-										<button class="normal" data-xc="A" data-yc="1" data-x="0" data-y="2" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button>
-										<button class="normal" data-xc="A" data-yc="2" data-x="0" data-y="3" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button>
-										<button class="normal" data-xc="A" data-yc="3" data-x="0" data-y="4" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button>
-										<button class="normal" data-xc="A" data-yc="4" data-x="0" data-y="5" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button>
-										<button class="disable"></button>
-										<button class="normal" data-xc="A" data-yc="5" data-x="0" data-y="7" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button>
-										<button class="normal" data-xc="A" data-yc="6" data-x="0" data-y="8" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button>
-										<button class="normal" data-xc="A" data-yc="7" data-x="0" data-y="9" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button>
-										<button class="normal" data-xc="A" data-yc="8" data-x="0" data-y="16" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14 </button>
-										<button class="disable"> </button>
-										<button class="disablePerson" data-xc="A" data-yc="16" data-x="0" data-y="19" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 16 </button>
-										<button class="disablePerson" data-xc="A" data-yc="17" data-x="0" data-y="20" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 17 </button>
-										<button class="disablePerson" data-xc="A" data-yc="18" data-x="0" data-y="21" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 18 </button>
-										<button class="disablePerson" data-xc="A" data-yc="19" data-x="0" data-y="22" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 19 </button>
-										<button class="disable"> </button>
-										<button class="seating_tit">A</button>
-									</div>-->
-								</div>
+
+<script>
+	$(function(){
+		// 버튼 클릭시 동작
+
+		$(".seat_list .seat_btn .seat").on("click",function (){
+			let btnCnt = 0;
+
+			let selectBtn = $(this);
+
+			if(selectBtn.hasClass("done")){
+				return;
+			}
+
+			if(selectBtn.hasClass("normal")){ // 선택
+				if(ticketCnt<=checkCnt){
+					return;
+				}
+				selectBtn.removeClass("normal");
+				selectBtn.addClass("select_seat");
+				btnCnt = 1;
+				seatArray.push(selectBtn.data("seat_num"));
+
+			} else {	// 제거
+				selectBtn.addClass("normal");
+				selectBtn.removeClass("select_seat");
+				btnCnt = -1;
+				for(let i =0; i< seatArray.length; i++) {	// 배열에서 제거
+					if (seatArray[i] === selectBtn.data("seat_num")) {
+						seatArray.splice(i, 1);
+					}
+				}
+			}
+			// 우측정보창 좌석 표기
+			if(seatArray.length==0){
+				$("#reserveInfoSeat").text("좌석 선택 가능");
+			}else {
+				$("#reserveInfoSeat").text(seatArray);
+			}
+			checkCnt += Number(btnCnt);
+
+		})
+
+	})
+
+</script>
+
+	<div class="seat_list" th:each="list,listStat:${seatList}">
+		<div class="seat_btn">
+			<th:block th:each="seat,seatStat:${list}">
+				<button class="seating_tit" th:if="${seatStat?.first}" th:text="${seat?.seatRowTitle}"></button>
+				<button class="disable" th:if="${seatStat?.index%4 == 0}"></button>
+				<th:block th:if="${seat?.seatReserveChk}"> <!--예약유무 판단-->
+					<button class="done seat" th:data-seat_num="${seat?.seatNumber}"></button>
+				</th:block>
+				<th:block th:unless="${seat?.seatReserveChk}"> <!--예약유무 판단-->
+					<button class="normal seat" th:text="${seat?.seatRowNum}" th:data-seat_num="${seat?.seatNumber}"></button>
+				</th:block>
+				<button class="seating_tit" th:if="${seatStat?.last}" th:text="${seat?.seatRowTitle}"></button>
+			</th:block>
+		</div>
+	</div>
+<!--
+<div class="seat_list">
+	<div class="seat_btn">
+        <button class="seating_tit">A</button>
+        <button class="disable"></button>
+        <button class="normal" data-xc="A" data-yc="1" data-x="0" data-y="2" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button>
+        <button class="normal" data-xc="A" data-yc="2" data-x="0" data-y="3" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button>
+        <button class="normal" data-xc="A" data-yc="3" data-x="0" data-y="4" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button>
+        <button class="normal" data-xc="A" data-yc="4" data-x="0" data-y="5" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button>
+        <button class="disable"></button>
+        <button class="normal" data-xc="A" data-yc="5" data-x="0" data-y="7" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button>
+        <button class="normal" data-xc="A" data-yc="6" data-x="0" data-y="8" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button>
+        <button class="normal" data-xc="A" data-yc="7" data-x="0" data-y="9" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button>
+        <button class="normal" data-xc="A" data-yc="8" data-x="0" data-y="16" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14 </button>
+        <button class="disable"> </button>
+        <button class="disablePerson" data-xc="A" data-yc="16" data-x="0" data-y="19" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 16 </button>
+        <button class="disablePerson" data-xc="A" data-yc="17" data-x="0" data-y="20" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 17 </button>
+        <button class="disablePerson" data-xc="A" data-yc="18" data-x="0" data-y="21" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 18 </button>
+        <button class="disablePerson" data-xc="A" data-yc="19" data-x="0" data-y="22" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 19 </button>
+        <button class="disable"> </button>
+        <button class="seating_tit">A</button>
+    </div>
+
+    <div class="seat_list">
+		<div class="seat_btn">
+			<button class="seating_tit">A</button>
+			<button class="disable"></button>
+			<button class="normal" data-xc="A" data-yc="1" data-x="0" data-y="2" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 1 </button>
+			<button class="normal" data-xc="A" data-yc="2" data-x="0" data-y="3" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 2 </button>
+			<button class="normal" data-xc="A" data-yc="3" data-x="0" data-y="4" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 3 </button>
+			<button class="normal" data-xc="A" data-yc="4" data-x="0" data-y="5" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 4 </button>
+			<button class="disable"></button>
+			<button class="normal" data-xc="A" data-yc="5" data-x="0" data-y="7" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 5 </button>
+			<button class="normal" data-xc="A" data-yc="6" data-x="0" data-y="8" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 6 </button>
+			<button class="normal" data-xc="A" data-yc="7" data-x="0" data-y="9" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 7 </button>
+			<button class="normal" data-xc="A" data-yc="8" data-x="0" data-y="16" data-mtime="110746" data-stype="STCD0010" data-useyn="Y"> 14 </button>
+			<button class="disable"> </button>
+			<button class="disablePerson" data-xc="A" data-yc="16" data-x="0" data-y="19" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 16 </button>
+			<button class="disablePerson" data-xc="A" data-yc="17" data-x="0" data-y="20" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 17 </button>
+			<button class="disablePerson" data-xc="A" data-yc="18" data-x="0" data-y="21" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 18 </button>
+			<button class="disablePerson" data-xc="A" data-yc="19" data-x="0" data-y="22" data-mtime="110746" data-stype="STCD0020" data-useyn="Y"> 19 </button>
+			<button class="disable"> </button>
+			<button class="seating_tit">A</button>
+		</div>
+	</div>
 </div>
+-->
