@@ -1,7 +1,9 @@
 package com.ezen.movie.controller.member;
 
-import org.apache.catalina.filters.AddDefaultCharsetFilter;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +14,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.comm.AjaxResVO;
+import com.ezen.movie.comm.MemberUtil;
 import com.ezen.movie.comm.ValueException;
 import com.ezen.movie.config.EmailService;
 import com.ezen.movie.service.member.MailDTO;
 import com.ezen.movie.service.member.MemberDTO;
 import com.ezen.movie.service.member.MemberService;
-import com.ezen.movie.service.store.StoreService;
+import com.google.gson.Gson;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/member")
@@ -30,10 +36,24 @@ public class MemberController extends AbstractController{
 	@Autowired
 	private MemberService memberService;
 	
+	@Value("${kakao.jsAppKey}")
+	private String jsAppKey; 
+	
+	@Value("${kakao.redirectUri}")
+	private String redirectUri;
+	
 	@GetMapping("/loginForm")
 	public ModelAndView loginForm() {
-		
+
 		ModelAndView mav = new ModelAndView("/member/login");
+
+		if(MemberUtil.isLogin()){
+			mav = new ModelAndView("redirect:/main");
+		}
+		
+		mav.addObject("redirectUri",redirectUri);
+		mav.addObject("jsAppKey",jsAppKey);
+		
 		return mav;
 		
 	}
@@ -179,5 +199,97 @@ public class MemberController extends AbstractController{
 		return data;
 		
     }
+
+	@PostMapping("/login")
+	@ResponseBody
+	public AjaxResVO<?> login(HttpServletRequest request, MemberDTO dto) throws Exception {
+
+		AjaxResVO<?> data = new AjaxResVO<>();
+
+		try {
+
+			if(dto == null) {
+				throw new ValueException("잘못된 접근 경로입니다.");
+			}
+
+			MemberDTO member = memberService.login(dto);
+
+			String msg = "";
+			if(member == null) {
+				msg = "로그인 실패";
+				data = new AjaxResVO<>(AJAXFAIL,msg);
+
+			}else{
+				msg = "로그인 성공";
+				HttpSession session = request.getSession();
+				session.setAttribute("user",new Gson().toJson(member));
+				data = new AjaxResVO<>(AJAXPASS,msg);
+
+			}
+
+
+		} catch (ValueException e) {
+			e.getMessage();
+			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		}
+
+		return data;
+
+	}
+
+	@GetMapping("/logOut")
+	public ModelAndView logout( HttpServletRequest request ) {
+		request.getSession().invalidate();
+		return new ModelAndView("redirect:/main");
+	}
+
+	@ResponseBody
+	@GetMapping("/login/kakao")
+	public ModelAndView loginKakao(HttpServletRequest request,@RequestParam(required = false) String code){
+
+		ModelAndView mav = null;
+		HttpSession session = request.getSession();
+
+		String accessToken = memberService.getKakaoAccessToken(code);
+
+		if(accessToken != null && !"".equals(accessToken)){
+
+			Map<String,Object> userInfo = memberService.getKakaoUserInfo(accessToken);
+			MemberDTO memberPrm = new MemberDTO();
+			String memberId = "KA-"+userInfo.get("id");
+			memberPrm.setMemberId(memberId);
+			// member 가져오기
+			MemberDTO member = memberService.getOne(memberPrm);
+
+			// 회원가입
+			if(member == null) {
+
+				MemberDTO memberDTO = new MemberDTO();
+
+				memberDTO.setMemberId(memberId);
+				memberDTO.setMemberName((String)userInfo.get("nickname"));
+				memberDTO.setEmail((String)userInfo.get("email"));
+				memberDTO.setMemberGender((String)userInfo.get("gender"));
+				memberDTO.setKakaoIdGb("Y");
+
+				memberService.kakaoJoin(memberDTO);
+
+				session.setAttribute("user",new Gson().toJson(memberDTO));
+
+			}else { // 로그인
+				session.setAttribute("user",new Gson().toJson(member));
+			}
+
+			mav = new ModelAndView("redirect:/main");
+
+		}
+
+		return mav;
+
+	}
+
 
 }

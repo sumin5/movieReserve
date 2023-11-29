@@ -15,7 +15,7 @@ public class MemberDTO extends CommDTO{
 	private String marketingYn;	// 마케팅수신여부
 	private String smsYn;		// sms수신여부
 	private String emailYn;		// 이메일수신여부
-	private String naverIdGb;	// 네이버메일구분
+	private String kakaoIdGb;	// 카카오토큰구분
 	private String memberGb;	// 구분
 	private String authNum;		// 인증번호
 	private String memberGender;// 성별
@@ -74,12 +74,15 @@ public class MemberDTO extends CommDTO{
 	public void setEmailYn(String emailYn) {
 		this.emailYn = emailYn;
 	}
-	public String getNaverIdGb() {
-		return naverIdGb;
+
+	public String getKakaoIdGb() {
+		return kakaoIdGb;
 	}
-	public void setNaverIdGb(String naverIdGb) {
-		this.naverIdGb = naverIdGb;
+
+	public void setKakaoIdGb(String kakaoIdGb) {
+		this.kakaoIdGb = kakaoIdGb;
 	}
+
 	public String getMemberGb() {
 		return memberGb;
 	}

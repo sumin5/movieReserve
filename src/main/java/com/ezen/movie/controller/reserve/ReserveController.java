@@ -4,8 +4,11 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import com.ezen.movie.comm.MemberUtil;
+import com.ezen.movie.service.member.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -141,12 +144,14 @@ public class ReserveController extends AbstractController{
 	@PostMapping("/insert")
 	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray) throws ValueException{
 
+		TransactionStatus status = getTransactionStatus();
 		AjaxResVO<?> data = new AjaxResVO<>();
 		
 		try {
-			
-			// TODO : 수정해야함
-			dto.setMemberId("osn9274");
+
+			MemberDTO member = MemberUtil.getMember();
+
+			dto.setMemberId(member.getMemberId());
 
 			if(isNull(seatArray) && (dto.getScreenIdx() < 0)){
 				throw new ValueException("잘못된 접근입니다");
@@ -159,12 +164,16 @@ public class ReserveController extends AbstractController{
 			dto.setSeatList(seatList);
 			
 			reserveService.insert(dto);
+
+			tManager.commit(status);
 			
 			data = new AjaxResVO<>(AJAXPASS, "예약이 완료되었습니다");
 
 		} catch (ValueException e) {
+			tManager.rollback(status);
 			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
 		} catch (Exception e) {
+			tManager.rollback(status);
 			e.printStackTrace();
 			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
 		}

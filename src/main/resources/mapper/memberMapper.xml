@@ -58,8 +58,35 @@
 		
 	
 	</insert>
-	
-	
+
+	<!-- 로그인 -->
+	<select id="login" parameterType="memberDTO" resultType="memberDTO">
+		select * from MEMBERS
+		where member_id = #{memberId} and password = sha2(#{password},512)
+	</select>
+
+	<select id="getOne" parameterType="String" resultType="memberDTO">
+		select * from MEMBERS
+		where member_id = #{memberId}
+	</select>
+
+	<!--카카오로 회원가입-->
+	<insert id="kakaoJoin" parameterType="memberDTO">
+		insert into MEMBERS (
+			member_id,
+			member_name,
+			email,
+			member_gender,
+		    kakao_id_gb
+		) values (
+			#{memberId},
+		    #{memberName},
+			#{email},
+		    #{memberGender},
+		    #{kakaoIdGb}
+		)
+
+	</insert>
 	
 
 </mapper>

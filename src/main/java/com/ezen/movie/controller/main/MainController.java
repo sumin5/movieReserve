@@ -13,13 +13,13 @@ import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.service.file.FileDTO;
 
 @Controller
-@RequestMapping(value = {"/main","/" } )
+@RequestMapping(value = {"/" } )
 public class MainController extends AbstractController{
 	
 	@Autowired
 	private FileMapper fileMapper;
 	
-	@GetMapping("/")
+	@GetMapping(value={"/","/main"})
 	public ModelAndView main() {
 		ModelAndView mav = new ModelAndView("/main/main");
 		
