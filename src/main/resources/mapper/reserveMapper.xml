@@ -33,6 +33,7 @@
 		   AND A.movie_idx	  = C.table_idx
 		   AND B.screen_idx   = D.screen_idx
 		   AND B.screening_dt = #{wildCard}
+		   AND DATE_FORMAT(A.end_dt,'%Y-%M-%d') >= DATE_FORMAT(now(),'%Y-%M-%d')
 		<if test="movieIdx != 0">
 		   AND A.movie_idx 	  = #{movieIdx}
 		</if>

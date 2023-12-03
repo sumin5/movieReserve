@@ -18,6 +18,7 @@
 		let selectScreenIdx = "";
 		let selectTimetableIdx = "";
 		let seatArray = [];	//좌석자리 배열
+		let productArray = []; // 상품 배열
 		// 페이지 온로드시
 		$(function(){
 
@@ -62,23 +63,31 @@
 				let btn = $(this);
 				let count = 0;
 				let inputBox = btn.parent().find("input[type='text']");
-				let priceVal = Number(8000);
+				let priceVal = inputBox.data("price");
+				let productIdx = Number(btn.parent().find("input[name='productIdx']").val());
 
-				if(inputBox.hasClass("oldType")){
+				/* if(inputBox.hasClass("oldType")){
 					priceVal = Number(4000);
 				} else if(inputBox.hasClass("morningType")){
 					priceVal = Number(6000);
 				}
-
+ */
 				if(btn.hasClass("minus")){
 					if(Number(inputBox.val()) == 0) {	// 값이 0미만으로는 안내려감
 						return;
 					}
+					for(let i =0; i< productArray.length; i++) {	// 배열에서 제거
+						if (productArray[i] === productIdx) {
+							productArray.splice(i, 1);
+						}
+					}
 					count = -1;
 				}else{
 					count = +1;
+					productArray.push(productIdx);
 				}
 
+				
 				price += priceVal*count;
 				ticketCnt += count;
 				inputBox.val(Number(inputBox.val())+count);
@@ -101,7 +110,6 @@
 				alert("잘못된 접근입니다.");
 				return false;
 			}
-
 
 			$.ajax({
 
@@ -277,6 +285,7 @@
 		// 초기화
 		function reset(){
 			seatArray = [];
+			productArray = [];
 			price = 0;
 			ticketCnt = 0;
 			checkCnt = 0;
@@ -300,7 +309,7 @@
 		// 예약하기
 		function reserveBtn(){
 			
-			if(!nextBtnFlag){
+			if(!nextBtnFlag || isNull(productArray)){
 				alert("잘못된 접근입니다.");
 				return;
 			}
@@ -321,6 +330,7 @@
 				type : 'post',
 				url : '[[@{/reserve/insert}]]',
 				data : {
+					'productArray' : JSON.stringify(productArray),
 					'seatArray' : JSON.stringify(seatArray),
 					'price' : price,
 					'timetableIdx' : selectTimetableIdx,
@@ -400,14 +410,15 @@
 							<p class="tit">관람인원선택</p>
 							<button class="refresh" onclick="reset()">초기화</button>
 							<div class="btn_area reserve_area">
-								<div class="btn_list">
-									<p class="tit">우대2D</p>
+								<div th:if="${pList.size > 0}" th:each="p : ${pList}" class="btn_list">
+									<p class="tit" th:text="${p.productName}"></p>
 									<div class="btn_box">
-										<button data-acid="161" class="minus">&nbsp;</button>
-										<input type="text" class="num oldType" value="0" readonly="">
-										<button data-acid="161" class="plus">&nbsp;</button></div>
+										<button class="minus">&nbsp;</button>
+										<input type="text" class="num" value="0" readonly="" th:data-price="${p.productPrice}">
+										<input type="hidden" name="productIdx" th:value="${p.productIdx}">
+										<button class="plus">&nbsp;</button></div>
 								</div>
-								<div class="btn_list">
+								<!-- <div class="btn_list">
 									<p class="tit">조조2D</p>
 									<div class="btn_box">
 										<button class="minus">&nbsp;</button>
@@ -421,7 +432,7 @@
 										<button class="minus">&nbsp;</button>
 										<input type="text" class="num normalType"  value="0" readonly="">
 										<button class="plus">&nbsp;</button></div>
-								</div>
+								</div> -->
 							</div>
 							<div class="screen">SCREEN</div>
 							<div class="seat_select seating_map_view" id="seatView">

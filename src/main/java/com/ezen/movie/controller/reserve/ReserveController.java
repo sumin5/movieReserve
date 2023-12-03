@@ -1,6 +1,8 @@
 package com.ezen.movie.controller.reserve;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,8 @@ import com.ezen.movie.comm.ValueException;
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
+import com.ezen.movie.service.product.ProductDTO;
+import com.ezen.movie.service.product.ProductService;
 import com.ezen.movie.service.reserve.ReserveDTO;
 import com.ezen.movie.service.reserve.ReserveService;
 import com.google.common.collect.Lists;
@@ -37,6 +41,8 @@ public class ReserveController extends AbstractController{
 	private MovieService movieService;
 	@Autowired
 	private ReserveService reserveService;
+	@Autowired
+	private ProductService productService;
 	
 	/*상수*/
 	final static String TABLEGB = "MOVIES";
@@ -46,14 +52,16 @@ public class ReserveController extends AbstractController{
 		
 		ModelAndView mav = new ModelAndView("/reserve/selectPage");
 		List<MoviesDTO> movieList = movieService.movieList();
-		for(int i=0 ; i<movieList.size() ; i ++) {
-			
-		}
+		
+		ProductDTO productDto = new ProductDTO();
+		productDto.setProductGb("T");
+		List<ProductDTO> pList = productService.getList(productDto);
 		
 		if(!isNull(movieList)) {
 			mav.addObject("initIdx",movieList.get(0).getMovieIdx());
 		}
 		
+		mav.addObject("pList",pList);
 		mav.addObject("movieList", movieList);
 		return mav;
 		
@@ -142,13 +150,12 @@ public class ReserveController extends AbstractController{
 	 */
 	@ResponseBody
 	@PostMapping("/insert")
-	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray) throws ValueException{
+	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray) throws ValueException{
 
 		TransactionStatus status = getTransactionStatus();
 		AjaxResVO<?> data = new AjaxResVO<>();
 		
 		try {
-
 			MemberDTO member = MemberUtil.getMember();
 
 			dto.setMemberId(member.getMemberId());
@@ -159,11 +166,23 @@ public class ReserveController extends AbstractController{
 
 			Type listType = new TypeToken<List<String>>() {
 			}.getType();
+			Type intListType = new TypeToken<List<Integer>>() {
+			}.getType();
 			List<String> seatList = new Gson().fromJson(seatArray, listType);
+			
+			List<Integer> productList = new Gson().fromJson(productArray, intListType);
 			
 			dto.setSeatList(seatList);
 			
 			reserveService.insert(dto);
+			
+			// 구매내역 테이블에 넣기
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
+			
+			String nowTime = simpleDateFormat.format(System.currentTimeMillis());
+			String purchaceDetailIdx = dto.getMemberId() + nowTime;
+			
 
 			tManager.commit(status);
 			
