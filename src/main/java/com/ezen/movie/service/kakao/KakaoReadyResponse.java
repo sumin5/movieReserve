@@ -1,6 +1,6 @@
 package com.ezen.movie.service.kakao;
 
-public class KakaoReadyResponseEntity {
+public class KakaoReadyResponse {
 	
 	private String tid;					// 결제 고유 번호
 	private String next_redirect_pc_url; // pc 웹일 경우 받는 결제 페이지

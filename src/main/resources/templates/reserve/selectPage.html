@@ -22,6 +22,21 @@
 		// 페이지 온로드시
 		$(function(){
 
+			$('#apibtn').click(function name() {
+				$.ajax({
+					url : '[[@{/pay/ready}]]',
+					method : 'POST',
+					dataType : "json",
+					success : function (data) {
+						var box = data.next_redirect_pc_url;
+						window.open(box);
+					},
+					error : function (error) {
+						alert(error);
+					}
+				})
+			})
+
 			// 데이트피커 옵션설정
 			$('#datepicker').datepicker({
 				closeText: "닫기",
@@ -541,6 +556,7 @@
 								<p class="seatsel total_btn_wrap" id="secondPageBtn" style="display: none;">
 									<button class="btn stlf_on" type="button" onclick="prevBtn()">이전</button>
 									<button class="btn strf_off" type="button" id="nextBtn" disabled onclick="reserveBtn()">다음</button>
+									<button id="apibtn">카카오페이로 결제하기</button>
 								</p>
 								<p class="seatsel total_btn_wrap" style="display: none;">
 									<button class="btn stlf_on" type="button">이전</button>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+    [템플릿 설명]  
+    - 해당 파일은 SQL 문을 작성하는 곳입니다.
+-->
+<mapper namespace="com.ezen.movie.mapper.purchase.PurchaseMapper">
+
+   <insert id="infoInsert" parameterType="purchaseInfoDTO">
+   		insert into PURCHASE_INFO(
+   			purchase_info_idx, member_id, total_price, create_dt
+   		)
+   		values( 
+   			#{purchaseInfoIdx}, #{memberId}, #{totalPrice}, now()
+   		)
+   </insert>
+   
+   <insert id="detailInsert" parameterType="purchaseDetailDTO">
+   		insert into PURCHASE_DETAIL(
+   			create_dt,product_idx,purchase_info_idx
+   		)
+   		values
+   		<foreach collection="productList" item="item" separator=" , ">
+   			( now(), #{item}, #{purchaseInfoIdx} )
+   		</foreach>
+   </insert>
+	
+
+</mapper>

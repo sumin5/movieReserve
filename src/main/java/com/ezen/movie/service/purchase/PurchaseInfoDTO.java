@@ -2,21 +2,24 @@ package com.ezen.movie.service.purchase;
 
 import java.util.List;
 
+import org.apache.ibatis.type.Alias;
+
 import com.ezen.movie.service.comm.CommDTO;
 
+@Alias("purchaseInfoDTO")
 public class PurchaseInfoDTO extends CommDTO{
 	
-	private int purchaseInfoIdx;	// 구매정보내역인덱스
+	private String purchaseInfoIdx;	// 구매정보내역인덱스
 	private String memberId;		// 회원IDX
 	private int totalPrice;			// 총합가격
 	
 	private List<PurchaseDetailDTO> detailList ;	// 상세리스트
 
-	public int getPurchaseInfoIdx() {
+	public String getPurchaseInfoIdx() {
 		return purchaseInfoIdx;
 	}
 
-	public void setPurchaseInfoIdx(int purchaseInfoIdx) {
+	public void setPurchaseInfoIdx(String purchaseInfoIdx) {
 		this.purchaseInfoIdx = purchaseInfoIdx;
 	}
 

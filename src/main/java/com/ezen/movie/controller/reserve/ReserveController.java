@@ -26,6 +26,9 @@ import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.product.ProductDTO;
 import com.ezen.movie.service.product.ProductService;
+import com.ezen.movie.service.purchase.PurchaseDetailDTO;
+import com.ezen.movie.service.purchase.PurchaseInfoDTO;
+import com.ezen.movie.service.purchase.PurchaseService;
 import com.ezen.movie.service.reserve.ReserveDTO;
 import com.ezen.movie.service.reserve.ReserveService;
 import com.google.common.collect.Lists;
@@ -43,6 +46,8 @@ public class ReserveController extends AbstractController{
 	private ReserveService reserveService;
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private PurchaseService purchaseService;
 	
 	/*상수*/
 	final static String TABLEGB = "MOVIES";
@@ -150,7 +155,8 @@ public class ReserveController extends AbstractController{
 	 */
 	@ResponseBody
 	@PostMapping("/insert")
-	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray) throws ValueException{
+	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray,
+			@RequestParam("price") int price) throws ValueException{
 
 		TransactionStatus status = getTransactionStatus();
 		AjaxResVO<?> data = new AjaxResVO<>();
@@ -176,14 +182,28 @@ public class ReserveController extends AbstractController{
 			
 			reserveService.insert(dto);
 			
-			// 구매내역 테이블에 넣기
+			// 구매내역 테이블 상위에 넣기
 			
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMDDHHmmss");
 			
 			String nowTime = simpleDateFormat.format(System.currentTimeMillis());
+			
 			String purchaceDetailIdx = dto.getMemberId() + nowTime;
 			
-
+			PurchaseInfoDTO purchaseInfoDTO = new PurchaseInfoDTO();
+			purchaseInfoDTO.setPurchaseInfoIdx(purchaceDetailIdx);
+			purchaseInfoDTO.setTotalPrice(price);
+			purchaseInfoDTO.setMemberId(member.getMemberId());
+			
+			purchaseService.infoInsert(purchaseInfoDTO);
+			// 구매내역 테이블 하위 넣기
+			
+			PurchaseDetailDTO purchaseDetailDTO = new PurchaseDetailDTO();
+			purchaseDetailDTO.setProductList(productList);
+			purchaseDetailDTO.setPurchaseInfoIdx(purchaseInfoDTO.getPurchaseInfoIdx());
+			
+			purchaseService.detailInsert(purchaseDetailDTO);
+			
 			tManager.commit(status);
 			
 			data = new AjaxResVO<>(AJAXPASS, "예약이 완료되었습니다");
