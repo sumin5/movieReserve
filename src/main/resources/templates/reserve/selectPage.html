@@ -28,8 +28,7 @@
 					method : 'POST',
 					dataType : "json",
 					success : function (data) {
-						var box = data.next_redirect_pc_url;
-						window.open(box);
+						location.href=data.next_redirect_pc_url;
 					},
 					error : function (error) {
 						alert(error);

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,6 +33,9 @@ public class KakaoPayService {
 	private KakaoReadyResponse kakaoReady;
 	
     public KakaoReadyResponse kakaoPayReady(KakaoPayResponse kakaoPay) {
+    	
+    	
+    	HttpServletRequest request = HttpUtil.getRequest();
     	
     	String path = HttpUtil.getRequest().getScheme()+"://"+HttpUtil.getRequest().getServerName()+":"+HttpUtil.getRequest().getServerPort();
     	
@@ -52,10 +56,17 @@ public class KakaoPayService {
         parameters.add("quantity", "1");
         parameters.add("total_amount", "5000");
         parameters.add("vat_amount", "500");
+        parameters.add("item_code", "{\r\n"
+        		+ "  \"product\": \"Item123\",\r\n"
+        		+ "  \"quantity\": 2,\r\n"
+        		+ "  \"amount\": 30000\r\n"
+        		+ "}");
         parameters.add("tax_free_amount", "500");
         parameters.add("approval_url", path + "/pay/success"); // 성공 시 redirect url
         parameters.add("cancel_url", path + "/pay/cancle"); // 취소 시 redirect url
         parameters.add("fail_url", path + "/pay/fail"); // 실패 시 redirect url
+        HttpSession session = request.getSession();
+        session.setAttribute("tumin", 123);
         // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
         System.err.println(requestEntity);
