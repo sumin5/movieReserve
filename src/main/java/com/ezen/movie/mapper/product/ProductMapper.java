@@ -9,4 +9,6 @@ public interface ProductMapper {
 
 	public List<ProductDTO> getList(ProductDTO dto);
 
+	public ProductDTO getOne(Integer integer);
+
 }

@@ -2,7 +2,10 @@ package com.ezen.movie.controller.reserve;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +25,8 @@ import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.comm.AjaxResVO;
 import com.ezen.movie.comm.ValueException;
 import com.ezen.movie.service.file.FileDTO;
+import com.ezen.movie.service.kakao.KakaoPayService;
+import com.ezen.movie.service.kakao.KakaoReadyResponse;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.product.ProductDTO;
@@ -48,6 +53,8 @@ public class ReserveController extends AbstractController{
 	private ProductService productService;
 	@Autowired
 	private PurchaseService purchaseService;
+	@Autowired
+	private KakaoPayService kakaoPayService;
 	
 	/*상수*/
 	final static String TABLEGB = "MOVIES";
@@ -154,8 +161,8 @@ public class ReserveController extends AbstractController{
 	 * @throws ValueException
 	 */
 	@ResponseBody
-	@PostMapping("/insert")
-	public AjaxResVO<?> insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray,
+	@PostMapping("/insert2")
+	public AjaxResVO<?> insert2(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray,
 			@RequestParam("price") int price) throws ValueException{
 
 		TransactionStatus status = getTransactionStatus();
@@ -206,6 +213,7 @@ public class ReserveController extends AbstractController{
 			
 			tManager.commit(status);
 			
+			
 			data = new AjaxResVO<>(AJAXPASS, "예약이 완료되었습니다");
 
 		} catch (ValueException e) {
@@ -215,6 +223,77 @@ public class ReserveController extends AbstractController{
 			tManager.rollback(status);
 			e.printStackTrace();
 			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
+		}
+
+		return data;
+
+	}
+	
+	/**
+	 * @DESC : 예약하기
+	 * @param dto
+	 * @param seatList
+	 * @return
+	 * @throws ValueException
+	 */
+	@ResponseBody
+	@PostMapping("/insert")
+	public KakaoReadyResponse insert(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray,
+			@RequestParam("price") int price) throws ValueException{
+
+		TransactionStatus status = getTransactionStatus();
+		KakaoReadyResponse data = new KakaoReadyResponse();
+		
+		try {
+			MemberDTO member = MemberUtil.getMember();
+
+			dto.setMemberId(member.getMemberId());
+
+			if(isNull(seatArray) && (dto.getScreenIdx() < 0)){
+				throw new ValueException("잘못된 접근입니다");
+			}
+
+			Type listType = new TypeToken<List<String>>() {
+			}.getType();
+			Type intListType = new TypeToken<List<Integer>>() {
+			}.getType();
+			List<String> seatList = new Gson().fromJson(seatArray, listType);
+			// 보류 
+			List<Integer> productList = new Gson().fromJson(productArray, intListType);
+			
+			dto.setSeatList(seatList);
+			
+			reserveService.insert(dto);
+			
+			// 구매내역 테이블 상위에 넣기
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMDDHHmmss");
+			
+			String nowTime = simpleDateFormat.format(System.currentTimeMillis());
+			
+			String purchaceDetailIdx = dto.getMemberId() + nowTime;
+			
+			Map<String,String> map = new HashMap<>();
+			
+			map.put("partner_order_id", purchaceDetailIdx);
+			map.put("partner_user_id", dto.getMemberId());
+			map.put("item_name", "영화티켓");
+			map.put("quantity", Integer.toString(productList.size()));
+			map.put("total_amount", Integer.toString(price));
+			map.put("tax_free_amount", Integer.toString((int) (price*0.9)));
+			
+			data = kakaoPayService.kakaoPayReady(map);
+			data.setAjaxCode(AJAXPASS);
+			tManager.commit(status);
+			
+
+		} catch (ValueException e) {
+			tManager.rollback(status);
+			data = new KakaoReadyResponse(AJAXFAIL, e.getMessage());
+		} catch (Exception e) {
+			tManager.rollback(status);
+			e.printStackTrace();
+			data = new KakaoReadyResponse(AJAXFAIL, "오류로 인하여 실패하였습니다.");
 		}
 
 		return data;

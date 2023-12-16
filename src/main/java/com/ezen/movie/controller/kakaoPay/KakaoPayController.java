@@ -1,5 +1,8 @@
 package com.ezen.movie.controller.kakaoPay;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +39,9 @@ public class KakaoPayController extends AbstractController{
      */
     @PostMapping("/ready")
     public KakaoReadyResponse readyToKakaoPay(KakaoPayResponse kakao) {
-
-        return kakaoPayService.kakaoPayReady(kakao);
+    	
+    	Map<String,String> map = new HashMap<>();
+        return kakaoPayService.kakaoPayReady(map);
     }
     
     /**
@@ -48,9 +52,9 @@ public class KakaoPayController extends AbstractController{
 
     	HttpServletRequest request = HttpUtil.getRequest();
     	HttpSession session = request.getSession();
-    	System.err.println("세션값 ? " + session.getAttribute("tumin"));
+    
         KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken);
-        System.err.println(new Gson().toJson(kakaoApprove));
+        System.err.println("여기");
         return new ModelAndView("/main/main");
     }
 

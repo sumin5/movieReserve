@@ -7,4 +7,10 @@
 		where product_gb = #{productGb}
 	</select>
 	
+	<select id="getOne" parameterType="Integer" resultType="productDTO">
+		select * from PRODUCT
+		where product_idx = #{integer}
+		limit 1
+	</select>
+	
 </mapper>

@@ -32,8 +32,7 @@ public class KakaoPayService {
 	
 	private KakaoReadyResponse kakaoReady;
 	
-    public KakaoReadyResponse kakaoPayReady(KakaoPayResponse kakaoPay) {
-    	
+    public KakaoReadyResponse kakaoPayReady(Map<String,String> map) {
     	
     	HttpServletRequest request = HttpUtil.getRequest();
     	
@@ -41,7 +40,10 @@ public class KakaoPayService {
     	
     	// 카카오페이 요청 양식
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        
+        HttpSession session = request.getSession();
         parameters.add("cid", cid);
+        session.setAttribute("cid", cid);
 		/*
 		 * parameters.add("partner_order_id", kakaoPay.getPartner_order_id());
 		 * parameters.add("partner_user_id", kakaoPay.getPartner_user_id());
@@ -50,23 +52,18 @@ public class KakaoPayService {
 		 * parameters.add("total_amount",kakaoPay.getAmount().getTotal());
 		 * parameters.add("tax_free_amount", kakaoPay.getAmount().getTax_free());
 		 */
-        parameters.add("partner_order_id", "가맹점 주문 번호");
-        parameters.add("partner_user_id", "가맹점 회원 ID");
-        parameters.add("item_name", "상품명");
-        parameters.add("quantity", "1");
-        parameters.add("total_amount", "5000");
-        parameters.add("vat_amount", "500");
-        parameters.add("item_code", "{\r\n"
-        		+ "  \"product\": \"Item123\",\r\n"
-        		+ "  \"quantity\": 2,\r\n"
-        		+ "  \"amount\": 30000\r\n"
-        		+ "}");
-        parameters.add("tax_free_amount", "500");
+        parameters.add("partner_order_id", map.get("partner_order_id"));
+        session.setAttribute("partner_order_id", map.get("partner_order_id"));
+        parameters.add("partner_user_id", map.get("partner_user_id"));
+        session.setAttribute("partner_user_id", map.get("partner_user_id"));
+        parameters.add("item_name", map.get("item_name"));
+        parameters.add("quantity", map.get("quantity"));
+        parameters.add("total_amount", map.get("total_amount"));
+        parameters.add("tax_free_amount", map.get("tax_free_amount"));
         parameters.add("approval_url", path + "/pay/success"); // 성공 시 redirect url
         parameters.add("cancel_url", path + "/pay/cancle"); // 취소 시 redirect url
         parameters.add("fail_url", path + "/pay/fail"); // 실패 시 redirect url
-        HttpSession session = request.getSession();
-        session.setAttribute("tumin", 123);
+        
         // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
         System.err.println(requestEntity);
@@ -89,12 +86,16 @@ public class KakaoPayService {
      */
     public KakaoApproveResponse approveResponse(String pgToken) {
     
+    	HttpServletRequest request = HttpUtil.getRequest();
+    	// 세션값 추출
+    	HttpSession session = request.getSession();
+    	
         // 카카오 요청
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("cid", cid);
         parameters.add("tid", kakaoReady.getTid());
-        parameters.add("partner_order_id", "가맹점 주문 번호");
-        parameters.add("partner_user_id", "가맹점 회원 ID");
+        parameters.add("partner_order_id", (String)session.getAttribute("partner_order_id"));
+        parameters.add("partner_user_id", (String)session.getAttribute("partner_user_id"));
         parameters.add("pg_token", pgToken);
 
         // 파라미터, 헤더

@@ -353,15 +353,13 @@
 				},
 				dataType : 'json',
 				success : function(res){
+				
+					if(res.ajaxCode == "00"){
 
-					if(res.code == "00"){
-						
-						location.href = "[[@{/main}]]";
+						location.href=res.next_redirect_pc_url;
 						
 					}
 					
-					alert(res.msg);
-
 				},
 				error: function(res){
 					alert(res);

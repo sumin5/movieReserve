@@ -5,5 +5,7 @@ import java.util.List;
 public interface ProductService {
 
 	public List<ProductDTO> getList(ProductDTO dto);
+
+	public ProductDTO getOne(Integer integer);
 	
 }

@@ -20,7 +20,7 @@ public class ReserveDTO extends CommDTO {
 	private String seatRowTitle;    // 시트좌석타이틀
 	private String seatRowNum;        // 시트좌석번호
 	private List<String> seatList;		// 좌석시트담을곳
-
+	private String paymentYn;			// 결제여부
 
 	public int getSeatReserveIdx() {
 		return seatReserveIdx;
@@ -92,6 +92,14 @@ public class ReserveDTO extends CommDTO {
 
 	public void setSeatList(List<String> seatList) {
 		this.seatList = seatList;
+	}
+
+	public String getPaymentYn() {
+		return paymentYn;
+	}
+
+	public void setPaymentYn(String paymentYn) {
+		this.paymentYn = paymentYn;
 	}
 	
 }

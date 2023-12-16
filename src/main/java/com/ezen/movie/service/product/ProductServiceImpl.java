@@ -18,4 +18,10 @@ public class ProductServiceImpl implements ProductService {
 		return productMapper.getList(dto);
 	}
 
+	@Override
+	public ProductDTO getOne(Integer integer) {
+		return productMapper.getOne(integer);
+		
+	}
+
 }
