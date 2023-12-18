@@ -273,11 +273,20 @@ public class ReserveController extends AbstractController{
 			
 			String purchaceDetailIdx = dto.getMemberId() + nowTime;
 			
+			Map<String,Object> strJsonMap = new HashMap<>();
 			Map<String,String> map = new HashMap<>();
 			
 			map.put("partner_order_id", purchaceDetailIdx);
 			map.put("partner_user_id", dto.getMemberId());
 			map.put("item_name", "영화티켓");
+			strJsonMap.put("productList", productList);
+			strJsonMap.put("screenIdx", dto.getScreenIdx());
+			strJsonMap.put("timetableIdx", dto.getTimetableIdx());
+			strJsonMap.put("seatList",seatList);
+			
+			String strJson = new Gson().toJson(strJsonMap);
+			
+			map.put("item_code",strJson);
 			map.put("quantity", Integer.toString(productList.size()));
 			map.put("total_amount", Integer.toString(price));
 			map.put("tax_free_amount", Integer.toString((int) (price*0.9)));

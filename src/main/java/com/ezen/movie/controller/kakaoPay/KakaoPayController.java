@@ -49,12 +49,11 @@ public class KakaoPayController extends AbstractController{
      */
     @GetMapping("/success")
     public ModelAndView afterPayRequest(@RequestParam("pg_token") String pgToken) throws ValueException{
-
-    	HttpServletRequest request = HttpUtil.getRequest();
-    	HttpSession session = request.getSession();
     
         KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken);
+        
         System.err.println("여기");
+        System.err.println(new Gson().toJson(kakaoApprove));
         return new ModelAndView("/main/main");
     }
 
