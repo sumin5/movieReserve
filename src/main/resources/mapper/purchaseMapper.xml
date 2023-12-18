@@ -9,10 +9,10 @@
 
    <insert id="infoInsert" parameterType="purchaseInfoDTO">
    		insert into PURCHASE_INFO(
-   			purchase_info_idx, member_id, total_price, create_dt
+   			purchase_info_idx, member_id, total_price, create_dt, tid
    		)
    		values( 
-   			#{purchaseInfoIdx}, #{memberId}, #{totalPrice}, now()
+   			#{purchaseInfoIdx}, #{memberId}, #{totalPrice}, now(), #{tid}
    		)
    </insert>
    

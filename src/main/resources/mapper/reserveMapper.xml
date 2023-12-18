@@ -19,7 +19,7 @@
 			 , B.dimension_gb 		AS dimensionGb
 			 , B.start_time 		AS startTime
 			 , B.finish_time 		AS finishTime
-			 , D.seat_total - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx and C.paymentYn = 'N') AS total
+			 , D.seat_total - (SELECT COUNT(*) FROM SEAT_RESERVE C WHERE C.timetable_idx = B.timetable_idx and (C.payment_yn = 'N' or 'S')) AS total
 			 , C.file_top_path		AS fileTopPath
 		  FROM MOVIES A
 			 , TIMETABLE B 
@@ -60,7 +60,31 @@
 		)
 		values
 		<foreach collection="seatList" item="item" separator=" , ">
-			( now(), #{screenIdx}, #{timetableIdx}, #{memberId} , #{item} )
+			( now(), #{screenIdx}, #{timetableIdx}, #{memberId} , #{item})
 		</foreach>
 	</insert>
+	
+	<select id="getList" parameterType="reserveDTO" resultType="reserveDTO">
+		
+		select * 
+		from SEAT_RESERVE
+		where screen_idx = #{screenIdx}
+		and timetable_idx = #{timetableIdx}
+		and seat_number in ( 
+		<foreach collection="seatList" item="item" separator=" , ">
+			#{item}
+		</foreach>
+		)
+	</select>
+	
+	<update id="reserveUpdate" parameterType="reserveDTO">
+			update SEAT_RESERVE
+				set change_dt = now(),
+				payment_yn = 'Y'
+			where seat_reserve_idx in (
+			<foreach collection="list" item="item" separator=" , ">
+				#{item}
+			</foreach>
+			)
+	</update>
 </mapper>

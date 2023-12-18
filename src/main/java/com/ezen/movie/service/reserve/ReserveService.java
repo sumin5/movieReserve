@@ -24,4 +24,17 @@ public interface ReserveService {
 	 * @param dto
 	 */
 	public void insert(ReserveDTO dto);
+
+	/**
+	 * 예약좌석 업데이트 하기전 예약되어있는지 확인
+	 * @param reserveDTO
+	 * @return
+	 */
+	public List<ReserveDTO> getList(ReserveDTO reserveDTO);
+
+	/**
+	 * 예약좌석확정
+	 * @param seatReserveList
+	 */
+	public void reserveUpdate(List<Integer> seatReserveList);
 }

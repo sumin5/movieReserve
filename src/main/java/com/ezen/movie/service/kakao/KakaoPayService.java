@@ -2,7 +2,6 @@ package com.ezen.movie.service.kakao;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,9 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.ezen.movie.comm.HttpUtil;
-import com.google.gson.Gson;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -44,18 +41,12 @@ public class KakaoPayService {
         HttpSession session = request.getSession();
         parameters.add("cid", cid);
         session.setAttribute("cid", cid);
-		/*
-		 * parameters.add("partner_order_id", kakaoPay.getPartner_order_id());
-		 * parameters.add("partner_user_id", kakaoPay.getPartner_user_id());
-		 * parameters.add("item_name", kakaoPay.getItem_name()); // todo
-		 * parameters.add("quantity", kakaoPay.getQuantity());
-		 * parameters.add("total_amount",kakaoPay.getAmount().getTotal());
-		 * parameters.add("tax_free_amount", kakaoPay.getAmount().getTax_free());
-		 */
+	
         parameters.add("partner_order_id", map.get("partner_order_id"));
         session.setAttribute("partner_order_id", map.get("partner_order_id"));
         parameters.add("partner_user_id", map.get("partner_user_id"));
         session.setAttribute("partner_user_id", map.get("partner_user_id"));
+        parameters.add("item_code", map.get("item_code"));
         parameters.add("item_name", map.get("item_name"));
         parameters.add("quantity", map.get("quantity"));
         parameters.add("total_amount", map.get("total_amount"));
@@ -66,8 +57,6 @@ public class KakaoPayService {
         
         // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
-        System.err.println(requestEntity);
-        System.err.println("이것 ? " + new Gson().toJson(requestEntity));
         // 외부에 보낼 url
         RestTemplate restTemplate = new RestTemplate();
         
@@ -75,7 +64,6 @@ public class KakaoPayService {
                 "https://kapi.kakao.com/v1/payment/ready",
                 requestEntity,
                 KakaoReadyResponse.class);
-        System.err.println(kakaoReady);
         return kakaoReady;
         
     	

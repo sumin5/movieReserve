@@ -31,4 +31,15 @@ public class ReserveServiceImpl implements ReserveService {
 		
 	}
 
+	@Override
+	public List<ReserveDTO> getList(ReserveDTO reserveDTO) {
+		return reserveMapper.getList(reserveDTO);
+	}
+
+	@Override
+	public void reserveUpdate(List<Integer> seatReserveList) {
+		reserveMapper.reserveUpdate(seatReserveList);
+		
+	}
+
 }

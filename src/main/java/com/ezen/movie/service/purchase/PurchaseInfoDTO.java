@@ -11,6 +11,7 @@ public class PurchaseInfoDTO extends CommDTO{
 	
 	private String purchaseInfoIdx;	// 구매정보내역인덱스
 	private String memberId;		// 회원IDX
+	private String tid;				// 카카오결제고유번호
 	private int totalPrice;			// 총합가격
 	
 	private List<PurchaseDetailDTO> detailList ;	// 상세리스트
@@ -29,6 +30,14 @@ public class PurchaseInfoDTO extends CommDTO{
 
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
+	}
+
+	public String getTid() {
+		return tid;
+	}
+
+	public void setTid(String tid) {
+		this.tid = tid;
 	}
 
 	public int getTotalPrice() {

@@ -29,4 +29,17 @@ public interface ReserveMapper {
 	 * @param dto
 	 */
 	public void insert(ReserveDTO dto);
+
+	/**
+	 * 좌석 업데이트전 예약있는지 판단
+	 * @param reserveDTO
+	 * @return
+	 */
+	public List<ReserveDTO> getList(ReserveDTO reserveDTO);
+
+	/**
+	 * 예약좌석 확정
+	 * @param rList
+	 */
+	public void reserveUpdate(List<Integer> seatReserveList);
 }

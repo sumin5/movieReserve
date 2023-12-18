@@ -2,15 +2,10 @@ package com.ezen.movie.controller.reserve;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.ezen.movie.comm.MemberUtil;
-import com.ezen.movie.service.member.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
@@ -23,10 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ezen.movie.comm.AbstractController;
 import com.ezen.movie.comm.AjaxResVO;
+import com.ezen.movie.comm.MemberUtil;
 import com.ezen.movie.comm.ValueException;
 import com.ezen.movie.service.file.FileDTO;
 import com.ezen.movie.service.kakao.KakaoPayService;
 import com.ezen.movie.service.kakao.KakaoReadyResponse;
+import com.ezen.movie.service.member.MemberDTO;
 import com.ezen.movie.service.movies.MovieService;
 import com.ezen.movie.service.movies.MoviesDTO;
 import com.ezen.movie.service.product.ProductDTO;
@@ -151,82 +148,6 @@ public class ReserveController extends AbstractController{
 		}
 
 		return mav;
-	}
-
-	/**
-	 * @DESC : 예약하기
-	 * @param dto
-	 * @param seatList
-	 * @return
-	 * @throws ValueException
-	 */
-	@ResponseBody
-	@PostMapping("/insert2")
-	public AjaxResVO<?> insert2(ReserveDTO dto,@RequestParam("seatArray") String seatArray,@RequestParam("productArray") String productArray,
-			@RequestParam("price") int price) throws ValueException{
-
-		TransactionStatus status = getTransactionStatus();
-		AjaxResVO<?> data = new AjaxResVO<>();
-		
-		try {
-			MemberDTO member = MemberUtil.getMember();
-
-			dto.setMemberId(member.getMemberId());
-
-			if(isNull(seatArray) && (dto.getScreenIdx() < 0)){
-				throw new ValueException("잘못된 접근입니다");
-			}
-
-			Type listType = new TypeToken<List<String>>() {
-			}.getType();
-			Type intListType = new TypeToken<List<Integer>>() {
-			}.getType();
-			List<String> seatList = new Gson().fromJson(seatArray, listType);
-			
-			List<Integer> productList = new Gson().fromJson(productArray, intListType);
-			
-			dto.setSeatList(seatList);
-			
-			reserveService.insert(dto);
-			
-			// 구매내역 테이블 상위에 넣기
-			
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMDDHHmmss");
-			
-			String nowTime = simpleDateFormat.format(System.currentTimeMillis());
-			
-			String purchaceDetailIdx = dto.getMemberId() + nowTime;
-			
-			PurchaseInfoDTO purchaseInfoDTO = new PurchaseInfoDTO();
-			purchaseInfoDTO.setPurchaseInfoIdx(purchaceDetailIdx);
-			purchaseInfoDTO.setTotalPrice(price);
-			purchaseInfoDTO.setMemberId(member.getMemberId());
-			
-			purchaseService.infoInsert(purchaseInfoDTO);
-			// 구매내역 테이블 하위 넣기
-			
-			PurchaseDetailDTO purchaseDetailDTO = new PurchaseDetailDTO();
-			purchaseDetailDTO.setProductList(productList);
-			purchaseDetailDTO.setPurchaseInfoIdx(purchaseInfoDTO.getPurchaseInfoIdx());
-			
-			purchaseService.detailInsert(purchaseDetailDTO);
-			
-			tManager.commit(status);
-			
-			
-			data = new AjaxResVO<>(AJAXPASS, "예약이 완료되었습니다");
-
-		} catch (ValueException e) {
-			tManager.rollback(status);
-			data = new AjaxResVO<>(AJAXFAIL, e.getMessage());
-		} catch (Exception e) {
-			tManager.rollback(status);
-			e.printStackTrace();
-			data = new AjaxResVO<>(AJAXFAIL, "오류로 인하여 실패하였습니다.");
-		}
-
-		return data;
-
 	}
 	
 	/**
