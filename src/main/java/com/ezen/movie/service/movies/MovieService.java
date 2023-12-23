@@ -24,6 +24,8 @@ public interface MovieService {
 	void movieInsert(MoviesDTO mDto);
 
 	void movieStillCutInsert(FileDTO dto, MultipartFile[] files) throws Exception;
+	
+	int findMaxTableIdx() throws  Exception;
 
 	
 

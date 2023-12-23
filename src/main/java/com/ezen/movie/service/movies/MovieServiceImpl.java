@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ezen.movie.mapper.file.FileMapper;
 import com.ezen.movie.mapper.movies.MoviesMapper;
 import com.ezen.movie.service.file.FileDTO;
 
@@ -24,6 +25,8 @@ public class MovieServiceImpl implements MovieService {
 
 	@Autowired
 	private MoviesMapper moviesMapper;
+	@Autowired
+	private FileMapper fileMapper;
 
 	// 영화 리스트 가져오기
 	@Override
@@ -74,6 +77,10 @@ public class MovieServiceImpl implements MovieService {
 			dto.setFileName(fileName);
 			dto.setFilePath("/files/" + fileName);
 		}
+		
+		int nextTableIdx = findMaxTableIdx();
+		
+		dto.setTableIdx(nextTableIdx+1);
 
 		moviesMapper.movieThumbNailInsert(dto);
 	}
@@ -125,4 +132,9 @@ public class MovieServiceImpl implements MovieService {
 		moviesMapper.movieInsert(mDto);
 	}
 
+	public int findMaxTableIdx() {
+		
+		return fileMapper.findMaxTableIdx(); 
+		
+	}
 }

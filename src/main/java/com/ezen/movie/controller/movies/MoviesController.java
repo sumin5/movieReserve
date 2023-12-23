@@ -124,6 +124,7 @@ public class MoviesController extends AbstractController{
 		// 이렇게 참조하는 방법도 있음.
 		movieDetail.setPersonDTO(person);
 		mav.addObject("movieDetail", movieDetail);
+		System.out.println("testtesttest"+ movieDetail.getFileDTO2().getFileTopPath());
 		return mav;
 	}
 
@@ -167,7 +168,6 @@ public class MoviesController extends AbstractController{
 			System.err.println(dto);
 			System.err.println(new Gson().toJson(dto));
 			
-			dto.setTableIdx(1);
 			dto.setPathGb(true);
 			movieService.movieThumbNailInsert(dto,file);
 			movieService.movieInsert(mDto);

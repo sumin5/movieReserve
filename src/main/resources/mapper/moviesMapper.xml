@@ -99,41 +99,45 @@
 	</insert>
 
 	<insert id="movieStillCutInsert" parameterType="fileDTO">
-		insert into FILE
-		(
-		create_dt,
-		table_idx,
-		<if test="filePath != null and filePath.length > 0">
-			file_path,
-		</if>
-		<if test="fileName != null and fileName.length > 0">
-			file_name,
-		</if>
-		<if test="fileTopPath != null and fileTopPath.length > 0">
-			file_top_path,
-		</if>
-		<if test="fileTopName != null and fileTopName.length > 0">
-			file_top_name,
-		</if>
-		table_gb
-		)
-		values(
-		now(),
-		#{tableIdx},
-		<if test="filePath != null and filePath.length > 0">
-			#{filePath},
-		</if>
-		<if test="fileName != null and fileName.length > 0">
-			#{fileName},
-		</if>
-		<if test="fileTopPath != null and fileTopPath.length > 0">
-			#{fileTopPath},
-		</if>
-		<if test="fileTopName != null and fileTopName.length > 0">
-			#{fileTopName},
-		</if>
-		'movies'
-		)
-	</insert>
+    insert into FILE
+    (
+        create_dt,
+        <if test="fileTopPath != null and fileTopPath.length > 0">
+            table_idx,
+        </if>
+        <if test="filePath != null and filePath.length > 0">
+            file_path,
+        </if>
+        <if test="fileName != null and fileName.length > 0">
+            file_name,
+        </if>
+        <if test="fileTopPath != null and fileTopPath.length > 0">
+            file_top_path,
+        </if>
+        <if test="fileTopName != null and fileTopName.length > 0">
+            file_top_name,
+        </if>
+        table_gb
+    )
+    values(
+        now(),
+        <if test="fileTopPath != null and fileTopPath.length > 0">
+            (select coalesce(max(table_idx), 0) + 1 from FILE),
+        </if>
+        <if test="filePath != null and filePath.length > 0">
+            #{filePath},
+        </if>
+        <if test="fileName != null and fileName.length > 0">
+            #{fileName},
+        </if>
+        <if test="fileTopPath != null and fileTopPath.length > 0">
+            #{fileTopPath},
+        </if>
+        <if test="fileTopName != null and fileTopName.length > 0">
+            #{fileTopName},
+        </if>
+        'movies'
+    )
+</insert>
 	
 </mapper>

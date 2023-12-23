@@ -16,5 +16,7 @@ public interface FileMapper {
 	public FileDTO getTop(FileDTO vo);
 	//메인 페이지에 영화 대표이미지리스트 가져오기
 	public List<FileDTO> getListMain(FileDTO vo);
+	
+	public int findMaxTableIdx();
 
 }

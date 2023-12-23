@@ -38,4 +38,8 @@
 		where table_gb = #{wildCard}
 		and file_top_path is not null
 	</select>
+	
+	<select id="findMaxTableIdx" resultType="int">
+		SELECT MAX(table_idx) FROM FILE;
+	</select>
 </mapper>
