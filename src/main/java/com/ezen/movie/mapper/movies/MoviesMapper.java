@@ -26,6 +26,8 @@ public interface MoviesMapper {
 	
 	void movieInsert(MoviesDTO mDto);
 
+	int selectMaxMovieIdx();
+
 	
 	
 }

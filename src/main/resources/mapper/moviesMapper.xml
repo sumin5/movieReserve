@@ -136,4 +136,7 @@
 		)
 	</insert>
 	
+	<select id="selectMaxMovieIdx" resultType="int">
+		select MAX(movie_idx) from MOVIES
+	</select>
 </mapper>
