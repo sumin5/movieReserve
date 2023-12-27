@@ -78,8 +78,8 @@ public class MovieServiceImpl implements MovieService {
 			dto.setFilePath("/files/" + fileName);
 		}
 		
-		int tableIdx = moviesMapper.selectMaxMovieIdx();
-		dto.setTableIdx(tableIdx);
+		//int tableIdx = moviesMapper.selectMaxMovieIdx();
+		//dto.setTableIdx(tableIdx);
 		
 		moviesMapper.movieThumbNailInsert(dto);
 	}
@@ -92,7 +92,7 @@ public class MovieServiceImpl implements MovieService {
 		System.err.println(files.length);
 		
 		// 썸네일의 이미지 파일들을 배열로 받아와서 for문으로 랜덤 파일이름을 하나씩 생성
-		int tableIdx = moviesMapper.selectMaxMovieIdx();
+		//int tableIdx = moviesMapper.selectMaxMovieIdx();
 		
 		for (MultipartFile file : files) {
 				
@@ -123,7 +123,7 @@ public class MovieServiceImpl implements MovieService {
 				fDto.setFilePath("/files/" + fileName);
 			}
 			
-			fDto.setTableIdx(tableIdx);
+			//fDto.setTableIdx(tableIdx);
 			
 			// 메서드를 for문 안에서  파일 개수만큼 호출
 			moviesMapper.movieStillCutInsert(fDto);

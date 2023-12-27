@@ -30,6 +30,9 @@
 	</delete>
 	
 	<insert id="movieThumbNailInsert" parameterType="fileDTO">
+		<selectKey resultType="int" keyProperty="tableIdx" order="BEFORE">
+        	select MAX(movie_idx) from MOVIES        
+    	</selectKey> 
 		insert into FILE
 		(
 		create_dt,
@@ -99,6 +102,9 @@
 	</insert>
 
 	<insert id="movieStillCutInsert" parameterType="fileDTO">
+		<selectKey resultType="int" keyProperty="tableIdx" order="BEFORE">
+        	select MAX(movie_idx) from MOVIES        
+    	</selectKey>  
 		insert into FILE
 		(
 		create_dt,
