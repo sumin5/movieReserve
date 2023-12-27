@@ -169,8 +169,8 @@ public class MoviesController extends AbstractController{
 			System.err.println(new Gson().toJson(dto));
 			
 			dto.setPathGb(true);
-			movieService.movieThumbNailInsert(dto,file);
 			movieService.movieInsert(mDto);
+			movieService.movieThumbNailInsert(dto,file);
 			dto.setPathGb(false);
 			movieService.movieStillCutInsert(dto,files);
 			String msg = "등록되었습니다";

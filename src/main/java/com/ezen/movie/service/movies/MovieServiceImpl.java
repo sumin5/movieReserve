@@ -79,7 +79,7 @@ public class MovieServiceImpl implements MovieService {
 		}
 		
 		int tableIdx = moviesMapper.selectMaxMovieIdx();
-		dto.setTableIdx(tableIdx +1);
+		dto.setTableIdx(tableIdx);
 		
 		moviesMapper.movieThumbNailInsert(dto);
 	}
